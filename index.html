@@ -3,28 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Master</title>
+    <title>Math Matrix | Interactive Learning</title>
     <style>
-        /* CSS Styles */
+        :root {
+            --neon-blue: #0ff0fc;
+            --neon-pink: #ff2a6d;
+            --neon-purple: #d300c5;
+            --dark-bg: #0d0221;
+            --darker-bg: #070113;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+            font-family: 'Orbitron', 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            color: #333;
-            background-color: #f5f5f5;
+            background-color: var(--dark-bg);
+            color: white;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255,42,109,0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(13,240,252,0.1) 0%, transparent 20%);
+            overflow-x: hidden;
+        }
+        
+        @font-face {
+            font-family: 'Orbitron';
+            src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
         }
         
         header {
-            background: #4CAF50;
-            color: white;
-            padding: 1rem;
+            background: linear-gradient(to right, var(--darker-bg), var(--dark-bg));
+            padding: 2rem;
             text-align: center;
+            border-bottom: 1px solid var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, 
+                transparent, 
+                var(--neon-blue), 
+                var(--neon-pink), 
+                var(--neon-purple), 
+                transparent);
+            animation: headerGlow 3s linear infinite;
+        }
+        
+        @keyframes headerGlow {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(13,240,252,0.3);
+            letter-spacing: 2px;
         }
         
         nav {
-            background: #333;
-            padding: 0.5rem;
+            background: rgba(13,2,33,0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-bottom: 1px solid var(--neon-purple);
+            box-shadow: 0 5px 15px rgba(211,0,197,0.2);
         }
         
         nav ul {
@@ -33,180 +87,585 @@
             margin: 0;
             display: flex;
             justify-content: center;
-        }
-        
-        nav li {
-            margin: 0 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         
         nav a {
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid var(--neon-blue);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
         }
         
         nav a:hover {
-            background: #4CAF50;
-            border-radius: 4px;
+            background: rgba(13,240,252,0.2);
+            box-shadow: 0 0 15px var(--neon-blue);
+            transform: translateY(-3px);
         }
         
-        main {
+        nav a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(13,240,252,0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        nav a:hover::before {
+            left: 100%;
+        }
+        
+        .grade-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
         
-        .grade-section {
-            display: none;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .active {
             display: block;
         }
         
+        .subject-category {
+            margin-bottom: 3rem;
+            background: rgba(7,1,19,0.7);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--neon-purple);
+            box-shadow: 0 0 20px rgba(211,0,197,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subject-category::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+        }
+        
+        h2, h3 {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(13,240,252,0.3);
+        }
+        
         .math-problem {
-            background: white;
-            padding: 1rem;
-            margin: 1rem 0;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(13,2,33,0.5);
+            border-left: 4px solid var(--neon-pink);
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .math-problem:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 0 15px rgba(255,42,109,0.3);
+        }
+        
+        input[type="text"] {
+            padding: 0.8rem;
+            margin: 1rem 0;
+            width: 120px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--neon-blue);
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+            background: rgba(255,255,255,0.2);
         }
         
         .btn {
-            background: #4CAF50;
+            background: transparent;
             color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            border: 2px solid var(--neon-blue);
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
             cursor: pointer;
-            margin: 0.5rem 0;
+            margin: 1rem 1rem 1rem 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            width: 100%;
         }
         
         .btn:hover {
-            background: #45a049;
+            box-shadow: 0 0 15px var(--neon-blue);
+            transform: translateY(-3px);
+            color: white;
+        }
+        
+        .answer-feedback {
+            margin: 1rem 0;
+            font-weight: bold;
+            padding: 0.8rem;
+            border-radius: 5px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .correct {
+            color: #00ff88;
+            background: rgba(0,255,136,0.1);
+            border-left: 4px solid #00ff88;
+        }
+        
+        .incorrect {
+            color: var(--neon-pink);
+            background: rgba(255,42,109,0.1);
+            border-left: 4px solid var(--neon-pink);
         }
         
         footer {
-            background: #333;
+            background: linear-gradient(to right, var(--darker-bg), var(--dark-bg));
             color: white;
             text-align: center;
-            padding: 1rem;
-            margin-top: 2rem;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--neon-purple);
+            box-shadow: 0 -5px 15px rgba(211,0,197,0.2);
+            position: relative;
+        }
+        
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, 
+                transparent, 
+                var(--neon-blue), 
+                var(--neon-pink), 
+                var(--neon-purple), 
+                transparent);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+            
+            header {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="particles" id="particles-js"></div>
+    
     <header>
-        <h1>Math Master</h1>
-        <p>Free math resources for grades 1-12</p>
+        <h1>MATH MATRIX</h1>
+        <p>Neon-Powered Math Learning</p>
     </header>
     
     <nav>
         <ul>
-            <li><a href="#" onclick="showSection('home')">Home</a></li>
-            <li><a href="#" onclick="showSection('grade1-5')">Grades 1-5</a></li>
-            <li><a href="#" onclick="showSection('grade6-8')">Grades 6-8</a></li>
-            <li><a href="#" onclick="showSection('grade9-12')">Grades 9-12</a></li>
+            <li><a href="#" onclick="showSection('home')">HOME</a></li>
+            <li><a href="#" onclick="showSection('grade1-5')">GRADES 1-5</a></li>
+            <li><a href="#" onclick="showSection('grade6-8')">GRADES 6-8</a></li>
+            <li><a href="#" onclick="showSection('grade9-12')">GRADES 9-12</a></li>
         </ul>
     </nav>
     
     <main>
         <!-- Home Section -->
         <section id="home" class="grade-section active">
-            <h2>Welcome to Math Master!</h2>
-            <p>Select your grade level to begin learning.</p>
-            <div>
-                <button class="btn" onclick="showSection('grade1-5')">Grades 1-5</button>
-                <button class="btn" onclick="showSection('grade6-8')">Grades 6-8</button>
-                <button class="btn" onclick="showSection('grade9-12')">Grades 9-12</button>
+            <div style="text-align: center; margin: 3rem 0;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">WELCOME TO THE MATH MATRIX</h2>
+                <p style="max-width: 700px; margin: 0 auto 2rem; line-height: 1.8;">
+                    Where numbers come alive in a neon digital universe. 
+                    Select your grade level to begin your interactive math journey.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                    <button class="btn" onclick="showSection('grade1-5')" 
+                            style="border-color: var(--neon-blue);">ELEMENTARY</button>
+                    <button class="btn" onclick="showSection('grade6-8')" 
+                            style="border-color: var(--neon-pink);">MIDDLE SCHOOL</button>
+                    <button class="btn" onclick="showSection('grade9-12')" 
+                            style="border-color: var(--neon-purple);">HIGH SCHOOL</button>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: center; margin-top: 3rem;">
+                <div style="width: 100%; max-width: 800px; background: rgba(13,2,33,0.7); padding: 2rem; border-radius: 10px; border: 1px solid var(--neon-blue);">
+                    <h3 style="color: var(--neon-pink); text-align: center; margin-bottom: 1.5rem;">HOW IT WORKS</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <div style="text-align: center;">
+                            <div style="width: 60px; height: 60px; background: rgba(13,240,252,0.1); border: 1px solid var(--neon-blue); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">1</div>
+                            <p>Select your grade level</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="width: 60px; height: 60px; background: rgba(255,42,109,0.1); border: 1px solid var(--neon-pink); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">2</div>
+                            <p>Choose a math topic</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="width: 60px; height: 60px; background: rgba(211,0,197,0.1); border: 1px solid var(--neon-purple); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">3</div>
+                            <p>Solve problems and get instant feedback</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         
         <!-- Grades 1-5 Section -->
         <section id="grade1-5" class="grade-section">
-            <h2>Grades 1-5 Math</h2>
+            <button class="btn" onclick="showSection('home')" style="margin-bottom: 2rem;">← BACK TO HOME</button>
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; text-shadow: 0 0 15px var(--neon-blue);">GRADES 1-5 MATH LAB</h2>
             
-            <div class="math-problem">
-                <h3>Addition</h3>
-                <p>What is 5 + 7?</p>
-                <button class="btn" onclick="showAnswer('answer1', '12')">Show Answer</button>
-                <p id="answer1" style="display:none;">Answer: 12</p>
+            <div class="subject-category">
+                <h3 style="color: var(--neon-blue);">BASIC ARITHMETIC</h3>
+                
+                <div class="math-problem">
+                    <p>1. What is 8 + 7?</p>
+                    <input type="text" id="grade1-q1" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade1-q1', '15')">CHECK ANSWER</button>
+                    <div id="grade1-q1-feedback" class="answer-feedback"></div>
+                </div>
+                
+                <div class="math-problem">
+                    <p>2. What is 12 - 5?</p>
+                    <input type="text" id="grade1-q2" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade1-q2', '7')">CHECK ANSWER</button>
+                    <div id="grade1-q2-feedback" class="answer-feedback"></div>
+                </div>
+                
+                <div class="math-problem">
+                    <p>3. What is 3 × 4?</p>
+                    <input type="text" id="grade1-q3" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade1-q3', '12')">CHECK ANSWER</button>
+                    <div id="grade1-q3-feedback" class="answer-feedback"></div>
+                </div>
             </div>
             
-            <div class="math-problem">
-                <h3>Subtraction</h3>
-                <p>What is 10 - 4?</p>
-                <button class="btn" onclick="showAnswer('answer2', '6')">Show Answer</button>
-                <p id="answer2" style="display:none;">Answer: 6</p>
+            <div class="subject-category">
+                <h3 style="color: var(--neon-pink);">FRACTIONS</h3>
+                
+                <div class="math-problem">
+                    <p>4. What is 1/2 + 1/4? (answer as fraction)</p>
+                    <input type="text" id="grade1-q4" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade1-q4', '3/4')">CHECK ANSWER</button>
+                    <div id="grade1-q4-feedback" class="answer-feedback"></div>
+                </div>
             </div>
-            
-            <button class="btn" onclick="showSection('home')">Back to Home</button>
         </section>
         
         <!-- Grades 6-8 Section -->
         <section id="grade6-8" class="grade-section">
-            <h2>Grades 6-8 Math</h2>
+            <button class="btn" onclick="showSection('home')" style="margin-bottom: 2rem;">← BACK TO HOME</button>
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; text-shadow: 0 0 15px var(--neon-pink);">GRADES 6-8 MATH LAB</h2>
             
-            <div class="math-problem">
-                <h3>Algebra</h3>
-                <p>Solve for x: x + 5 = 12</p>
-                <button class="btn" onclick="showAnswer('answer3', '7')">Show Answer</button>
-                <p id="answer3" style="display:none;">Answer: x = 7</p>
+            <div class="subject-category">
+                <h3 style="color: var(--neon-blue);">PRE-ALGEBRA</h3>
+                
+                <div class="math-problem">
+                    <p>1. Solve for x: x + 5 = 12</p>
+                    <input type="text" id="grade6-q1" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade6-q1', '7')">CHECK ANSWER</button>
+                    <div id="grade6-q1-feedback" class="answer-feedback"></div>
+                </div>
+                
+                <div class="math-problem">
+                    <p>2. Solve for y: 2y = 18</p>
+                    <input type="text" id="grade6-q2" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade6-q2', '9')">CHECK ANSWER</button>
+                    <div id="grade6-q2-feedback" class="answer-feedback"></div>
+                </div>
             </div>
             
-            <div class="math-problem">
-                <h3>Fractions</h3>
-                <p>What is 1/2 + 1/4?</p>
-                <button class="btn" onclick="showAnswer('answer4', '3/4')">Show Answer</button>
-                <p id="answer4" style="display:none;">Answer: 3/4</p>
+            <div class="subject-category">
+                <h3 style="color: var(--neon-pink);">GEOMETRY</h3>
+                
+                <div class="math-problem">
+                    <p>3. What is the area of a rectangle with length 5 and width 3?</p>
+                    <input type="text" id="grade6-q3" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade6-q3', '15')">CHECK ANSWER</button>
+                    <div id="grade6-q3-feedback" class="answer-feedback"></div>
+                </div>
+                
+                <div class="math-problem">
+                    <p>4. What is the circumference of a circle with radius 7? (Use π = 3.14)</p>
+                    <input type="text" id="grade6-q4" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade6-q4', '43.96')">CHECK ANSWER</button>
+                    <div id="grade6-q4-feedback" class="answer-feedback"></div>
+                </div>
             </div>
-            
-            <button class="btn" onclick="showSection('home')">Back to Home</button>
         </section>
         
         <!-- Grades 9-12 Section -->
         <section id="grade9-12" class="grade-section">
-            <h2>Grades 9-12 Math</h2>
+            <button class="btn" onclick="showSection('home')" style="margin-bottom: 2rem;">← BACK TO HOME</button>
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; text-shadow: 0 0 15px var(--neon-purple);">GRADES 9-12 MATH LAB</h2>
             
-            <div class="math-problem">
-                <h3>Algebra</h3>
-                <p>Solve for x: 2x + 3 = 15</p>
-                <button class="btn" onclick="showAnswer('answer5', '6')">Show Answer</button>
-                <p id="answer5" style="display:none;">Answer: x = 6</p>
+            <div class="subject-category">
+                <h3 style="color: var(--neon-blue);">ALGEBRA</h3>
+                
+                <div class="math-problem">
+                    <p>1. Solve for x: 2x + 3 = 15</p>
+                    <input type="text" id="grade9-q1" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade9-q1', '6')">CHECK ANSWER</button>
+                    <div id="grade9-q1-feedback" class="answer-feedback"></div>
+                </div>
+                
+                <div class="math-problem">
+                    <p>2. Factor: x² + 5x + 6</p>
+                    <input type="text" id="grade9-q2" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade9-q2', '(x+2)(x+3)')">CHECK ANSWER</button>
+                    <div id="grade9-q2-feedback" class="answer-feedback"></div>
+                </div>
             </div>
             
-            <div class="math-problem">
-                <h3>Geometry</h3>
-                <p>What is the area of a circle with radius 5?</p>
-                <button class="btn" onclick="showAnswer('answer6', '25π or ~78.54')">Show Answer</button>
-                <p id="answer6" style="display:none;">Answer: 25π (≈78.54)</p>
+            <div class="subject-category">
+                <h3 style="color: var(--neon-pink);">GEOMETRY</h3>
+                
+                <div class="math-problem">
+                    <p>3. What is the area of a circle with radius 5? (Answer in terms of π)</p>
+                    <input type="text" id="grade9-q3" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade9-q3', '25π')">CHECK ANSWER</button>
+                    <div id="grade9-q3-feedback" class="answer-feedback"></div>
+                </div>
+                
+                <div class="math-problem">
+                    <p>4. A right triangle has legs of 3 and 4. What is the hypotenuse?</p>
+                    <input type="text" id="grade9-q4" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade9-q4', '5')">CHECK ANSWER</button>
+                    <div id="grade9-q4-feedback" class="answer-feedback"></div>
+                </div>
             </div>
             
-            <button class="btn" onclick="showSection('home')">Back to Home</button>
+            <div class="subject-category">
+                <h3 style="color: var(--neon-purple);">TRIGONOMETRY</h3>
+                
+                <div class="math-problem">
+                    <p>5. What is sin(30°)?</p>
+                    <input type="text" id="grade9-q5" placeholder="Your answer">
+                    <button class="btn" onclick="checkAnswer('grade9-q5', '0.5')">CHECK ANSWER</button>
+                    <div id="grade9-q5-feedback" class="answer-feedback"></div>
+                </div>
+            </div>
         </section>
     </main>
     
     <footer>
-        <p>&copy; 2023 Math Master. All rights reserved.</p>
+        <p>© 2023 MATH MATRIX | Neon-Powered Math Learning</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">All problems are randomly generated for educational purposes</p>
     </footer>
-    
+
     <script>
-        // JavaScript Functions
+        // JavaScript for interactive elements
         function showSection(sectionId) {
-            // Hide all sections
             document.querySelectorAll('.grade-section').forEach(section => {
                 section.classList.remove('active');
             });
-            
-            // Show selected section
             document.getElementById(sectionId).classList.add('active');
+            window.scrollTo(0, 0);
         }
-        
-        function showAnswer(elementId, answer) {
-            const answerElement = document.getElementById(elementId);
-            answerElement.textContent = `Answer: ${answer}`;
-            answerElement.style.display = 'block';
+
+        function checkAnswer(inputId, correctAnswer) {
+            const userAnswer = document.getElementById(inputId).value.trim();
+            const feedbackElement = document.getElementById(inputId + '-feedback');
+            
+            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                feedbackElement.textContent = "✓ Correct! Great job!";
+                feedbackElement.className = "answer-feedback correct";
+                
+                // Add neon pulse effect
+                feedbackElement.style.animation = "none";
+                void feedbackElement.offsetWidth; // Trigger reflow
+                feedbackElement.style.animation = "pulseCorrect 0.5s";
+            } else {
+                feedbackElement.textContent = `✗ Incorrect. The correct answer is ${correctAnswer}. Try again!`;
+                feedbackElement.className = "answer-feedback incorrect";
+                
+                // Add shake effect
+                feedbackElement.style.animation = "none";
+                void feedbackElement.offsetWidth; // Trigger reflow
+                feedbackElement.style.animation = "shake 0.5s";
+            }
         }
+
+        // Add animation keyframes dynamically
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulseCorrect {
+                0% { box-shadow: 0 0 5px rgba(0,255,136,0.5); }
+                50% { box-shadow: 0 0 20px rgba(0,255,136,0.8); }
+                100% { box-shadow: 0 0 5px rgba(0,255,136,0.5); }
+            }
+            
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                20%, 60% { transform: translateX(-5px); }
+                40%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize with home section active
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('home');
+        });
+    </script>
+
+    <!-- Particles.js for background effect -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 80,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": ["#0ff0fc", "#ff2a6d", "#d300c5"]
+                        },
+                        "shape": {
+                            "type": "circle",
+                            "stroke": {
+                                "width": 0,
+                                "color": "#000000"
+                            }
+                        },
+                        "opacity": {
+                            "value": 0.5,
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 1,
+                                "opacity_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true,
+                            "anim": {
+                                "enable": true,
+                                "speed": 2,
+                                "size_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#0ff0fc",
+                            "opacity": 0.2,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 1,
+                            "direction": "none",
+                            "random": true,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false,
+                            "attract": {
+                                "enable": true,
+                                "rotateX": 600,
+                                "rotateY": 1200
+                            }
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": {
+                                "distance": 140,
+                                "line_linked": {
+                                    "opacity": 0.5
+                                }
+                            },
+                            "push": {
+                                "particles_nb": 4
+                            }
+                        }
+                    },
+                    "retina_detect": true
+                });
+            }
+        });
     </script>
 </body>
 </html>
