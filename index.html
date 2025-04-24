@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Master</title>
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        nav {
+            background: #333;
+            padding: 0.5rem;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        nav li {
+            margin: 0 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+        }
+        
+        nav a:hover {
+            background: #4CAF50;
+            border-radius: 4px;
+        }
+        
+        main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .grade-section {
+            display: none;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .math-problem {
+            background: white;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5rem 0;
+        }
+        
+        .btn:hover {
+            background: #45a049;
+        }
+        
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Math Master</h1>
+        <p>Free math resources for grades 1-12</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#" onclick="showSection('home')">Home</a></li>
+            <li><a href="#" onclick="showSection('grade1-5')">Grades 1-5</a></li>
+            <li><a href="#" onclick="showSection('grade6-8')">Grades 6-8</a></li>
+            <li><a href="#" onclick="showSection('grade9-12')">Grades 9-12</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="grade-section active">
+            <h2>Welcome to Math Master!</h2>
+            <p>Select your grade level to begin learning.</p>
+            <div>
+                <button class="btn" onclick="showSection('grade1-5')">Grades 1-5</button>
+                <button class="btn" onclick="showSection('grade6-8')">Grades 6-8</button>
+                <button class="btn" onclick="showSection('grade9-12')">Grades 9-12</button>
+            </div>
+        </section>
+        
+        <!-- Grades 1-5 Section -->
+        <section id="grade1-5" class="grade-section">
+            <h2>Grades 1-5 Math</h2>
+            
+            <div class="math-problem">
+                <h3>Addition</h3>
+                <p>What is 5 + 7?</p>
+                <button class="btn" onclick="showAnswer('answer1', '12')">Show Answer</button>
+                <p id="answer1" style="display:none;">Answer: 12</p>
+            </div>
+            
+            <div class="math-problem">
+                <h3>Subtraction</h3>
+                <p>What is 10 - 4?</p>
+                <button class="btn" onclick="showAnswer('answer2', '6')">Show Answer</button>
+                <p id="answer2" style="display:none;">Answer: 6</p>
+            </div>
+            
+            <button class="btn" onclick="showSection('home')">Back to Home</button>
+        </section>
+        
+        <!-- Grades 6-8 Section -->
+        <section id="grade6-8" class="grade-section">
+            <h2>Grades 6-8 Math</h2>
+            
+            <div class="math-problem">
+                <h3>Algebra</h3>
+                <p>Solve for x: x + 5 = 12</p>
+                <button class="btn" onclick="showAnswer('answer3', '7')">Show Answer</button>
+                <p id="answer3" style="display:none;">Answer: x = 7</p>
+            </div>
+            
+            <div class="math-problem">
+                <h3>Fractions</h3>
+                <p>What is 1/2 + 1/4?</p>
+                <button class="btn" onclick="showAnswer('answer4', '3/4')">Show Answer</button>
+                <p id="answer4" style="display:none;">Answer: 3/4</p>
+            </div>
+            
+            <button class="btn" onclick="showSection('home')">Back to Home</button>
+        </section>
+        
+        <!-- Grades 9-12 Section -->
+        <section id="grade9-12" class="grade-section">
+            <h2>Grades 9-12 Math</h2>
+            
+            <div class="math-problem">
+                <h3>Algebra</h3>
+                <p>Solve for x: 2x + 3 = 15</p>
+                <button class="btn" onclick="showAnswer('answer5', '6')">Show Answer</button>
+                <p id="answer5" style="display:none;">Answer: x = 6</p>
+            </div>
+            
+            <div class="math-problem">
+                <h3>Geometry</h3>
+                <p>What is the area of a circle with radius 5?</p>
+                <button class="btn" onclick="showAnswer('answer6', '25π or ~78.54')">Show Answer</button>
+                <p id="answer6" style="display:none;">Answer: 25π (≈78.54)</p>
+            </div>
+            
+            <button class="btn" onclick="showSection('home')">Back to Home</button>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 Math Master. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // JavaScript Functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.grade-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+        }
+        
+        function showAnswer(elementId, answer) {
+            const answerElement = document.getElementById(elementId);
+            answerElement.textContent = `Answer: ${answer}`;
+            answerElement.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
