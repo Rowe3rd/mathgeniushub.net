@@ -3,82 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algebra Arena | Abstract & Linear Algebra Tournament</title>
+    <title>Math Helper | Kind Explanations with LED Style</title>
     <style>
         :root {
-            --math-red: #e63946;
-            --math-blue: #457b9d;
-            --math-dark: #1d3557;
-            --math-light: #f1faee;
-            --math-teal: #a8dadc;
-            --gold: #FFD700;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
+            --led-blue: #00f0ff;
+            --led-pink: #ff2a6d;
+            --led-green: #00ff88;
+            --led-purple: #d300c5;
+            --dark-bg: #0d0221;
+            --soft-bg: #1a1a2e;
+            --text-light: #f0f0f0;
         }
         
         body {
-            font-family: 'Cambria', 'Georgia', serif;
+            font-family: 'Quicksand', 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--math-light);
-            color: var(--math-dark);
-            line-height: 1.6;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.8;
         }
         
-        .tournament-header {
-            background: linear-gradient(135deg, var(--math-dark), var(--math-blue));
-            color: white;
+        @font-face {
+            font-family: 'Quicksand';
+            src: url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+        }
+        
+        .teacher-header {
+            background: linear-gradient(to right, var(--soft-bg), var(--dark-bg));
             padding: 2rem;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-bottom: 1px solid var(--led-blue);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
             position: relative;
-            overflow: hidden;
         }
         
-        .tournament-header::before {
+        .teacher-header::before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 3px;
             background: linear-gradient(to right, 
                 transparent, 
-                var(--gold), 
-                var(--silver), 
-                var(--bronze), 
+                var(--led-blue), 
+                var(--led-pink), 
+                var(--led-purple), 
                 transparent);
+            animation: ledGlow 3s linear infinite;
+        }
+        
+        @keyframes ledGlow {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
         }
         
         h1 {
             margin: 0;
-            font-size: 2.8rem;
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--led-blue), var(--led-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             letter-spacing: 1px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .tagline {
             font-style: italic;
             margin-top: 0.5rem;
-            opacity: 0.9;
-            font-size: 1.2rem;
+            color: var(--led-blue);
         }
         
-        .theory-banner {
-            background: var(--math-teal);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem auto;
-            max-width: 800px;
-            border-left: 5px solid var(--math-blue);
+        .grade-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 2rem;
+            background: rgba(13, 2, 33, 0.7);
         }
         
-        .theory-banner h3 {
-            margin-top: 0;
-            color: var(--math-dark);
+        .grade-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         
-        .unit-container {
+        .grade-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .grade-btn::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 30px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .elementary-btn {
+            border-color: var(--led-green);
+        }
+        
+        .elementary-btn:hover {
+            box-shadow: 0 0 15px var(--led-green);
+        }
+        
+        .elementary-btn:hover::before {
+            background: linear-gradient(45deg, var(--led-green), transparent);
+            opacity: 0.3;
+        }
+        
+        .middle-btn {
+            border-color: var(--led-blue);
+        }
+        
+        .middle-btn:hover {
+            box-shadow: 0 0 15px var(--led-blue);
+        }
+        
+        .middle-btn:hover::before {
+            background: linear-gradient(45deg, var(--led-blue), transparent);
+            opacity: 0.3;
+        }
+        
+        .high-btn {
+            border-color: var(--led-pink);
+        }
+        
+        .high-btn:hover {
+            box-shadow: 0 0 15px var(--led-pink);
+        }
+        
+        .high-btn:hover::before {
+            background: linear-gradient(45deg, var(--led-pink), transparent);
+            opacity: 0.3;
+        }
+        
+        .units-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 2rem;
@@ -88,548 +164,657 @@
         }
         
         .unit-card {
-            background: white;
-            border-radius: 8px;
+            background: rgba(26, 26, 46, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-top: 4px solid var(--math-blue);
+        }
+        
+        .unit-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--led-blue), var(--led-purple));
         }
         
         .unit-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
         
-        .unit-header {
-            background: var(--math-blue);
-            color: white;
-            padding: 1.2rem;
-            position: relative;
+        .elementary-unit {
+            border-color: var(--led-green);
         }
         
-        .unit-header h2 {
-            margin: 0;
-            font-size: 1.4rem;
+        .elementary-unit:hover {
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
         }
         
-        .unit-body {
-            padding: 1.5rem;
+        .middle-unit {
+            border-color: var(--led-blue);
         }
         
-        .problem {
+        .middle-unit:hover {
+            box-shadow: 0 5px 20px rgba(0, 240, 255, 0.3);
+        }
+        
+        .high-unit {
+            border-color: var(--led-pink);
+        }
+        
+        .high-unit:hover {
+            box-shadow: 0 5px 20px rgba(255, 42, 109, 0.3);
+        }
+        
+        .unit-title {
+            font-size: 1.5rem;
+            margin-top: 0;
             margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
         
-        .problem:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
+        .elementary-title {
+            color: var(--led-green);
+        }
+        
+        .middle-title {
+            color: var(--led-blue);
+        }
+        
+        .high-title {
+            color: var(--led-pink);
+        }
+        
+        .unit-icon {
+            font-size: 1.8rem;
+        }
+        
+        .unit-description {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .start-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid;
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .start-elementary {
+            border-color: var(--led-green);
+        }
+        
+        .start-elementary:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 15px var(--led-green);
+        }
+        
+        .start-middle {
+            border-color: var(--led-blue);
+        }
+        
+        .start-middle:hover {
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 15px var(--led-blue);
+        }
+        
+        .start-high {
+            border-color: var(--led-pink);
+        }
+        
+        .start-high:hover {
+            background: rgba(255, 42, 109, 0.1);
+            box-shadow: 0 0 15px var(--led-pink);
+        }
+        
+        /* Problem Section */
+        .problem-section {
+            display: none;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 10px;
+            border: 1px solid var(--led-blue);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+        
+        .problem-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .back-btn {
+            background: transparent;
+            color: var(--led-blue);
+            border: 1px solid var(--led-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(0, 240, 255, 0.1);
+        }
+        
+        .problem-content {
+            margin-bottom: 2rem;
         }
         
         .problem-text {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .answer-section {
+            margin-top: 2rem;
         }
         
         .answer-input {
             display: flex;
             gap: 1rem;
+            margin-bottom: 1.5rem;
             align-items: center;
-            margin-bottom: 1rem;
         }
         
         .answer-input input {
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            flex-grow: 1;
-            font-family: 'Courier New', monospace;
+            flex: 1;
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--led-blue);
+            color: white;
+            border-radius: 5px;
             font-size: 1rem;
         }
         
         .submit-btn {
-            background: var(--math-blue);
-            color: white;
+            background: var(--led-blue);
+            color: var(--dark-bg);
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 4px;
+            padding: 1rem 2rem;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
         
         .submit-btn:hover {
-            background: var(--math-dark);
+            background: var(--led-green);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
         }
         
         .feedback {
-            padding: 0.8rem;
-            border-radius: 4px;
-            margin-top: 1rem;
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-top: 2rem;
             display: none;
-            animation: fadeIn 0.3s ease-out;
+            animation: fadeIn 0.5s ease-out;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .correct {
-            background-color: rgba(0,200,0,0.1);
-            border-left: 4px solid #00aa00;
+        .correct-feedback {
+            background: rgba(0, 255, 136, 0.1);
+            border-left: 4px solid var(--led-green);
             display: block;
         }
         
-        .incorrect {
-            background-color: rgba(200,0,0,0.1);
-            border-left: 4px solid #aa0000;
+        .incorrect-feedback {
+            background: rgba(255, 42, 109, 0.1);
+            border-left: 4px solid var(--led-pink);
             display: block;
         }
         
-        .progress-container {
-            background: #f0f0f0;
-            height: 8px;
-            border-radius: 4px;
-            margin: 1rem 0;
+        .teacher-explanation {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 4px solid var(--led-purple);
         }
         
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(to right, var(--math-blue), var(--math-teal));
-            border-radius: 4px;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-        
-        .unit-footer {
+        .teacher-tip {
             display: flex;
-            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .teacher-icon {
+            color: var(--led-blue);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .step-by-step {
+            margin-top: 1.5rem;
+        }
+        
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            background: var(--led-purple);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
-            padding: 0 1.5rem 1.5rem;
+            justify-content: center;
+            flex-shrink: 0;
             font-size: 0.9rem;
-            color: #666;
         }
         
-        .section-title {
-            text-align: center;
-            margin: 2rem 0 1rem;
-            color: var(--math-dark);
-            position: relative;
+        .led-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite alternate;
         }
         
-        .section-title::after {
-            content: "";
-            display: block;
-            width: 100px;
-            height: 3px;
-            background: var(--math-blue);
-            margin: 0.5rem auto;
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        .led-blue {
+            background: var(--led-blue);
+            box-shadow: 0 0 5px var(--led-blue);
+        }
+        
+        .led-pink {
+            background: var(--led-pink);
+            box-shadow: 0 0 5px var(--led-pink);
+            animation-delay: 0.5s;
+        }
+        
+        .led-green {
+            background: var(--led-green);
+            box-shadow: 0 0 5px var(--led-green);
+            animation-delay: 1s;
         }
         
         @media (max-width: 768px) {
-            .unit-container {
+            .units-container {
                 grid-template-columns: 1fr;
                 padding: 1rem;
             }
             
-            h1 {
-                font-size: 2rem;
+            .grade-selector {
+                flex-direction: column;
+                align-items: center;
             }
-        }
-        
-        /* Math notation styling */
-        .math {
-            font-family: 'Cambria Math', 'Latin Modern Math', serif;
-            font-style: italic;
-        }
-        
-        .variable {
-            color: var(--math-red);
-            font-weight: bold;
-        }
-        
-        .operator {
-            font-weight: bold;
-        }
-        
-        .group {
-            font-weight: bold;
+            
+            .grade-btn {
+                width: 100%;
+                max-width: 250px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="tournament-header">
-        <h1>Algebra Arena</h1>
-        <p class="tagline">Master Abstract and Linear Algebra Through Competitive Problem-Solving</p>
-    </div>
-    
-    <div class="theory-banner">
-        <h3><i class="fas fa-lightbulb"></i> Theoretical Foundation</h3>
-        <p>In algebra, a <span class="math">unit</span> refers to an element with a multiplicative inverse. In ring theory, a unit in a ring <span class="math">R</span> is any element <span class="math variable">u</span> for which there exists an element <span class="math variable">v</span> such that <span class="math">u·v = v·u = 1</span>, where 1 is the multiplicative identity.</p>
-    </div>
-    
-    <h2 class="section-title">Abstract Algebra Focus</h2>
-    
-    <div class="unit-container">
-        <!-- Unit 1 -->
-        <div class="unit-card">
-            <div class="unit-header">
-                <h2>Units in Algebra: Invertibility and Identity Elements</h2>
-            </div>
-            <div class="unit-body">
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>In the ring ℤ/7ℤ (integers modulo 7), which elements are units? Select all that apply:</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit1-q1" placeholder="e.g. 1, 2, 3...">
-                        <button class="submit-btn" onclick="checkAnswer('unit1-q1', '1,2,3,4,5,6', 'All non-zero elements in ℤ/7ℤ are units since 7 is prime')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit1-q1-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Prove that in any ring, the product of two units is also a unit.</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit1-q2" placeholder="Your proof sketch">
-                        <button class="submit-btn" onclick="checkAnswer('unit1-q2', 'product of inverses in reverse order', 'If u and v are units with inverses u⁻¹ and v⁻¹, then (uv)(v⁻¹u⁻¹) = u(vv⁻¹)u⁻¹ = u1u⁻¹ = uu⁻¹ = 1')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit1-q2-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 30%;"></div>
-                </div>
-            </div>
-            <div class="unit-footer">
-                <span>2/7 problems solved</span>
-                <span>150 points</span>
-            </div>
-        </div>
-        
-        <!-- Unit 2 -->
-        <div class="unit-card">
-            <div class="unit-header">
-                <h2>Rings, Fields, and Units: Foundations of Algebraic Structures</h2>
-            </div>
-            <div class="unit-body">
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Show that every non-zero element in a field is a unit.</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit2-q1" placeholder="Your explanation">
-                        <button class="submit-btn" onclick="checkAnswer('unit2-q1', 'definition of field', 'By definition, a field is a commutative ring where every non-zero element has a multiplicative inverse, making them units')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit2-q1-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Give an example of a ring where not all non-zero elements are units.</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit2-q2" placeholder="e.g. ℤ, M₂(ℝ)...">
-                        <button class="submit-btn" onclick="checkAnswer('unit2-q2', 'ℤ', 'In the ring of integers ℤ, only 1 and -1 are units')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit2-q2-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 15%;"></div>
-                </div>
-            </div>
-            <div class="unit-footer">
-                <span>1/8 problems solved</span>
-                <span>75 points</span>
-            </div>
-        </div>
-        
-        <!-- Unit 3 -->
-        <div class="unit-card">
-            <div class="unit-header">
-                <h2>The Unit Group: Multiplicative Inverses in Number Systems</h2>
-            </div>
-            <div class="unit-body">
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Find the unit group U(ℤ/10ℤ) of the ring ℤ/10ℤ.</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit3-q1" placeholder="List elements">
-                        <button class="submit-btn" onclick="checkAnswer('unit3-q1', '1,3,7,9', 'These numbers are coprime with 10 and thus have inverses modulo 10')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit3-q1-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Prove that the unit group U(n) forms a group under multiplication.</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit3-q2" placeholder="Your proof">
-                        <button class="submit-btn" onclick="checkAnswer('unit3-q2', 'closure, associativity, identity, inverses', '1) Closure: product of units is a unit. 2) Associativity: inherited from ring. 3) Identity: 1 is always a unit. 4) Inverses: by definition of unit')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit3-q2-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 20%;"></div>
-                </div>
-            </div>
-            <div class="unit-footer">
-                <span>1/5 problems solved</span>
-                <span>100 points</span>
-            </div>
+    <div class="teacher-header">
+        <h1>Math Helper</h1>
+        <p class="tagline">Kind explanations and step-by-step guidance</p>
+        <div style="margin-top: 1rem;">
+            <span class="led-dot led-blue"></span>
+            <span class="led-dot led-pink"></span>
+            <span class="led-dot led-green"></span>
         </div>
     </div>
     
-    <h2 class="section-title">Linear Algebra & Geometry Focus</h2>
+    <div class="grade-selector">
+        <button class="grade-btn elementary-btn" onclick="showGrade('elementary')">
+            <i class="fas fa-apple-alt"></i> Elementary (K-5)
+        </button>
+        <button class="grade-btn middle-btn" onclick="showGrade('middle')">
+            <i class="fas fa-calculator"></i> Middle School (6-8)
+        </button>
+        <button class="grade-btn high-btn" onclick="showGrade('high')">
+            <i class="fas fa-square-root-alt"></i> High School (9-12)
+        </button>
+    </div>
     
-    <div class="unit-container">
-        <!-- Unit 4 -->
-        <div class="unit-card">
-            <div class="unit-header">
-                <h2>Unit Vectors and Matrices: Building Blocks of Linear Algebra</h2>
+    <!-- Elementary School Units -->
+    <div id="elementary" class="units-container" style="display: none;">
+        <div class="unit-card elementary-unit">
+            <h2 class="unit-title elementary-title">
+                <i class="fas fa-plus-circle unit-icon"></i> Basic Arithmetic
+            </h2>
+            <div class="unit-description">
+                <p>Learn addition, subtraction, multiplication, and division with friendly explanations for mistakes.</p>
             </div>
-            <div class="unit-body">
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Normalize the vector v = (3, 0, 4) to obtain a unit vector.</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit4-q1" placeholder="Format: (x,y,z)">
-                        <button class="submit-btn" onclick="checkAnswer('unit4-q1', '(3/5,0,4/5)', 'Divide each component by the magnitude √(3²+0²+4²)=5')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit4-q1-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>What is the determinant of a unitary matrix?</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit4-q2" placeholder="Your answer">
-                        <button class="submit-btn" onclick="checkAnswer('unit4-q2', '1 or -1', '|det(U)| = 1 for unitary U, since U*U = I implies |det(U)|² = 1')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit4-q2-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 40%;"></div>
-                </div>
-            </div>
-            <div class="unit-footer">
-                <span>2/5 problems solved</span>
-                <span>200 points</span>
-            </div>
+            <button class="start-btn start-elementary" onclick="startUnit('basic-arithmetic')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
         </div>
         
-        <!-- Unit 5 -->
-        <div class="unit-card">
-            <div class="unit-header">
-                <h2>The Unit Circle and Beyond: Trigonometry's Core Framework</h2>
+        <div class="unit-card elementary-unit">
+            <h2 class="unit-title elementary-title">
+                <i class="fas fa-pizza-slice unit-icon"></i> Fractions Fun
+            </h2>
+            <div class="unit-description">
+                <p>Understand fractions through visual examples and gentle corrections when you make mistakes.</p>
             </div>
-            <div class="unit-body">
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Using the unit circle, find exact values for sin(π/3) and cos(π/3).</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit5-q1" placeholder="Format: sin, cos">
-                        <button class="submit-btn" onclick="checkAnswer('unit5-q1', '√3/2, 1/2', 'From the 60° reference triangle in the unit circle')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit5-q1-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Prove the Pythagorean identity sin²θ + cos²θ = 1 using the unit circle definition.</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit5-q2" placeholder="Your proof">
-                        <button class="submit-btn" onclick="checkAnswer('unit5-q2', 'x²+y²=1', 'For any point (x,y) on the unit circle, x=cosθ and y=sinθ, and by definition x²+y²=1')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit5-q2-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 25%;"></div>
-                </div>
-            </div>
-            <div class="unit-footer">
-                <span>1/4 problems solved</span>
-                <span>125 points</span>
-            </div>
+            <button class="start-btn start-elementary" onclick="startUnit('fractions')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
         </div>
         
-        <!-- Unit 6 -->
-        <div class="unit-card">
-            <div class="unit-header">
-                <h2>Identity Matrices and Unit Vectors: Essentials of Vector Spaces</h2>
+        <div class="unit-card elementary-unit">
+            <h2 class="unit-title elementary-title">
+                <i class="fas fa-shapes unit-icon"></i> Geometry Basics
+            </h2>
+            <div class="unit-description">
+                <p>Explore shapes, angles, and measurements with helpful feedback on errors.</p>
             </div>
-            <div class="unit-body">
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Show that the identity matrix Iₙ is the multiplicative identity in Mₙ(ℝ).</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit6-q1" placeholder="Your proof">
-                        <button class="submit-btn" onclick="checkAnswer('unit6-q1', 'AI=IA=A', 'For any n×n matrix A, (AI)ᵢⱼ = ΣAᵢₖIₖⱼ = Aᵢⱼ, similarly for IA')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit6-q1-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Express the vector (2,5) as a linear combination of the standard unit vectors in ℝ².</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit6-q2" placeholder="Format: ai + bj">
-                        <button class="submit-btn" onclick="checkAnswer('unit6-q2', '2i+5j', 'Standard unit vectors are i=(1,0) and j=(0,1)')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit6-q2-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 50%;"></div>
-                </div>
-            </div>
-            <div class="unit-footer">
-                <span>2/4 problems solved</span>
-                <span>250 points</span>
-            </div>
+            <button class="start-btn start-elementary" onclick="startUnit('geometry')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
         </div>
     </div>
     
-    <h2 class="section-title">Applied/Measurement Focus</h2>
-    
-    <div class="unit-container">
-        <!-- Unit 7 -->
-        <div class="unit-card">
-            <div class="unit-header">
-                <h2>Units in Equations: Balancing Dimensions and Quantities</h2>
+    <!-- Middle School Units -->
+    <div id="middle" class="units-container" style="display: none;">
+        <div class="unit-card middle-unit">
+            <h2 class="unit-title middle-title">
+                <i class="fas fa-percentage unit-icon"></i> Pre-Algebra
+            </h2>
+            <div class="unit-description">
+                <p>Master ratios, percentages, and basic equations with supportive explanations.</p>
             </div>
-            <div class="unit-body">
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Check the dimensional consistency of F = ma (force = mass × acceleration).</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit7-q1" placeholder="Your analysis">
-                        <button class="submit-btn" onclick="checkAnswer('unit7-q1', '[M][L][T⁻²]', 'Dimensions: [F]=[M][L][T⁻²], [ma]=[M][L][T⁻²]')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit7-q1-feedback" class="feedback"></div>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 10%;"></div>
-                </div>
-            </div>
-            <div class="unit-footer">
-                <span>1/10 problems solved</span>
-                <span>50 points</span>
-            </div>
+            <button class="start-btn start-middle" onclick="startUnit('pre-algebra')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
         </div>
         
-        <!-- Unit 8 -->
-        <div class="unit-card">
-            <div class="unit-header">
-                <h2>Dimensional Analysis: The Algebra of Units and Measurements</h2>
+        <div class="unit-card middle-unit">
+            <h2 class="unit-title middle-title">
+                <i class="fas fa-ruler-combined unit-icon"></i> Measurement
+            </h2>
+            <div class="unit-description">
+                <p>Convert units and solve measurement problems with caring guidance.</p>
             </div>
-            <div class="unit-body">
-                <div class="problem">
-                    <div class="problem-text">
-                        <p>Convert 72 km/h to m/s using unit conversion factors.</p>
-                    </div>
-                    <div class="answer-input">
-                        <input type="text" id="unit8-q1" placeholder="Your answer">
-                        <button class="submit-btn" onclick="checkAnswer('unit8-q1', '20', '72 km/h × (1000 m/km) × (1 h/3600 s) = 20 m/s')">
-                            Submit
-                        </button>
-                    </div>
-                    <div id="unit8-q1-feedback" class="feedback"></div>
+            <button class="start-btn start-middle" onclick="startUnit('measurement')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
+        </div>
+        
+        <div class="unit-card middle-unit">
+            <h2 class="unit-title middle-title">
+                <i class="fas fa-chart-bar unit-icon"></i> Data & Probability
+            </h2>
+            <div class="unit-description">
+                <p>Learn statistics basics with encouraging feedback on mistakes.</p>
+            </div>
+            <button class="start-btn start-middle" onclick="startUnit('data')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
+        </div>
+    </div>
+    
+    <!-- High School Units -->
+    <div id="high" class="units-container" style="display: none;">
+        <div class="unit-card high-unit">
+            <h2 class="unit-title high-title">
+                <i class="fas fa-function unit-icon"></i> Algebra I & II
+            </h2>
+            <div class="unit-description">
+                <p>Solve equations and functions with detailed, kind explanations of errors.</p>
+            </div>
+            <button class="start-btn start-high" onclick="startUnit('algebra')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
+        </div>
+        
+        <div class="unit-card high-unit">
+            <h2 class="unit-title high-title">
+                <i class="fas fa-shapes unit-icon"></i> Geometry
+            </h2>
+            <div class="unit-description">
+                <p>Understand proofs and theorems with patient guidance through mistakes.</p>
+            </div>
+            <button class="start-btn start-high" onclick="startUnit('hs-geometry')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
+        </div>
+        
+        <div class="unit-card high-unit">
+            <h2 class="unit-title high-title">
+                <i class="fas fa-chart-line unit-icon"></i> Trigonometry
+            </h2>
+            <div class="unit-description">
+                <p>Master the unit circle and trig functions with supportive explanations.</p>
+            </div>
+            <button class="start-btn start-high" onclick="startUnit('trigonometry')">
+                <i class="fas fa-book-open"></i> Start Learning
+            </button>
+        </div>
+    </div>
+    
+    <!-- Problem Section -->
+    <div id="problem-section" class="problem-section">
+        <div class="problem-header">
+            <h2 id="problem-unit-title">Basic Arithmetic</h2>
+            <button class="back-btn" onclick="backToUnits()">
+                <i class="fas fa-arrow-left"></i> Back to Units
+            </button>
+        </div>
+        
+        <div class="problem-content">
+            <div class="problem-text" id="problem-text">
+                <p>What is 3/4 + 1/2? Remember to find a common denominator first.</p>
+            </div>
+            
+            <div class="answer-section">
+                <div class="answer-input">
+                    <input type="text" id="answer-input" placeholder="Your answer">
+                    <button class="submit-btn" onclick="checkAnswer()">
+                        <i class="fas fa-check"></i> Check Answer
+                    </button>
                 </div>
                 
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 15%;"></div>
+                <div id="feedback" class="feedback">
+                    <!-- Feedback will appear here -->
                 </div>
-            </div>
-            <div class="unit-footer">
-                <span>1/7 problems solved</span>
-                <span>75 points</span>
+                
+                <div id="teacher-explanation" class="teacher-explanation" style="display: none;">
+                    <h3><i class="fas fa-chalkboard-teacher"></i> Teacher's Explanation</h3>
+                    <div id="explanation-content">
+                        <!-- Explanation will appear here -->
+                    </div>
+                    
+                    <div class="teacher-tip">
+                        <i class="fas fa-lightbulb teacher-icon"></i>
+                        <div id="teacher-tip-content">
+                            <!-- Tip will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="step-by-step" id="step-by-step">
+                        <!-- Steps will appear here -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
     <script>
-        function checkAnswer(inputId, correctAnswer, explanation) {
-            const userAnswer = document.getElementById(inputId).value.trim();
-            const feedbackElement = document.getElementById(inputId + '-feedback');
-            
-            if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-                feedbackElement.textContent = "✓ Correct! " + explanation;
-                feedbackElement.className = "feedback correct";
-                
-                // Update progress (in a real app, this would be server-side)
-                const progressBar = feedbackElement.closest('.unit-card').querySelector('.progress-bar');
-                const currentWidth = parseFloat(progressBar.style.width);
-                progressBar.style.width = (currentWidth + 10) + '%';
-            } else {
-                feedbackElement.textContent = "✗ Incorrect. The correct answer is: " + correctAnswer + ". Explanation: " + explanation;
-                feedbackElement.className = "feedback incorrect";
-            }
+        // Show selected grade level
+        function showGrade(grade) {
+            document.getElementById('elementary').style.display = 'none';
+            document.getElementById('middle').style.display = 'none';
+            document.getElementById('high').style.display = 'none';
+            document.getElementById(grade).style.display = 'grid';
         }
         
-        // Initialize MathJax for proper math rendering
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']]
-            },
-            svg: {
-                fontCache: 'global'
-            }
-        };
+        // Start a unit
+        function startUnit(unitId) {
+            document.getElementById('elementary').style.display = 'none';
+            document.getElementById('middle').style.display = 'none';
+            document.getElementById('high').style.display = 'none';
+            
+            // Set up problem based on unit
+            const problemData = getProblemData(unitId);
+            document.getElementById('problem-unit-title').textContent = problemData.unitTitle;
+            document.getElementById('problem-text').innerHTML = `<p>${problemData.problem}</p>`;
+            document.getElementById('answer-input').value = '';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('teacher-explanation').style.display = 'none';
+            
+            document.getElementById('problem-section').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
         
-        (function() {
-            var script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-            script.async = true;
-            document.head.appendChild(script);
-        })();
+        // Return to unit selection
+        function backToUnits() {
+            document.getElementById('problem-section').style.display = 'none';
+            const lastGrade = localStorage.getItem('lastGrade') || 'elementary';
+            document.getElementById(lastGrade).style.display = 'grid';
+        }
+        
+        // Check student's answer
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer-input').value.trim();
+            const problemData = getCurrentProblem();
+            const feedback = document.getElementById('feedback');
+            const explanation = document.getElementById('teacher-explanation');
+            
+            if (userAnswer.toLowerCase() === problemData.answer.toLowerCase()) {
+                feedback.innerHTML = `
+                    <div class="correct-feedback">
+                        <p><i class="fas fa-check-circle"></i> <strong>Correct!</strong> Great job!</p>
+                        <p>${problemData.correctFeedback}</p>
+                    </div>
+                `;
+            } else {
+                feedback.innerHTML = `
+                    <div class="incorrect-feedback">
+                        <p><i class="fas fa-exclamation-circle"></i> <strong>Not quite right</strong>, but that's okay!</p>
+                        <p>The correct answer is: ${problemData.answer}</p>
+                    </div>
+                `;
+                
+                // Show detailed explanation
+                document.getElementById('explanation-content').innerHTML = problemData.explanation;
+                document.getElementById('teacher-tip-content').innerHTML = problemData.tip;
+                
+                // Show step-by-step solution
+                let stepsHtml = '<h4><i class="fas fa-list-ol"></i> Step-by-Step Solution:</h4>';
+                problemData.steps.forEach((step, index) => {
+                    stepsHtml += `
+                        <div class="step">
+                            <div class="step-number">${index + 1}</div>
+                            <div>${step}</div>
+                        </div>
+                    `;
+                });
+                document.getElementById('step-by-step').innerHTML = stepsHtml;
+                
+                explanation.style.display = 'block';
+            }
+            
+            feedback.style.display = 'block';
+        }
+        
+        // Get problem data based on unit
+        function getProblemData(unitId) {
+            const problems = {
+                'basic-arithmetic': {
+                    unitTitle: 'Basic Arithmetic',
+                    problem: 'What is 3/4 + 1/2? Remember to find a common denominator first.',
+                    answer: '5/4 or 1 1/4',
+                    correctFeedback: 'You correctly found the common denominator and added the numerators!',
+                    explanation: '<p>When adding fractions, we need a common denominator. Here\'s how to solve it:</p>',
+                    tip: 'Remember that the denominator tells us how many equal parts make a whole. We can\'t add fractions directly unless they have the same denominator.',
+                    steps: [
+                        'Find a common denominator: The denominators are 4 and 2. The least common denominator is 4.',
+                        'Convert 1/2 to fourths: 1/2 = 2/4',
+                        'Now add: 3/4 + 2/4 = 5/4',
+                        'Simplify if needed: 5/4 can be written as 1 1/4'
+                    ]
+                },
+                'fractions': {
+                    unitTitle: 'Fractions',
+                    problem: 'Multiply 2/3 × 3/5. Simplify your answer if possible.',
+                    answer: '6/15 or 2/5',
+                    correctFeedback: 'Excellent work multiplying the numerators and denominators!',
+                    explanation: '<p>Multiplying fractions is different from adding them. Here\'s the process:</p>',
+                    tip: 'Unlike addition, we don\'t need a common denominator for multiplication. Just multiply straight across!',
+                    steps: [
+                        'Multiply the numerators: 2 × 3 = 6',
+                        'Multiply the denominators: 3 × 5 = 15',
+                        'This gives us 6/15',
+                        'Simplify by dividing numerator and denominator by 3: 6 ÷ 3 = 2, 15 ÷ 3 = 5',
+                        'Final simplified answer: 2/5'
+                    ]
+                },
+                'pre-algebra': {
+                    unitTitle: 'Pre-Algebra',
+                    problem: 'Solve for x: 2x + 5 = 15',
+                    answer: '5',
+                    correctFeedback: 'Great job isolating the variable!',
+                    explanation: '<p>Solving linear equations requires careful step-by-step work:</p>',
+                    tip: 'Think of the equation like a balance scale - whatever you do to one side, you must do to the other.',
+                    steps: [
+                        'Start with the equation: 2x + 5 = 15',
+                        'Subtract 5 from both sides: 2x = 10',
+                        'Divide both sides by 2: x = 5',
+                        'Check your answer by plugging back in: 2(5) + 5 = 15 ✓'
+                    ]
+                }
+            };
+            
+            return problems[unitId] || problems['basic-arithmetic'];
+        }
+        
+        // Get current problem data (simplified for demo)
+        function getCurrentProblem() {
+            return getProblemData('basic-arithmetic');
+        }
+        
+        // Initialize with elementary content
+        document.addEventListener('DOMContentLoaded', function() {
+            showGrade('elementary');
+        });
     </script>
 </body>
 </html>
