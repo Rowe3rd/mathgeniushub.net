@@ -1,820 +1,164 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Helper | Kind Explanations with LED Style</title>
-    <style>
-        :root {
-            --led-blue: #00f0ff;
-            --led-pink: #ff2a6d;
-            --led-green: #00ff88;
-            --led-purple: #d300c5;
-            --dark-bg: #0d0221;
-            --soft-bg: #1a1a2e;
-            --text-light: #f0f0f0;
-        }
-        
-        body {
-            font-family: 'Quicksand', 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--dark-bg);
-            color: var(--text-light);
-            line-height: 1.8;
-        }
-        
-        @font-face {
-            font-family: 'Quicksand';
-            src: url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
-        }
-        
-        .teacher-header {
-            background: linear-gradient(to right, var(--soft-bg), var(--dark-bg));
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid var(--led-blue);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-            position: relative;
-        }
-        
-        .teacher-header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(to right, 
-                transparent, 
-                var(--led-blue), 
-                var(--led-pink), 
-                var(--led-purple), 
-                transparent);
-            animation: ledGlow 3s linear infinite;
-        }
-        
-        @keyframes ledGlow {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-        
-        h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            background: linear-gradient(to right, var(--led-blue), var(--led-green));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 1px;
-        }
-        
-        .tagline {
-            font-style: italic;
-            margin-top: 0.5rem;
-            color: var(--led-blue);
-        }
-        
-        .grade-selector {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            padding: 2rem;
-            background: rgba(13, 2, 33, 0.7);
-        }
-        
-        .grade-btn {
-            background: transparent;
-            color: white;
-            border: 2px solid;
-            padding: 1rem 2rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .grade-btn:hover {
-            transform: translateY(-3px);
-        }
-        
-        .grade-btn::before {
-            content: "";
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 30px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .elementary-btn {
-            border-color: var(--led-green);
-        }
-        
-        .elementary-btn:hover {
-            box-shadow: 0 0 15px var(--led-green);
-        }
-        
-        .elementary-btn:hover::before {
-            background: linear-gradient(45deg, var(--led-green), transparent);
-            opacity: 0.3;
-        }
-        
-        .middle-btn {
-            border-color: var(--led-blue);
-        }
-        
-        .middle-btn:hover {
-            box-shadow: 0 0 15px var(--led-blue);
-        }
-        
-        .middle-btn:hover::before {
-            background: linear-gradient(45deg, var(--led-blue), transparent);
-            opacity: 0.3;
-        }
-        
-        .high-btn {
-            border-color: var(--led-pink);
-        }
-        
-        .high-btn:hover {
-            box-shadow: 0 0 15px var(--led-pink);
-        }
-        
-        .high-btn:hover::before {
-            background: linear-gradient(45deg, var(--led-pink), transparent);
-            opacity: 0.3;
-        }
-        
-        .units-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .unit-card {
-            background: rgba(26, 26, 46, 0.7);
-            padding: 2rem;
-            border-radius: 10px;
-            border: 1px solid;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .unit-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--led-blue), var(--led-purple));
-        }
-        
-        .unit-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .elementary-unit {
-            border-color: var(--led-green);
-        }
-        
-        .elementary-unit:hover {
-            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
-        }
-        
-        .middle-unit {
-            border-color: var(--led-blue);
-        }
-        
-        .middle-unit:hover {
-            box-shadow: 0 5px 20px rgba(0, 240, 255, 0.3);
-        }
-        
-        .high-unit {
-            border-color: var(--led-pink);
-        }
-        
-        .high-unit:hover {
-            box-shadow: 0 5px 20px rgba(255, 42, 109, 0.3);
-        }
-        
-        .unit-title {
-            font-size: 1.5rem;
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .elementary-title {
-            color: var(--led-green);
-        }
-        
-        .middle-title {
-            color: var(--led-blue);
-        }
-        
-        .high-title {
-            color: var(--led-pink);
-        }
-        
-        .unit-icon {
-            font-size: 1.8rem;
-        }
-        
-        .unit-description {
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-        
-        .start-btn {
-            background: transparent;
-            color: white;
-            border: 2px solid;
-            padding: 0.8rem 1.8rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-        
-        .start-btn:hover {
-            transform: translateY(-2px);
-        }
-        
-        .start-elementary {
-            border-color: var(--led-green);
-        }
-        
-        .start-elementary:hover {
-            background: rgba(0, 255, 136, 0.1);
-            box-shadow: 0 0 15px var(--led-green);
-        }
-        
-        .start-middle {
-            border-color: var(--led-blue);
-        }
-        
-        .start-middle:hover {
-            background: rgba(0, 240, 255, 0.1);
-            box-shadow: 0 0 15px var(--led-blue);
-        }
-        
-        .start-high {
-            border-color: var(--led-pink);
-        }
-        
-        .start-high:hover {
-            background: rgba(255, 42, 109, 0.1);
-            box-shadow: 0 0 15px var(--led-pink);
-        }
-        
-        /* Problem Section */
-        .problem-section {
-            display: none;
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: rgba(26, 26, 46, 0.8);
-            border-radius: 10px;
-            border: 1px solid var(--led-blue);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
-        }
-        
-        .problem-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .back-btn {
-            background: transparent;
-            color: var(--led-blue);
-            border: 1px solid var(--led-blue);
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .back-btn:hover {
-            background: rgba(0, 240, 255, 0.1);
-        }
-        
-        .problem-content {
-            margin-bottom: 2rem;
-        }
-        
-        .problem-text {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-        
-        .answer-section {
-            margin-top: 2rem;
-        }
-        
-        .answer-input {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            align-items: center;
-        }
-        
-        .answer-input input {
-            flex: 1;
-            padding: 1rem;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--led-blue);
-            color: white;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .submit-btn {
-            background: var(--led-blue);
-            color: var(--dark-bg);
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .submit-btn:hover {
-            background: var(--led-green);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
-        }
-        
-        .feedback {
-            padding: 1.5rem;
-            border-radius: 5px;
-            margin-top: 2rem;
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .correct-feedback {
-            background: rgba(0, 255, 136, 0.1);
-            border-left: 4px solid var(--led-green);
-            display: block;
-        }
-        
-        .incorrect-feedback {
-            background: rgba(255, 42, 109, 0.1);
-            border-left: 4px solid var(--led-pink);
-            display: block;
-        }
-        
-        .teacher-explanation {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-            border-left: 4px solid var(--led-purple);
-        }
-        
-        .teacher-tip {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .teacher-icon {
-            color: var(--led-blue);
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        
-        .step-by-step {
-            margin-top: 1.5rem;
-        }
-        
-        .step {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            align-items: flex-start;
-        }
-        
-        .step-number {
-            background: var(--led-purple);
-            color: white;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 0.9rem;
-        }
-        
-        .led-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 8px;
-            animation: pulse 1.5s infinite alternate;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-        
-        .led-blue {
-            background: var(--led-blue);
-            box-shadow: 0 0 5px var(--led-blue);
-        }
-        
-        .led-pink {
-            background: var(--led-pink);
-            box-shadow: 0 0 5px var(--led-pink);
-            animation-delay: 0.5s;
-        }
-        
-        .led-green {
-            background: var(--led-green);
-            box-shadow: 0 0 5px var(--led-green);
-            animation-delay: 1s;
-        }
-        
-        @media (max-width: 768px) {
-            .units-container {
-                grid-template-columns: 1fr;
-                padding: 1rem;
-            }
-            
-            .grade-selector {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .grade-btn {
-                width: 100%;
-                max-width: 250px;
-            }
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <div class="teacher-header">
-        <h1>Math Helper</h1>
-        <p class="tagline">Kind explanations and step-by-step guidance</p>
-        <div style="margin-top: 1rem;">
-            <span class="led-dot led-blue"></span>
-            <span class="led-dot led-pink"></span>
-            <span class="led-dot led-green"></span>
-        </div>
-    </div>
+<script>
+    // Track current unit
+    let currentUnit = 'basic-arithmetic';
     
-    <div class="grade-selector">
-        <button class="grade-btn elementary-btn" onclick="showGrade('elementary')">
-            <i class="fas fa-apple-alt"></i> Elementary (K-5)
-        </button>
-        <button class="grade-btn middle-btn" onclick="showGrade('middle')">
-            <i class="fas fa-calculator"></i> Middle School (6-8)
-        </button>
-        <button class="grade-btn high-btn" onclick="showGrade('high')">
-            <i class="fas fa-square-root-alt"></i> High School (9-12)
-        </button>
-    </div>
+    // Show selected grade level
+    function showGrade(grade) {
+        document.getElementById('elementary').style.display = 'none';
+        document.getElementById('middle').style.display = 'none';
+        document.getElementById('high').style.display = 'none';
+        document.getElementById(grade).style.display = 'grid';
+        localStorage.setItem('lastGrade', grade);
+    }
     
-    <!-- Elementary School Units -->
-    <div id="elementary" class="units-container" style="display: none;">
-        <div class="unit-card elementary-unit">
-            <h2 class="unit-title elementary-title">
-                <i class="fas fa-plus-circle unit-icon"></i> Basic Arithmetic
-            </h2>
-            <div class="unit-description">
-                <p>Learn addition, subtraction, multiplication, and division with friendly explanations for mistakes.</p>
-            </div>
-            <button class="start-btn start-elementary" onclick="startUnit('basic-arithmetic')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
+    // Start a unit
+    function startUnit(unitId) {
+        currentUnit = unitId;
+        document.getElementById('elementary').style.display = 'none';
+        document.getElementById('middle').style.display = 'none';
+        document.getElementById('high').style.display = 'none';
         
-        <div class="unit-card elementary-unit">
-            <h2 class="unit-title elementary-title">
-                <i class="fas fa-pizza-slice unit-icon"></i> Fractions Fun
-            </h2>
-            <div class="unit-description">
-                <p>Understand fractions through visual examples and gentle corrections when you make mistakes.</p>
-            </div>
-            <button class="start-btn start-elementary" onclick="startUnit('fractions')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
+        // Set up problem based on unit
+        const problemData = getProblemData(unitId);
+        document.getElementById('problem-unit-title').textContent = problemData.unitTitle;
+        document.getElementById('problem-text').innerHTML = `<p>${problemData.problem}</p>`;
+        document.getElementById('answer-input').value = '';
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('teacher-explanation').style.display = 'none';
         
-        <div class="unit-card elementary-unit">
-            <h2 class="unit-title elementary-title">
-                <i class="fas fa-shapes unit-icon"></i> Geometry Basics
-            </h2>
-            <div class="unit-description">
-                <p>Explore shapes, angles, and measurements with helpful feedback on errors.</p>
-            </div>
-            <button class="start-btn start-elementary" onclick="startUnit('geometry')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
-    </div>
+        document.getElementById('problem-section').style.display = 'block';
+        window.scrollTo(0, 0);
+    }
     
-    <!-- Middle School Units -->
-    <div id="middle" class="units-container" style="display: none;">
-        <div class="unit-card middle-unit">
-            <h2 class="unit-title middle-title">
-                <i class="fas fa-percentage unit-icon"></i> Pre-Algebra
-            </h2>
-            <div class="unit-description">
-                <p>Master ratios, percentages, and basic equations with supportive explanations.</p>
-            </div>
-            <button class="start-btn start-middle" onclick="startUnit('pre-algebra')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
-        
-        <div class="unit-card middle-unit">
-            <h2 class="unit-title middle-title">
-                <i class="fas fa-ruler-combined unit-icon"></i> Measurement
-            </h2>
-            <div class="unit-description">
-                <p>Convert units and solve measurement problems with caring guidance.</p>
-            </div>
-            <button class="start-btn start-middle" onclick="startUnit('measurement')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
-        
-        <div class="unit-card middle-unit">
-            <h2 class="unit-title middle-title">
-                <i class="fas fa-chart-bar unit-icon"></i> Data & Probability
-            </h2>
-            <div class="unit-description">
-                <p>Learn statistics basics with encouraging feedback on mistakes.</p>
-            </div>
-            <button class="start-btn start-middle" onclick="startUnit('data')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
-    </div>
+    // Return to unit selection
+    function backToUnits() {
+        document.getElementById('problem-section').style.display = 'none';
+        const lastGrade = localStorage.getItem('lastGrade') || 'elementary';
+        document.getElementById(lastGrade).style.display = 'grid';
+    }
     
-    <!-- High School Units -->
-    <div id="high" class="units-container" style="display: none;">
-        <div class="unit-card high-unit">
-            <h2 class="unit-title high-title">
-                <i class="fas fa-function unit-icon"></i> Algebra I & II
-            </h2>
-            <div class="unit-description">
-                <p>Solve equations and functions with detailed, kind explanations of errors.</p>
-            </div>
-            <button class="start-btn start-high" onclick="startUnit('algebra')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
+    // Check student's answer
+    function checkAnswer() {
+        const userAnswer = document.getElementById('answer-input').value.trim();
+        const problemData = getProblemData(currentUnit);
+        const feedback = document.getElementById('feedback');
+        const explanation = document.getElementById('teacher-explanation');
         
-        <div class="unit-card high-unit">
-            <h2 class="unit-title high-title">
-                <i class="fas fa-shapes unit-icon"></i> Geometry
-            </h2>
-            <div class="unit-description">
-                <p>Understand proofs and theorems with patient guidance through mistakes.</p>
-            </div>
-            <button class="start-btn start-high" onclick="startUnit('hs-geometry')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
+        // For fractions, accept multiple forms (like 5/4 or 1 1/4)
+        let isCorrect = false;
+        if (currentUnit.includes('fraction') || currentUnit.includes('arithmetic')) {
+            isCorrect = problemData.acceptableAnswers.includes(userAnswer.toLowerCase());
+        } else {
+            isCorrect = userAnswer.toLowerCase() === problemData.answer.toLowerCase();
+        }
         
-        <div class="unit-card high-unit">
-            <h2 class="unit-title high-title">
-                <i class="fas fa-chart-line unit-icon"></i> Trigonometry
-            </h2>
-            <div class="unit-description">
-                <p>Master the unit circle and trig functions with supportive explanations.</p>
-            </div>
-            <button class="start-btn start-high" onclick="startUnit('trigonometry')">
-                <i class="fas fa-book-open"></i> Start Learning
-            </button>
-        </div>
-    </div>
-    
-    <!-- Problem Section -->
-    <div id="problem-section" class="problem-section">
-        <div class="problem-header">
-            <h2 id="problem-unit-title">Basic Arithmetic</h2>
-            <button class="back-btn" onclick="backToUnits()">
-                <i class="fas fa-arrow-left"></i> Back to Units
-            </button>
-        </div>
-        
-        <div class="problem-content">
-            <div class="problem-text" id="problem-text">
-                <p>What is 3/4 + 1/2? Remember to find a common denominator first.</p>
-            </div>
-            
-            <div class="answer-section">
-                <div class="answer-input">
-                    <input type="text" id="answer-input" placeholder="Your answer">
-                    <button class="submit-btn" onclick="checkAnswer()">
-                        <i class="fas fa-check"></i> Check Answer
-                    </button>
+        if (isCorrect) {
+            feedback.innerHTML = `
+                <div class="correct-feedback">
+                    <p><i class="fas fa-check-circle"></i> <strong>Correct!</strong> Great job!</p>
+                    <p>${problemData.correctFeedback}</p>
                 </div>
-                
-                <div id="feedback" class="feedback">
-                    <!-- Feedback will appear here -->
+            `;
+        } else {
+            feedback.innerHTML = `
+                <div class="incorrect-feedback">
+                    <p><i class="fas fa-exclamation-circle"></i> <strong>Not quite right</strong>, but that's okay!</p>
+                    <p>The correct answer is: ${problemData.answer}</p>
                 </div>
-                
-                <div id="teacher-explanation" class="teacher-explanation" style="display: none;">
-                    <h3><i class="fas fa-chalkboard-teacher"></i> Teacher's Explanation</h3>
-                    <div id="explanation-content">
-                        <!-- Explanation will appear here -->
-                    </div>
-                    
-                    <div class="teacher-tip">
-                        <i class="fas fa-lightbulb teacher-icon"></i>
-                        <div id="teacher-tip-content">
-                            <!-- Tip will appear here -->
-                        </div>
-                    </div>
-                    
-                    <div class="step-by-step" id="step-by-step">
-                        <!-- Steps will appear here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        // Show selected grade level
-        function showGrade(grade) {
-            document.getElementById('elementary').style.display = 'none';
-            document.getElementById('middle').style.display = 'none';
-            document.getElementById('high').style.display = 'none';
-            document.getElementById(grade).style.display = 'grid';
-        }
-        
-        // Start a unit
-        function startUnit(unitId) {
-            document.getElementById('elementary').style.display = 'none';
-            document.getElementById('middle').style.display = 'none';
-            document.getElementById('high').style.display = 'none';
+            `;
             
-            // Set up problem based on unit
-            const problemData = getProblemData(unitId);
-            document.getElementById('problem-unit-title').textContent = problemData.unitTitle;
-            document.getElementById('problem-text').innerHTML = `<p>${problemData.problem}</p>`;
-            document.getElementById('answer-input').value = '';
-            document.getElementById('feedback').style.display = 'none';
-            document.getElementById('teacher-explanation').style.display = 'none';
+            // Show detailed explanation
+            document.getElementById('explanation-content').innerHTML = problemData.explanation;
+            document.getElementById('teacher-tip-content').innerHTML = problemData.tip;
             
-            document.getElementById('problem-section').style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-        
-        // Return to unit selection
-        function backToUnits() {
-            document.getElementById('problem-section').style.display = 'none';
-            const lastGrade = localStorage.getItem('lastGrade') || 'elementary';
-            document.getElementById(lastGrade).style.display = 'grid';
-        }
-        
-        // Check student's answer
-        function checkAnswer() {
-            const userAnswer = document.getElementById('answer-input').value.trim();
-            const problemData = getCurrentProblem();
-            const feedback = document.getElementById('feedback');
-            const explanation = document.getElementById('teacher-explanation');
-            
-            if (userAnswer.toLowerCase() === problemData.answer.toLowerCase()) {
-                feedback.innerHTML = `
-                    <div class="correct-feedback">
-                        <p><i class="fas fa-check-circle"></i> <strong>Correct!</strong> Great job!</p>
-                        <p>${problemData.correctFeedback}</p>
+            // Show step-by-step solution
+            let stepsHtml = '<h4><i class="fas fa-list-ol"></i> Step-by-Step Solution:</h4>';
+            problemData.steps.forEach((step, index) => {
+                stepsHtml += `
+                    <div class="step">
+                        <div class="step-number">${index + 1}</div>
+                        <div>${step}</div>
                     </div>
                 `;
-            } else {
-                feedback.innerHTML = `
-                    <div class="incorrect-feedback">
-                        <p><i class="fas fa-exclamation-circle"></i> <strong>Not quite right</strong>, but that's okay!</p>
-                        <p>The correct answer is: ${problemData.answer}</p>
-                    </div>
-                `;
-                
-                // Show detailed explanation
-                document.getElementById('explanation-content').innerHTML = problemData.explanation;
-                document.getElementById('teacher-tip-content').innerHTML = problemData.tip;
-                
-                // Show step-by-step solution
-                let stepsHtml = '<h4><i class="fas fa-list-ol"></i> Step-by-Step Solution:</h4>';
-                problemData.steps.forEach((step, index) => {
-                    stepsHtml += `
-                        <div class="step">
-                            <div class="step-number">${index + 1}</div>
-                            <div>${step}</div>
-                        </div>
-                    `;
-                });
-                document.getElementById('step-by-step').innerHTML = stepsHtml;
-                
-                explanation.style.display = 'block';
+            });
+            document.getElementById('step-by-step').innerHTML = stepsHtml;
+            
+            explanation.style.display = 'block';
+        }
+        
+        feedback.style.display = 'block';
+    }
+    
+    // Get problem data based on unit
+    function getProblemData(unitId) {
+        const problems = {
+            'basic-arithmetic': {
+                unitTitle: 'Basic Arithmetic',
+                problem: 'What is 3/4 + 1/2? Remember to find a common denominator first.',
+                answer: '5/4',
+                acceptableAnswers: ['5/4', '1 1/4', '1.25', '1¼'],
+                correctFeedback: 'You correctly found the common denominator and added the numerators!',
+                explanation: '<p>When adding fractions, we need a common denominator. Here\'s how to solve it:</p>',
+                tip: 'Remember that the denominator tells us how many equal parts make a whole. We can\'t add fractions directly unless they have the same denominator.',
+                steps: [
+                    'Find a common denominator: The denominators are 4 and 2. The least common denominator is 4.',
+                    'Convert 1/2 to fourths: 1/2 = 2/4',
+                    'Now add: 3/4 + 2/4 = 5/4',
+                    'Simplify if needed: 5/4 can be written as 1 1/4'
+                ]
+            },
+            'fractions': {
+                unitTitle: 'Fractions',
+                problem: 'Multiply 2/3 × 3/5. Simplify your answer if possible.',
+                answer: '2/5',
+                acceptableAnswers: ['6/15', '2/5', '0.4'],
+                correctFeedback: 'Excellent work multiplying the numerators and denominators!',
+                explanation: '<p>Multiplying fractions is different from adding them. Here\'s the process:</p>',
+                tip: 'Unlike addition, we don\'t need a common denominator for multiplication. Just multiply straight across!',
+                steps: [
+                    'Multiply the numerators: 2 × 3 = 6',
+                    'Multiply the denominators: 3 × 5 = 15',
+                    'This gives us 6/15',
+                    'Simplify by dividing numerator and denominator by 3: 6 ÷ 3 = 2, 15 ÷ 3 = 5',
+                    'Final simplified answer: 2/5'
+                ]
+            },
+            'pre-algebra': {
+                unitTitle: 'Pre-Algebra',
+                problem: 'Solve for x: 2x + 5 = 15',
+                answer: '5',
+                acceptableAnswers: ['5', '5.0'],
+                correctFeedback: 'Great job isolating the variable!',
+                explanation: '<p>Solving linear equations requires careful step-by-step work:</p>',
+                tip: 'Think of the equation like a balance scale - whatever you do to one side, you must do to the other.',
+                steps: [
+                    'Start with the equation: 2x + 5 = 15',
+                    'Subtract 5 from both sides: 2x = 10',
+                    'Divide both sides by 2: x = 5',
+                    'Check your answer by plugging back in: 2(5) + 5 = 15 ✓'
+                ]
+            },
+            'algebra': {
+                unitTitle: 'Algebra',
+                problem: 'Solve for x: x² - 5x + 6 = 0',
+                answer: '2, 3',
+                acceptableAnswers: ['2,3', '3,2', '2 and 3', '3 and 2', 'x=2,x=3', 'x=3,x=2'],
+                correctFeedback: 'Excellent work factoring the quadratic equation!',
+                explanation: '<p>Quadratic equations can be solved by factoring:</p>',
+                tip: 'Look for two numbers that multiply to the constant term (6) and add to the coefficient of the middle term (-5).',
+                steps: [
+                    'Factor the quadratic: (x - 2)(x - 3) = 0',
+                    'Set each factor equal to zero: x - 2 = 0 or x - 3 = 0',
+                    'Solve each equation: x = 2 or x = 3'
+                ]
             }
-            
-            feedback.style.display = 'block';
-        }
+        };
         
-        // Get problem data based on unit
-        function getProblemData(unitId) {
-            const problems = {
-                'basic-arithmetic': {
-                    unitTitle: 'Basic Arithmetic',
-                    problem: 'What is 3/4 + 1/2? Remember to find a common denominator first.',
-                    answer: '5/4 or 1 1/4',
-                    correctFeedback: 'You correctly found the common denominator and added the numerators!',
-                    explanation: '<p>When adding fractions, we need a common denominator. Here\'s how to solve it:</p>',
-                    tip: 'Remember that the denominator tells us how many equal parts make a whole. We can\'t add fractions directly unless they have the same denominator.',
-                    steps: [
-                        'Find a common denominator: The denominators are 4 and 2. The least common denominator is 4.',
-                        'Convert 1/2 to fourths: 1/2 = 2/4',
-                        'Now add: 3/4 + 2/4 = 5/4',
-                        'Simplify if needed: 5/4 can be written as 1 1/4'
-                    ]
-                },
-                'fractions': {
-                    unitTitle: 'Fractions',
-                    problem: 'Multiply 2/3 × 3/5. Simplify your answer if possible.',
-                    answer: '6/15 or 2/5',
-                    correctFeedback: 'Excellent work multiplying the numerators and denominators!',
-                    explanation: '<p>Multiplying fractions is different from adding them. Here\'s the process:</p>',
-                    tip: 'Unlike addition, we don\'t need a common denominator for multiplication. Just multiply straight across!',
-                    steps: [
-                        'Multiply the numerators: 2 × 3 = 6',
-                        'Multiply the denominators: 3 × 5 = 15',
-                        'This gives us 6/15',
-                        'Simplify by dividing numerator and denominator by 3: 6 ÷ 3 = 2, 15 ÷ 3 = 5',
-                        'Final simplified answer: 2/5'
-                    ]
-                },
-                'pre-algebra': {
-                    unitTitle: 'Pre-Algebra',
-                    problem: 'Solve for x: 2x + 5 = 15',
-                    answer: '5',
-                    correctFeedback: 'Great job isolating the variable!',
-                    explanation: '<p>Solving linear equations requires careful step-by-step work:</p>',
-                    tip: 'Think of the equation like a balance scale - whatever you do to one side, you must do to the other.',
-                    steps: [
-                        'Start with the equation: 2x + 5 = 15',
-                        'Subtract 5 from both sides: 2x = 10',
-                        'Divide both sides by 2: x = 5',
-                        'Check your answer by plugging back in: 2(5) + 5 = 15 ✓'
-                    ]
-                }
-            };
-            
-            return problems[unitId] || problems['basic-arithmetic'];
-        }
-        
-        // Get current problem data (simplified for demo)
-        function getCurrentProblem() {
-            return getProblemData('basic-arithmetic');
-        }
-        
-        // Initialize with elementary content
-        document.addEventListener('DOMContentLoaded', function() {
-            showGrade('elementary');
-        });
-    </script>
-</body>
-</html>
+        return problems[unitId] || problems['basic-arithmetic'];
+    }
+    
+    // Initialize with elementary content
+    document.addEventListener('DOMContentLoaded', function() {
+        showGrade('elementary');
+    });
+</script>
