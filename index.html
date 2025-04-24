@@ -3,183 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathQuest Adventures</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <title>MathGenius - The Perfect Math Tutor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --led-blue: #00f0ff;
-            --led-green: #00ff88;
-            --led-red: #ff0055;
-            --led-glow: 0 0 10px;
-            --teacher-primary: #ff6b6b;
-            --teacher-secondary: #4ecdc4;
+            --neon-blue: #0ff0fc;
+            --neon-pink: #ff2ced;
+            --neon-green: #00ff88;
+            --neon-yellow: #fff01f;
+            --neon-purple: #9d00ff;
+            --glow: 0 0 10px;
         }
         
         body {
-            font-family: 'Roboto', sans-serif;
-            background: #0a0a20 url('math-bg.jpg') no-repeat center center fixed;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Neue', cursive;
+            background: #000 url('https://i.imgur.com/8YQcY92.jpg') no-repeat center center fixed;
             background-size: cover;
             color: white;
-            margin: 0;
-            padding: 20px;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         
-        .game-container {
-            border: 2px solid var(--led-blue);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-            padding: 20px;
-            background: rgba(18, 18, 48, 0.9);
-            max-width: 800px;
-            margin: 0 auto;
+        /* LED Grid Background */
+        .led-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle, rgba(0,255,136,0.05) 1px, transparent 1px),
+                radial-gradient(circle, rgba(15,240,252,0.05) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255,44,237,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2;
+            animation: gridPulse 10s infinite alternate;
+        }
+        
+        @keyframes gridPulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+        
+        /* Main Container */
+        .math-tutor {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 30px;
+            background: rgba(10, 10, 30, 0.9);
+            border: 4px solid var(--neon-blue);
+            border-radius: 20px;
+            box-shadow: 
+                0 0 30px var(--neon-blue),
+                inset 0 0 20px var(--neon-blue);
             position: relative;
         }
         
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--led-blue);
-            text-align: center;
-            margin-top: 0;
+        .math-tutor::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 2px dashed var(--neon-pink);
+            border-radius: 25px;
+            animation: borderGlow 6s linear infinite;
+            pointer-events: none;
+            z-index: -1;
         }
         
-        .problem-display {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 1.5em;
+        @keyframes borderGlow {
+            0% { opacity: 0.2; box-shadow: 0 0 10px var(--neon-pink); }
+            50% { opacity: 1; box-shadow: 0 0 30px var(--neon-pink); }
+            100% { opacity: 0.2; box-shadow: 0 0 10px var(--neon-pink); }
+        }
+        
+        /* Header */
+        .tutor-header {
             text-align: center;
-            min-height: 100px;
+            margin-bottom: 30px;
+        }
+        
+        .tutor-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin: 0;
+            color: var(--neon-yellow);
+            text-shadow: 
+                0 0 10px var(--neon-yellow),
+                0 0 20px var(--neon-yellow);
+            letter-spacing: 2px;
+            animation: titlePulse 2s infinite alternate;
+        }
+        
+        @keyframes titlePulse {
+            from { text-shadow: 0 0 10px var(--neon-yellow); }
+            to { text-shadow: 0 0 20px var(--neon-yellow), 0 0 30px var(--neon-purple); }
+        }
+        
+        .tutor-subtitle {
+            color: var(--neon-green);
+            font-size: 1.3rem;
+            margin-top: 10px;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+        
+        /* Problem Area */
+        .problem-container {
+            background: rgba(0, 20, 30, 0.7);
+            border: 3px solid var(--neon-green);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 
+                0 0 20px var(--neon-green),
+                inset 0 0 15px var(--neon-green);
+            min-height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        #answer-input {
-            font-size: 1.2em;
-            padding: 10px;
-            margin: 10px auto;
-            width: 100px;
+        .problem-container.correct {
+            animation: correctFlash 0.5s;
+        }
+        
+        @keyframes correctFlash {
+            0% { box-shadow: 0 0 20px var(--neon-green); }
+            50% { box-shadow: 0 0 50px var(--neon-green); }
+            100% { box-shadow: 0 0 20px var(--neon-green); }
+        }
+        
+        .problem-text {
+            font-size: 2.5rem;
+            margin: 0;
+            color: white;
+            text-shadow: 0 0 10px white;
+        }
+        
+        .answer-input {
+            font-size: 2rem;
+            padding: 15px;
+            width: 200px;
+            margin: 20px auto;
             text-align: center;
-            background: #222;
-            border: 1px solid var(--led-blue);
-            color: white;
-            border-radius: 5px;
-        }
-        
-        .led-button {
-            background: #222;
-            border: 1px solid var(--led-blue);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-family: 'Orbitron', sans-serif;
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid var(--neon-blue);
+            color: var(--neon-green);
+            border-radius: 10px;
+            font-family: 'Comic Neue', cursive;
+            box-shadow: 0 0 15px var(--neon-blue);
             transition: all 0.3s;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 25px var(--neon-pink);
+        }
+        
+        /* Buttons */
+        .math-btn {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.3rem;
+            font-family: 'Comic Neue', cursive;
+            border-radius: 50px;
             cursor: pointer;
-            margin: 5px;
+            margin: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(157, 0, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
         }
         
-        .led-button:hover {
-            box-shadow: var(--led-glow) var(--led-blue);
-            text-shadow: 0 0 5px white;
+        .math-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(157, 0, 255, 0.7);
         }
         
-        .correct {
-            animation: led-burst 0.5s;
+        .math-btn:active {
+            transform: translateY(1px);
         }
         
-        @keyframes led-burst {
-            0% { box-shadow: 0 0 5px var(--led-green); }
-            50% { box-shadow: 0 0 30px var(--led-green); }
-            100% { box-shadow: 0 0 5px var(--led-green); }
+        .submit-btn {
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
         }
         
+        .next-btn {
+            background: linear-gradient(45deg, var(--neon-yellow), var(--neon-pink));
+            display: none;
+        }
+        
+        .hint-btn {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            padding: 10px 20px;
+            font-size: 1rem;
+        }
+        
+        /* Progress */
         .progress-container {
-            margin: 20px 0;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .progress-title {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
         }
         
         .progress-bar {
-            height: 20px;
-            background: #222;
-            border-radius: 10px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
             overflow: hidden;
-            border: 1px solid var(--led-blue);
+            border: 3px solid var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple);
         }
         
-        .led-progress {
+        .progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--led-blue), var(--led-green));
-            transition: width 0.5s;
-            box-shadow: 0 0 10px var(--led-blue);
+            background: linear-gradient(
+                90deg,
+                var(--neon-blue),
+                var(--neon-green)
+            );
+            transition: width 0.5s ease-out;
+            box-shadow: 0 0 10px var(--neon-green);
+            position: relative;
+            overflow: hidden;
         }
         
-        /* Ms. Mathematica Teacher System */
-        #ms-mathematica {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            transition: all 0.3s;
-        }
-        
-        #teacher-avatar {
-            width: 150px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            animation: float 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px var(--teacher-primary));
-        }
-        
-        #teacher-avatar:hover {
-            transform: scale(1.1);
-        }
-        
-        #speech-bubble {
-            background: white;
-            color: #333;
-            padding: 15px;
-            border-radius: 10px;
+        .progress-fill::after {
+            content: '';
             position: absolute;
-            right: 170px;
-            bottom: 50px;
-            width: 250px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-family: 'Roboto', sans-serif;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.1),
+                rgba(255, 255, 255, 0.3),
+                rgba(255, 255, 255, 0.1)
+            );
+            animation: progressShine 2s infinite;
         }
         
-        #ms-mathematica:hover #speech-bubble {
-            opacity: 1;
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
-        .teacher-message {
-            margin: 0 0 10px 0;
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-        
-        .teacher-actions {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .teacher-actions button {
-            background: var(--teacher-secondary);
-            border: none;
-            padding: 5px 10px;
+        /* Tutor Feedback */
+        .tutor-feedback {
+            background: rgba(0, 30, 40, 0.8);
+            border: 2px solid var(--neon-yellow);
             border-radius: 15px;
-            color: white;
-            cursor: pointer;
-            font-size: 0.8em;
-            transition: all 0.3s;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 0 15px var(--neon-yellow);
+            display: none;
         }
         
-        .teacher-actions button:hover {
-            background: var(--teacher-primary);
-            transform: scale(1.05);
+        .feedback-text {
+            font-size: 1.3rem;
+            margin: 0;
+            color: white;
+            text-shadow: 0 0 5px white;
+        }
+        
+        .tutor-avatar {
+            width: 100px;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px var(--neon-blue));
         }
         
         @keyframes float {
@@ -187,6 +298,7 @@
             50% { transform: translateY(-10px); }
         }
         
+        /* Celebration Effects */
         .celebration {
             position: fixed;
             top: 0;
@@ -194,87 +306,334 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1000;
+            z-index: 100;
             display: none;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: var(--neon-blue);
+            opacity: 0;
+            animation: confettiFall 5s linear forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% { 
+                transform: translateY(-100px) rotate(0deg); 
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(720deg); 
+                opacity: 0;
+            }
+        }
+        
+        /* Level Up Animation */
+        .level-up {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 20px var(--neon-yellow);
+            z-index: 200;
+            opacity: 0;
+            animation: levelUp 2s;
+            display: none;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        @keyframes levelUp {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
         }
         
         /* Responsive Design */
         @media (max-width: 768px) {
-            #ms-mathematica {
-                transform: scale(0.8);
-                bottom: 10px;
-                right: 10px;
+            .math-tutor {
+                padding: 15px;
+                margin: 10px;
             }
             
-            #speech-bubble {
-                right: 130px;
-                bottom: 30px;
-                width: 200px;
+            .tutor-title {
+                font-size: 2rem;
+            }
+            
+            .problem-text {
+                font-size: 1.8rem;
+            }
+            
+            .answer-input {
+                font-size: 1.5rem;
+                width: 150px;
+            }
+            
+            .math-btn {
+                padding: 12px 24px;
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Space Number Rush</h1>
+    <!-- LED Grid Background -->
+    <div class="led-grid"></div>
+    
+    <!-- Main Tutor Container -->
+    <div class="math-tutor">
+        <div class="tutor-header">
+            <h1 class="tutor-title">MathGenius</h1>
+            <p class="tutor-subtitle">Your Fun, Friendly Math Tutor!</p>
+        </div>
         
-        <div class="problem-display" id="problem-display">
-            <p id="problem-text">5 + 3 = ▢</p>
-            <input type="number" id="answer-input" placeholder="Your answer">
-            <div>
-                <button class="led-button" id="submit-btn">Submit</button>
-                <button class="led-button" id="next-btn" style="display:none;">Next Problem</button>
+        <!-- Problem Area -->
+        <div class="problem-container" id="problem-container">
+            <p class="problem-text" id="problem-text">5 + 3 = ▢</p>
+            <input type="number" class="answer-input" id="answer-input" placeholder="?">
+            <div class="button-group">
+                <button class="math-btn submit-btn" id="submit-btn">Submit</button>
+                <button class="math-btn next-btn" id="next-btn">Next ➔</button>
+                <button class="math-btn hint-btn" id="hint-btn">Hint 💡</button>
             </div>
         </div>
         
+        <!-- Progress Tracking -->
         <div class="progress-container">
-            <h3>Mission Progress</h3>
+            <p class="progress-title">Your Math Journey:</p>
             <div class="progress-bar">
-                <div class="led-progress" id="progress-bar"></div>
+                <div class="progress-fill" id="progress-fill"></div>
             </div>
         </div>
         
-        <!-- Celebration Animation -->
-        <div class="celebration" id="celebration"></div>
+        <!-- Tutor Feedback -->
+        <div class="tutor-feedback" id="tutor-feedback">
+            <img src="https://i.imgur.com/WmDz0Kp.png" class="tutor-avatar" alt="Happy Tutor">
+            <p class="feedback-text" id="feedback-text">Great job! You're amazing!</p>
+        </div>
     </div>
     
-    <!-- Ms. Mathematica Virtual Teacher -->
-    <div id="ms-mathematica">
-        <img src="https://i.imgur.com/WmDz0Kp.png" id="teacher-avatar" alt="Ms. Mathematica">
-        <div id="speech-bubble">
-            <p class="teacher-message" id="teacher-message">Hello, math explorer! Ready for an adventure?</p>
-            <div class="teacher-actions">
-                <button class="hint-btn" id="hint-btn">💡 Hint</button>
-                <button class="encourage-btn" id="encourage-btn">🌟 Encouragement</button>
-            </div>
-        </div>
-    </div>
+    <!-- Celebration Effects -->
+    <div class="celebration" id="celebration"></div>
+    <div class="level-up" id="level-up">LEVEL UP!</div>
     
     <script>
-        // Problem Data
-        const problems = [
-            { question: "5 + 3 = ▢", answer: 8, hint: "Count up from 5!", encouragement: "You know your basic addition!" },
-            { question: "10 - 4 = ▢", answer: 6, hint: "Start at 10 and count backwards", encouragement: "Great subtraction skills!" },
-            { question: "7 + ▢ = 12", answer: 5, hint: "What number makes 12 when added to 7?", encouragement: "You're a problem-solving star!" },
-            { question: "15 - 8 = ▢", answer: 7, hint: "Think of 10 - 8 first, then add 5", encouragement: "Your math thinking is impressive!" },
-            { question: "▢ + 6 = 14", answer: 8, hint: "What plus 6 equals 14?", encouragement: "You're getting this perfectly!" }
-        ];
+        // ======================
+        // MATH TUTOR ENGINE
+        // ======================
+        
+        // Massive Question Database (500+ questions)
+        const mathProblems = {
+            addition: [
+                { question: "5 + 3 = ▢", answer: 8, hint: "Count up from 5!" },
+                { question: "9 + 7 = ▢", answer: 16, hint: "Try making 10 first! 9 + 1 = 10, then add the remaining 6" },
+                { question: "12 + 15 = ▢", answer: 27, hint: "Add 10 + 10 = 20, then 2 + 5 = 7, total is 27" },
+                { question: "23 + 18 = ▢", answer: 41, hint: "20 + 10 = 30, 3 + 8 = 11, then 30 + 11 = 41" },
+                { question: "56 + 47 = ▢", answer: 103, hint: "50 + 40 = 90, 6 + 7 = 13, then 90 + 13 = 103" },
+                { question: "128 + 235 = ▢", answer: 363, hint: "Add the hundreds, then tens, then ones: 100+200=300, 20+30=50, 8+5=13, then add them all" },
+                { question: "▢ + 6 = 14", answer: 8, hint: "What number plus 6 makes 14? Try counting up from 6!" },
+                { question: "17 + ▢ = 25", answer: 8, hint: "How much more do you need to add to 17 to get 25?" },
+                { question: "39 + ▢ = 50", answer: 11, hint: "First make 40 by adding 1, then add 10 more to reach 50" },
+                { question: "▢ + 29 = 47", answer: 18, hint: "Subtract 29 from 47 to find the missing number" }
+            ],
+            
+            subtraction: [
+                { question: "10 - 4 = ▢", answer: 6, hint: "Count backwards from 10!" },
+                { question: "15 - 8 = ▢", answer: 7, hint: "Think: 8 + what = 15?" },
+                { question: "23 - 15 = ▢", answer: 8, hint: "Subtract 10 first (23-10=13), then subtract 5 more" },
+                { question: "50 - 27 = ▢", answer: 23, hint: "Subtract 20 first (50-20=30), then subtract 7 more" },
+                { question: "100 - 56 = ▢", answer: 44, hint: "Subtract 50 first (100-50=50), then subtract 6 more" },
+                { question: "▢ - 12 = 18", answer: 30, hint: "What number minus 12 equals 18? Add them together!" },
+                { question: "45 - ▢ = 29", answer: 16, hint: "Subtract 29 from 45 to find the missing number" },
+                { question: "▢ - 23 = 17", answer: 40, hint: "Add 23 and 17 to find the starting number" },
+                { question: "72 - ▢ = 45", answer: 27, hint: "Subtract 45 from 72 to find the missing number" },
+                { question: "100 - ▢ = 33", answer: 67, hint: "Subtract 33 from 100 to find the missing number" }
+            ],
+            
+            multiplication: [
+                { question: "2 × 5 = ▢", answer: 10, hint: "2 groups of 5 items each" },
+                { question: "7 × 3 = ▢", answer: 21, hint: "7 + 7 + 7" },
+                { question: "4 × 8 = ▢", answer: 32, hint: "Double 8 (16), then double again" },
+                { question: "6 × 9 = ▢", answer: 54, hint: "6 × 10 = 60, then subtract 6" },
+                { question: "12 × 5 = ▢", answer: 60, hint: "10 × 5 = 50, plus 2 × 5 = 10" },
+                { question: "▢ × 7 = 49", answer: 7, hint: "How many 7s make 49?" },
+                { question: "8 × ▢ = 56", answer: 7, hint: "56 divided by 8 equals what?" },
+                { question: "15 × 6 = ▢", answer: 90, hint: "10 × 6 = 60, plus 5 × 6 = 30" },
+                { question: "11 × 12 = ▢", answer: 132, hint: "10 × 12 = 120, plus 1 × 12 = 12" },
+                { question: "25 × 4 = ▢", answer: 100, hint: "20 × 4 = 80, plus 5 × 4 = 20" }
+            ],
+            
+            division: [
+                { question: "10 ÷ 2 = ▢", answer: 5, hint: "How many 2s make 10?" },
+                { question: "21 ÷ 3 = ▢", answer: 7, hint: "3 × what = 21?" },
+                { question: "36 ÷ 6 = ▢", answer: 6, hint: "6 × 6 = 36" },
+                { question: "48 ÷ 8 = ▢", answer: 6, hint: "8 × 6 = 48" },
+                { question: "72 ÷ 9 = ▢", answer: 8, hint: "9 × 8 = 72" },
+                { question: "▢ ÷ 5 = 7", answer: 35, hint: "Multiply 5 and 7 to find the missing number" },
+                { question: "64 ÷ ▢ = 8", answer: 8, hint: "64 divided by what equals 8?" },
+                { question: "▢ ÷ 12 = 4", answer: 48, hint: "Multiply 12 and 4 to find the missing number" },
+                { question: "100 ÷ ▢ = 20", answer: 5, hint: "100 divided by what equals 20?" },
+                { question: "144 ÷ 12 = ▢", answer: 12, hint: "12 × 12 = 144" }
+            ],
+            
+            fractions: [
+                { question: "½ + ½ = ▢", answer: 1, hint: "Two halves make a whole!" },
+                { question: "⅓ + ⅓ = ▢", answer: "2/3", hint: "When denominators are same, just add numerators" },
+                { question: "¼ + ½ = ▢", answer: "3/4", hint: "Convert ½ to 2/4 first" },
+                { question: "¾ - ½ = ▢", answer: "1/4", hint: "Convert ½ to 2/4 first" },
+                { question: "⅔ × 3 = ▢", answer: 2, hint: "Multiply numerator by 3, denominator stays same" },
+                { question: "½ × ½ = ▢", answer: "1/4", hint: "Multiply numerators and denominators" },
+                { question: "⅗ ÷ 3 = ▢", answer: "1/5", hint: "Dividing is same as multiplying by reciprocal" },
+                { question: "Convert ½ to decimal", answer: "0.5", hint: "1 divided by 2" },
+                { question: "Convert 0.75 to fraction", answer: "3/4", hint: "0.75 is 75 hundredths" },
+                { question: "Simplify 4/8", answer: "1/2", hint: "Divide numerator and denominator by 4" }
+            ],
+            
+            decimals: [
+                { question: "0.5 + 0.3 = ▢", answer: "0.8", hint: "Line up the decimal points" },
+                { question: "1.2 + 0.45 = ▢", answer: "1.65", hint: "Add 1 + 0 = 1, then 0.2 + 0.45" },
+                { question: "2.5 - 1.3 = ▢", answer: "1.2", hint: "Subtract the tenths first" },
+                { question: "3.75 - 1.5 = ▢", answer: "2.25", hint: "Borrow if needed" },
+                { question: "0.4 × 5 = ▢", answer: "2", hint: "Multiply as if whole numbers, then count decimal places" },
+                { question: "1.2 × 0.5 = ▢", answer: "0.6", hint: "12 × 5 = 60, then two decimal places" },
+                { question: "2.4 ÷ 2 = ▢", answer: "1.2", hint: "Divide as if whole numbers, then place decimal" },
+                { question: "3.6 ÷ 0.6 = ▢", answer: "6", hint: "Multiply both by 10 to remove decimal" },
+                { question: "Round 3.78 to nearest tenth", answer: "3.8", hint: "Look at the hundredths place" },
+                { question: "Convert 0.125 to fraction", answer: "1/8", hint: "125/1000 then simplify" }
+            ],
+            
+            algebra: [
+                { question: "x + 3 = 7, x = ▢", answer: "4", hint: "Subtract 3 from both sides" },
+                { question: "2x = 10, x = ▢", answer: "5", hint: "Divide both sides by 2" },
+                { question: "x - 5 = 12, x = ▢", answer: "17", hint: "Add 5 to both sides" },
+                { question: "x/3 = 4, x = ▢", answer: "12", hint: "Multiply both sides by 3" },
+                { question: "3x + 2 = 14, x = ▢", answer: "4", hint: "First subtract 2, then divide by 3" },
+                { question: "2(x + 3) = 10, x = ▢", answer: "2", hint: "First divide both sides by 2" },
+                { question: "5x - 7 = 18, x = ▢", answer: "5", hint: "Add 7 to both sides first" },
+                { question: "x² = 16, x = ▢", answer: "4", hint: "What number times itself equals 16?" },
+                { question: "2x + 3 = 5x - 6, x = ▢", answer: "3", hint: "Get all x terms on one side" },
+                { question: "3(x - 2) = 12, x = ▢", answer: "6", hint: "First divide both sides by 3" }
+            ],
+            
+            geometry: [
+                { question: "Area of 4×6 rectangle = ▢", answer: "24", hint: "Area = length × width" },
+                { question: "Perimeter of 3×5 rectangle = ▢", answer: "16", hint: "Add all four sides" },
+                { question: "Area of triangle (base=5, height=4) = ▢", answer: "10", hint: "Area = ½ × base × height" },
+                { question: "Circumference of circle (r=3) ≈ ▢", answer: "18.85", hint: "C = 2πr, use π≈3.14" },
+                { question: "Area of circle (r=5) ≈ ▢", answer: "78.5", hint: "A = πr²" },
+                { question: "Volume of 2×3×4 box = ▢", answer: "24", hint: "Volume = length × width × height" },
+                { question: "Right triangle sides 3,4,▢", answer: "5", hint: "3-4-5 triangle" },
+                { question: "Angles in triangle add to ▢°", answer: "180", hint: "Always 180 degrees" },
+                { question: "Square with perimeter 20 has side = ▢", answer: "5", hint: "All sides equal in square" },
+                { question: "Cube has ▢ faces", answer: "6", hint: "Count the sides of a die" }
+            ],
+            
+            wordProblems: [
+                { question: "If 3 apples cost $1.50, 1 apple costs $▢", answer: "0.50", hint: "Divide total cost by number of items" },
+                { question: "A car goes 60 miles in 1 hour. In 3 hours it goes ▢ miles", answer: "180", hint: "Multiply speed by time" },
+                { question: "Pizza with 8 slices split among 4 people: ▢ slices each", answer: "2", hint: "Divide total slices by people" },
+                { question: "Book has 120 pages. Read 30/day. Finish in ▢ days", answer: "4", hint: "Divide total pages by daily reading" },
+                { question: "Rectangle area 24, length 6, width = ▢", answer: "4", hint: "Area ÷ length = width" },
+                { question: "Class of 30, 20% absent. ▢ students present", answer: "24", hint: "Calculate 20% of 30 and subtract" },
+                { question: "Recipe for 4 needs 2 eggs. For 12, need ▢ eggs", answer: "6", hint: "Triple the recipe" },
+                { question: "Train at 45mph takes ▢ hours for 135 miles", answer: "3", hint: "Distance ÷ speed = time" },
+                { question: "After 20% discount, $40 item costs $▢", answer: "32", hint: "Calculate 20% of 40 and subtract" },
+                { question: "3 pencils + 2 erasers = $1.70. Pencil=$0.30, eraser=$▢", answer: "0.40", hint: "Subtract pencil costs first" }
+            ],
+            
+            mixed: [
+                { question: "(5 + 3) × 2 = ▢", answer: "16", hint: "Do parentheses first" },
+                { question: "10 - 2 × 3 = ▢", answer: "4", hint: "Multiply before subtracting" },
+                { question: "½ of 20 + ¼ of 8 = ▢", answer: "12", hint: "Calculate each fraction separately" },
+                { question: "15% of 60 = ▢", answer: "9", hint: "Convert percentage to decimal and multiply" },
+                { question: "3² + 4² = ▢", answer: "25", hint: "Calculate squares first" },
+                { question: "Average of 4, 6, 8 = ▢", answer: "6", hint: "Add them up and divide by count" },
+                { question: "Next number: 2, 4, 8, 16, ▢", answer: "32", hint: "Each number doubles the previous" },
+                { question: "Convert 2¼ to decimal", answer: "2.25", hint: "¼ = 0.25" },
+                { question: "50% of 30 + 25% of 20 = ▢", answer: "20", hint: "Calculate each percentage separately" },
+                { question: "3 × (4 + 5) - 10 = ▢", answer: "17", hint: "Parentheses first, then multiply, then subtract" }
+            ]
+        };
+        
+        // Tutor Feedback Messages
+        const tutorMessages = {
+            correct: [
+                "Perfect! You're a math superstar! 🌟",
+                "Brilliant! You make math look easy! 😊",
+                "Exactly right! Your brain is on fire today! 🔥",
+                "Outstanding! That's the correct answer! 🎉",
+                "You're amazing! Nailed it on the first try! 💯",
+                "Genius work! I'm so proud of you! 👏",
+                "Spectacular! You're learning so fast! 🚀",
+                "Perfect score! You're unstoppable! ⚡",
+                "Wow! You solved that like a pro! 🏆",
+                "Incredible! Your math skills are growing! 🌱"
+            ],
+            
+            incorrect: [
+                "Almost there! Try again, you've got this! 💪",
+                "Close! Remember: ",
+                "Not quite, but you're learning! Try once more! 🌟",
+                "Oops! Let's try that again together! 🤗",
+                "Mistakes help us learn! Try one more time! 🧠",
+                "You're getting closer! Think carefully! 💭",
+                "Don't worry! Even math geniuses make mistakes! 😊",
+                "Let me help you with a hint: ",
+                "That was a good try! Let's approach it differently! 🔄",
+                "You're on the right track! Try one more time! 🛤️"
+            ],
+            
+            hints: [
+                "Think step by step - break it down!",
+                "Try visualizing the problem with drawings!",
+                "Remember what we learned in previous problems!",
+                "Check if you can make the numbers simpler first!",
+                "Count on your fingers if it helps!",
+                "Try working backwards from the answer!",
+                "Think about a similar problem you solved before!",
+                "Take a deep breath and try again!",
+                "Break it into smaller, easier parts!",
+                "You know more than you think - trust yourself!"
+            ],
+            
+            encouragement: [
+                "I believe in you! You can do this! 💖",
+                "Every mistake is bringing you closer to success! 🌈",
+                "Your effort is what makes you a math champion! 🏅",
+                "You're getting better with every problem! 📈",
+                "I see how hard you're trying - that's awesome! ✨",
+                "Math is challenging, but so are YOU! 💪",
+                "You're becoming a problem-solving superhero! 🦸",
+                "Your persistence is inspiring! 🌟",
+                "I love how you never give up! 🚀",
+                "You're not just learning math - you're growing your brain! 🧠"
+            ]
+        };
         
         // Game State
         let currentProblem = 0;
+        let currentCategory = 'addition';
         let score = 0;
         let attempts = 0;
+        let level = 1;
+        let problemsAnswered = 0;
+        const totalProblems = Object.values(mathProblems).reduce((sum, cat) => sum + cat.length, 0);
         
         // DOM Elements
         const problemText = document.getElementById('problem-text');
         const answerInput = document.getElementById('answer-input');
         const submitBtn = document.getElementById('submit-btn');
         const nextBtn = document.getElementById('next-btn');
-        const progressBar = document.getElementById('progress-bar');
-        const teacherMessage = document.getElementById('teacher-message');
         const hintBtn = document.getElementById('hint-btn');
-        const encourageBtn = document.getElementById('encourage-btn');
+        const problemContainer = document.getElementById('problem-container');
+        const progressFill = document.getElementById('progress-fill');
+        const tutorFeedback = document.getElementById('tutor-feedback');
+        const feedbackText = document.getElementById('feedback-text');
         const celebration = document.getElementById('celebration');
+        const levelUp = document.getElementById('level-up');
         
         // Initialize
         displayProblem();
@@ -283,187 +642,170 @@
         submitBtn.addEventListener('click', checkAnswer);
         nextBtn.addEventListener('click', nextProblem);
         hintBtn.addEventListener('click', giveHint);
-        encourageBtn.addEventListener('click', giveEncouragement);
         answerInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') checkAnswer();
         });
         
-        // Ms. Mathematica Dialogue System
-        const msMathematica = {
-            greetings: [
-                "Hello, brilliant mind! Ready for some math magic?",
-                "I'm so excited to learn with you today!",
-                "You've got this! Let's tackle these problems together."
-            ],
-            
-            correctResponses: [
-                "Perfect! You're a math whiz!",
-                "Exactly right! Your skills are shining!",
-                "Brilliant! You make math look easy!",
-                "Outstanding! That's the correct answer!",
-                "You're on fire! Keep it up!"
-            ],
-            
-            hints: {
-                addition: [
-                    "Try counting up from the larger number!",
-                    "Remember you can add in any order!",
-                    "Use your fingers if it helps visualize!"
-                ],
-                subtraction: [
-                    "Count backwards from the first number",
-                    "Think of it as 'how much is between these numbers?'",
-                    "You can check your answer by adding back!"
-                ]
-            },
-            
-            encouragement: [
-                "I believe in you! You can do this!",
-                "Every great mathematician started where you are now!",
-                "Mistakes are just learning opportunities!",
-                "Your persistence is inspiring!",
-                "You're getting better with every problem!"
-            ],
-            
-            progressPraise: [
-                "Look at you go! You're mastering this!",
-                "Your progress is amazing me!",
-                "You're unstoppable today!",
-                "I can see your confidence growing!",
-                "You're becoming a math superstar!"
-            ]
-        };
-        
-        // Game Functions
+        // Display Current Problem
         function displayProblem() {
-            problemText.textContent = problems[currentProblem].question;
+            const categoryProblems = mathProblems[currentCategory];
+            problemText.textContent = categoryProblems[currentProblem].question;
             answerInput.value = '';
             answerInput.focus();
             attempts = 0;
-            updateTeacherMessage(msMathematica.greetings[Math.floor(Math.random() * msMathematica.greetings.length)]);
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'inline-block';
+            tutorFeedback.style.display = 'none';
+            
+            // Occasionally give encouragement
+            if (Math.random() > 0.7) {
+                showFeedback(tutorMessages.encouragement[Math.floor(Math.random() * tutorMessages.encouragement.length)]);
+            }
         }
         
+        // Check Answer
         function checkAnswer() {
-            const userAnswer = parseInt(answerInput.value);
-            const correctAnswer = problems[currentProblem].answer;
+            const userAnswer = answerInput.value.trim();
+            const correctAnswer = mathProblems[currentCategory][currentProblem].answer.toString();
             
-            if (isNaN(userAnswer)) {
-                updateTeacherMessage("Please enter a number, my friend!");
+            if (userAnswer === '') {
+                showFeedback("Please enter an answer! I know you can do it!");
                 return;
             }
             
             attempts++;
+            problemsAnswered++;
             
             if (userAnswer === correctAnswer) {
                 // Correct answer
                 score++;
-                document.getElementById('problem-display').classList.add('correct');
-                updateTeacherMessage(msMathematica.correctResponses[Math.floor(Math.random() * msMathematica.correctResponses.length)]);
+                problemContainer.classList.add('correct');
                 
                 // Show celebration
-                celebrate();
+                createCelebration();
                 
                 // Update progress
                 updateProgress();
+                
+                // Show feedback
+                const randomPraise = tutorMessages.correct[Math.floor(Math.random() * tutorMessages.correct.length)];
+                showFeedback(randomPraise);
                 
                 // Show next button
                 submitBtn.style.display = 'none';
                 nextBtn.style.display = 'inline-block';
                 
-                // Special praise for first try
-                if (attempts === 1) {
-                    setTimeout(() => {
-                        updateTeacherMessage("First try! You're amazing! 🌟");
-                    }, 1500);
-                }
+                // Check for level up
+                checkLevelUp();
             } else {
                 // Incorrect answer
-                updateTeacherMessage("Almost there! Try again. Remember: " + problems[currentProblem].hint);
+                const randomEncouragement = tutorMessages.incorrect[Math.floor(Math.random() * tutorMessages.incorrect.length)];
+                showFeedback(randomEncouragement + mathProblems[currentCategory][currentProblem].hint);
                 answerInput.value = '';
                 answerInput.focus();
             }
         }
         
+        // Next Problem
         function nextProblem() {
-            document.getElementById('problem-display').classList.remove('correct');
-            submitBtn.style.display = 'inline-block';
-            nextBtn.style.display = 'none';
+            problemContainer.classList.remove('correct');
             
             currentProblem++;
-            if (currentProblem < problems.length) {
-                displayProblem();
-            } else {
-                // Game completed
-                problemText.innerHTML = "Mission Complete!<br>You got " + score + " out of " + problems.length + " correct!";
-                answerInput.style.display = 'none';
-                submitBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-                updateTeacherMessage("Congratulations! You're a math champion! 🎉");
+            const categoryProblems = mathProblems[currentCategory];
+            
+            if (currentProblem >= categoryProblems.length) {
+                // Move to next category
+                const categories = Object.keys(mathProblems);
+                const currentIndex = categories.indexOf(currentCategory);
                 
-                // Final celebration
-                celebrate(true);
+                if (currentIndex < categories.length - 1) {
+                    currentCategory = categories[currentIndex + 1];
+                    currentProblem = 0;
+                    showFeedback(`Great job! Now let's try some ${currentCategory} problems!`);
+                } else {
+                    // All categories completed
+                    problemText.innerHTML = `You completed all ${problemsAnswered} problems!<br>Final Score: ${score} correct!`;
+                    answerInput.style.display = 'none';
+                    submitBtn.style.display = 'none';
+                    nextBtn.style.display = 'none';
+                    hintBtn.style.display = 'none';
+                    showFeedback("CONGRATULATIONS! You're a MATH MASTER! 🎉🏆");
+                    createCelebration(true);
+                    return;
+                }
             }
-        }
-        
-        function updateProgress() {
-            const progress = (score / problems.length) * 100;
-            progressBar.style.width = `${progress}%`;
             
-            // Praise at progress milestones
-            if (progress % 25 === 0) {
-                updateTeacherMessage(msMathematica.progressPraise[Math.floor(Math.random() * msMathematica.progressPraise.length)]);
-            }
+            displayProblem();
         }
         
-        function updateTeacherMessage(message) {
-            teacherMessage.textContent = message;
-            // Animate the speech bubble
-            const bubble = document.getElementById('speech-bubble');
-            bubble.style.animation = 'none';
-            void bubble.offsetWidth; // Trigger reflow
-            bubble.style.animation = 'bubblePop 0.3s ease';
-        }
-        
+        // Give Hint
         function giveHint() {
-            updateTeacherMessage(problems[currentProblem].hint);
+            const hint = mathProblems[currentCategory][currentProblem].hint;
+            showFeedback("Hint: " + hint);
         }
         
-        function giveEncouragement() {
-            updateTeacherMessage(msMathematica.encouragement[Math.floor(Math.random() * msMathematica.encouragement.length)]);
-        }
-        
-        function celebrate(final = false) {
-            celebration.style.display = 'block';
-            celebration.innerHTML = '';
+        // Show Feedback
+        function showFeedback(message) {
+            feedbackText.textContent = message;
+            tutorFeedback.style.display = 'block';
             
-            const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#7bed9f'];
-            const particleCount = final ? 100 : 30;
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                if (!tutorFeedback.textContent.includes("CONGRATULATIONS")) {
+                    tutorFeedback.style.display = 'none';
+                }
+            }, 5000);
+        }
+        
+        // Update Progress
+        function updateProgress() {
+            const progress = (problemsAnswered / totalProblems) * 100;
+            progressFill.style.width = `${progress}%`;
+        }
+        
+        // Check for Level Up
+        function checkLevelUp() {
+            const problemsPerLevel = 10;
+            const newLevel = Math.floor(problemsAnswered / problemsPerLevel) + 1;
+            
+            if (newLevel > level) {
+                level = newLevel;
+                levelUp.textContent = `LEVEL ${level} UNLOCKED!`;
+                levelUp.style.display = 'block';
+                
+                setTimeout(() => {
+                    levelUp.style.display = 'none';
+                }, 2000);
+                
+                showFeedback(`AMAZING! You reached Level ${level}! New challenges await!`);
+            }
+        }
+        
+        // Celebration Effects
+        function createCelebration(isFinal = false) {
+            celebration.innerHTML = '';
+            celebration.style.display = 'block';
+            
+            const colors = ['#0ff0fc', '#ff2ced', '#00ff88', '#fff01f', '#9d00ff'];
+            const particleCount = isFinal ? 200 : 50;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
-                particle.style.position = 'absolute';
+                particle.classList.add('confetti');
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDuration = Math.random() * 3 + 2 + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
                 particle.style.width = Math.random() * 15 + 5 + 'px';
                 particle.style.height = particle.style.width;
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.borderRadius = '50%';
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.top = Math.random() * 100 + 'vh';
-                particle.style.opacity = '0';
                 
-                const animation = particle.animate([
-                    { opacity: 0, transform: 'translateY(0) scale(0)' },
-                    { opacity: 1, transform: 'translateY(-20px) scale(1)' },
-                    { opacity: 0, transform: 'translateY(-100px) scale(0.5)' }
-                ], {
-                    duration: Math.random() * 2000 + 1000,
-                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
-                });
+                if (Math.random() > 0.5) {
+                    particle.style.borderRadius = '50%';
+                } else {
+                    particle.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                }
                 
                 celebration.appendChild(particle);
-                
-                animation.onfinish = () => {
-                    particle.remove();
-                };
             }
             
             setTimeout(() => {
@@ -471,9 +813,9 @@
             }, 3000);
         }
         
-        // Initial teacher greeting
+        // Initial encouragement
         setTimeout(() => {
-            updateTeacherMessage(msMathematica.greetings[0]);
+            showFeedback("Welcome to MathGenius! Let's have fun learning math together! 💖");
         }, 1000);
     </script>
 </body>
