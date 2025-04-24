@@ -1,164 +1,480 @@
-<script>
-    // Track current unit
-    let currentUnit = 'basic-arithmetic';
-    
-    // Show selected grade level
-    function showGrade(grade) {
-        document.getElementById('elementary').style.display = 'none';
-        document.getElementById('middle').style.display = 'none';
-        document.getElementById('high').style.display = 'none';
-        document.getElementById(grade).style.display = 'grid';
-        localStorage.setItem('lastGrade', grade);
-    }
-    
-    // Start a unit
-    function startUnit(unitId) {
-        currentUnit = unitId;
-        document.getElementById('elementary').style.display = 'none';
-        document.getElementById('middle').style.display = 'none';
-        document.getElementById('high').style.display = 'none';
-        
-        // Set up problem based on unit
-        const problemData = getProblemData(unitId);
-        document.getElementById('problem-unit-title').textContent = problemData.unitTitle;
-        document.getElementById('problem-text').innerHTML = `<p>${problemData.problem}</p>`;
-        document.getElementById('answer-input').value = '';
-        document.getElementById('feedback').style.display = 'none';
-        document.getElementById('teacher-explanation').style.display = 'none';
-        
-        document.getElementById('problem-section').style.display = 'block';
-        window.scrollTo(0, 0);
-    }
-    
-    // Return to unit selection
-    function backToUnits() {
-        document.getElementById('problem-section').style.display = 'none';
-        const lastGrade = localStorage.getItem('lastGrade') || 'elementary';
-        document.getElementById(lastGrade).style.display = 'grid';
-    }
-    
-    // Check student's answer
-    function checkAnswer() {
-        const userAnswer = document.getElementById('answer-input').value.trim();
-        const problemData = getProblemData(currentUnit);
-        const feedback = document.getElementById('feedback');
-        const explanation = document.getElementById('teacher-explanation');
-        
-        // For fractions, accept multiple forms (like 5/4 or 1 1/4)
-        let isCorrect = false;
-        if (currentUnit.includes('fraction') || currentUnit.includes('arithmetic')) {
-            isCorrect = problemData.acceptableAnswers.includes(userAnswer.toLowerCase());
-        } else {
-            isCorrect = userAnswer.toLowerCase() === problemData.answer.toLowerCase();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathQuest Adventures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --led-blue: #00f0ff;
+            --led-green: #00ff88;
+            --led-red: #ff0055;
+            --led-glow: 0 0 10px;
+            --teacher-primary: #ff6b6b;
+            --teacher-secondary: #4ecdc4;
         }
         
-        if (isCorrect) {
-            feedback.innerHTML = `
-                <div class="correct-feedback">
-                    <p><i class="fas fa-check-circle"></i> <strong>Correct!</strong> Great job!</p>
-                    <p>${problemData.correctFeedback}</p>
-                </div>
-            `;
-        } else {
-            feedback.innerHTML = `
-                <div class="incorrect-feedback">
-                    <p><i class="fas fa-exclamation-circle"></i> <strong>Not quite right</strong>, but that's okay!</p>
-                    <p>The correct answer is: ${problemData.answer}</p>
-                </div>
-            `;
-            
-            // Show detailed explanation
-            document.getElementById('explanation-content').innerHTML = problemData.explanation;
-            document.getElementById('teacher-tip-content').innerHTML = problemData.tip;
-            
-            // Show step-by-step solution
-            let stepsHtml = '<h4><i class="fas fa-list-ol"></i> Step-by-Step Solution:</h4>';
-            problemData.steps.forEach((step, index) => {
-                stepsHtml += `
-                    <div class="step">
-                        <div class="step-number">${index + 1}</div>
-                        <div>${step}</div>
-                    </div>
-                `;
-            });
-            document.getElementById('step-by-step').innerHTML = stepsHtml;
-            
-            explanation.style.display = 'block';
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0a0a20 url('math-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
         }
         
-        feedback.style.display = 'block';
-    }
-    
-    // Get problem data based on unit
-    function getProblemData(unitId) {
-        const problems = {
-            'basic-arithmetic': {
-                unitTitle: 'Basic Arithmetic',
-                problem: 'What is 3/4 + 1/2? Remember to find a common denominator first.',
-                answer: '5/4',
-                acceptableAnswers: ['5/4', '1 1/4', '1.25', '1¼'],
-                correctFeedback: 'You correctly found the common denominator and added the numerators!',
-                explanation: '<p>When adding fractions, we need a common denominator. Here\'s how to solve it:</p>',
-                tip: 'Remember that the denominator tells us how many equal parts make a whole. We can\'t add fractions directly unless they have the same denominator.',
-                steps: [
-                    'Find a common denominator: The denominators are 4 and 2. The least common denominator is 4.',
-                    'Convert 1/2 to fourths: 1/2 = 2/4',
-                    'Now add: 3/4 + 2/4 = 5/4',
-                    'Simplify if needed: 5/4 can be written as 1 1/4'
-                ]
-            },
-            'fractions': {
-                unitTitle: 'Fractions',
-                problem: 'Multiply 2/3 × 3/5. Simplify your answer if possible.',
-                answer: '2/5',
-                acceptableAnswers: ['6/15', '2/5', '0.4'],
-                correctFeedback: 'Excellent work multiplying the numerators and denominators!',
-                explanation: '<p>Multiplying fractions is different from adding them. Here\'s the process:</p>',
-                tip: 'Unlike addition, we don\'t need a common denominator for multiplication. Just multiply straight across!',
-                steps: [
-                    'Multiply the numerators: 2 × 3 = 6',
-                    'Multiply the denominators: 3 × 5 = 15',
-                    'This gives us 6/15',
-                    'Simplify by dividing numerator and denominator by 3: 6 ÷ 3 = 2, 15 ÷ 3 = 5',
-                    'Final simplified answer: 2/5'
-                ]
-            },
-            'pre-algebra': {
-                unitTitle: 'Pre-Algebra',
-                problem: 'Solve for x: 2x + 5 = 15',
-                answer: '5',
-                acceptableAnswers: ['5', '5.0'],
-                correctFeedback: 'Great job isolating the variable!',
-                explanation: '<p>Solving linear equations requires careful step-by-step work:</p>',
-                tip: 'Think of the equation like a balance scale - whatever you do to one side, you must do to the other.',
-                steps: [
-                    'Start with the equation: 2x + 5 = 15',
-                    'Subtract 5 from both sides: 2x = 10',
-                    'Divide both sides by 2: x = 5',
-                    'Check your answer by plugging back in: 2(5) + 5 = 15 ✓'
-                ]
-            },
-            'algebra': {
-                unitTitle: 'Algebra',
-                problem: 'Solve for x: x² - 5x + 6 = 0',
-                answer: '2, 3',
-                acceptableAnswers: ['2,3', '3,2', '2 and 3', '3 and 2', 'x=2,x=3', 'x=3,x=2'],
-                correctFeedback: 'Excellent work factoring the quadratic equation!',
-                explanation: '<p>Quadratic equations can be solved by factoring:</p>',
-                tip: 'Look for two numbers that multiply to the constant term (6) and add to the coefficient of the middle term (-5).',
-                steps: [
-                    'Factor the quadratic: (x - 2)(x - 3) = 0',
-                    'Set each factor equal to zero: x - 2 = 0 or x - 3 = 0',
-                    'Solve each equation: x = 2 or x = 3'
-                ]
+        .game-container {
+            border: 2px solid var(--led-blue);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            padding: 20px;
+            background: rgba(18, 18, 48, 0.9);
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--led-blue);
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        .problem-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 1.5em;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        #answer-input {
+            font-size: 1.2em;
+            padding: 10px;
+            margin: 10px auto;
+            width: 100px;
+            text-align: center;
+            background: #222;
+            border: 1px solid var(--led-blue);
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .led-button {
+            background: #222;
+            border: 1px solid var(--led-blue);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        .led-button:hover {
+            box-shadow: var(--led-glow) var(--led-blue);
+            text-shadow: 0 0 5px white;
+        }
+        
+        .correct {
+            animation: led-burst 0.5s;
+        }
+        
+        @keyframes led-burst {
+            0% { box-shadow: 0 0 5px var(--led-green); }
+            50% { box-shadow: 0 0 30px var(--led-green); }
+            100% { box-shadow: 0 0 5px var(--led-green); }
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: #222;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--led-blue);
+        }
+        
+        .led-progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--led-blue), var(--led-green));
+            transition: width 0.5s;
+            box-shadow: 0 0 10px var(--led-blue);
+        }
+        
+        /* Ms. Mathematica Teacher System */
+        #ms-mathematica {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        
+        #teacher-avatar {
+            width: 150px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px var(--teacher-primary));
+        }
+        
+        #teacher-avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        #speech-bubble {
+            background: white;
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            position: absolute;
+            right: 170px;
+            bottom: 50px;
+            width: 250px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        #ms-mathematica:hover #speech-bubble {
+            opacity: 1;
+        }
+        
+        .teacher-message {
+            margin: 0 0 10px 0;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        .teacher-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .teacher-actions button {
+            background: var(--teacher-secondary);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s;
+        }
+        
+        .teacher-actions button:hover {
+            background: var(--teacher-primary);
+            transform: scale(1.05);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #ms-mathematica {
+                transform: scale(0.8);
+                bottom: 10px;
+                right: 10px;
             }
+            
+            #speech-bubble {
+                right: 130px;
+                bottom: 30px;
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Space Number Rush</h1>
+        
+        <div class="problem-display" id="problem-display">
+            <p id="problem-text">5 + 3 = ▢</p>
+            <input type="number" id="answer-input" placeholder="Your answer">
+            <div>
+                <button class="led-button" id="submit-btn">Submit</button>
+                <button class="led-button" id="next-btn" style="display:none;">Next Problem</button>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <h3>Mission Progress</h3>
+            <div class="progress-bar">
+                <div class="led-progress" id="progress-bar"></div>
+            </div>
+        </div>
+        
+        <!-- Celebration Animation -->
+        <div class="celebration" id="celebration"></div>
+    </div>
+    
+    <!-- Ms. Mathematica Virtual Teacher -->
+    <div id="ms-mathematica">
+        <img src="https://i.imgur.com/WmDz0Kp.png" id="teacher-avatar" alt="Ms. Mathematica">
+        <div id="speech-bubble">
+            <p class="teacher-message" id="teacher-message">Hello, math explorer! Ready for an adventure?</p>
+            <div class="teacher-actions">
+                <button class="hint-btn" id="hint-btn">💡 Hint</button>
+                <button class="encourage-btn" id="encourage-btn">🌟 Encouragement</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Problem Data
+        const problems = [
+            { question: "5 + 3 = ▢", answer: 8, hint: "Count up from 5!", encouragement: "You know your basic addition!" },
+            { question: "10 - 4 = ▢", answer: 6, hint: "Start at 10 and count backwards", encouragement: "Great subtraction skills!" },
+            { question: "7 + ▢ = 12", answer: 5, hint: "What number makes 12 when added to 7?", encouragement: "You're a problem-solving star!" },
+            { question: "15 - 8 = ▢", answer: 7, hint: "Think of 10 - 8 first, then add 5", encouragement: "Your math thinking is impressive!" },
+            { question: "▢ + 6 = 14", answer: 8, hint: "What plus 6 equals 14?", encouragement: "You're getting this perfectly!" }
+        ];
+        
+        // Game State
+        let currentProblem = 0;
+        let score = 0;
+        let attempts = 0;
+        
+        // DOM Elements
+        const problemText = document.getElementById('problem-text');
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const teacherMessage = document.getElementById('teacher-message');
+        const hintBtn = document.getElementById('hint-btn');
+        const encourageBtn = document.getElementById('encourage-btn');
+        const celebration = document.getElementById('celebration');
+        
+        // Initialize
+        displayProblem();
+        
+        // Event Listeners
+        submitBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', nextProblem);
+        hintBtn.addEventListener('click', giveHint);
+        encourageBtn.addEventListener('click', giveEncouragement);
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkAnswer();
+        });
+        
+        // Ms. Mathematica Dialogue System
+        const msMathematica = {
+            greetings: [
+                "Hello, brilliant mind! Ready for some math magic?",
+                "I'm so excited to learn with you today!",
+                "You've got this! Let's tackle these problems together."
+            ],
+            
+            correctResponses: [
+                "Perfect! You're a math whiz!",
+                "Exactly right! Your skills are shining!",
+                "Brilliant! You make math look easy!",
+                "Outstanding! That's the correct answer!",
+                "You're on fire! Keep it up!"
+            ],
+            
+            hints: {
+                addition: [
+                    "Try counting up from the larger number!",
+                    "Remember you can add in any order!",
+                    "Use your fingers if it helps visualize!"
+                ],
+                subtraction: [
+                    "Count backwards from the first number",
+                    "Think of it as 'how much is between these numbers?'",
+                    "You can check your answer by adding back!"
+                ]
+            },
+            
+            encouragement: [
+                "I believe in you! You can do this!",
+                "Every great mathematician started where you are now!",
+                "Mistakes are just learning opportunities!",
+                "Your persistence is inspiring!",
+                "You're getting better with every problem!"
+            ],
+            
+            progressPraise: [
+                "Look at you go! You're mastering this!",
+                "Your progress is amazing me!",
+                "You're unstoppable today!",
+                "I can see your confidence growing!",
+                "You're becoming a math superstar!"
+            ]
         };
         
-        return problems[unitId] || problems['basic-arithmetic'];
-    }
-    
-    // Initialize with elementary content
-    document.addEventListener('DOMContentLoaded', function() {
-        showGrade('elementary');
-    });
-</script>
+        // Game Functions
+        function displayProblem() {
+            problemText.textContent = problems[currentProblem].question;
+            answerInput.value = '';
+            answerInput.focus();
+            attempts = 0;
+            updateTeacherMessage(msMathematica.greetings[Math.floor(Math.random() * msMathematica.greetings.length)]);
+        }
+        
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+            const correctAnswer = problems[currentProblem].answer;
+            
+            if (isNaN(userAnswer)) {
+                updateTeacherMessage("Please enter a number, my friend!");
+                return;
+            }
+            
+            attempts++;
+            
+            if (userAnswer === correctAnswer) {
+                // Correct answer
+                score++;
+                document.getElementById('problem-display').classList.add('correct');
+                updateTeacherMessage(msMathematica.correctResponses[Math.floor(Math.random() * msMathematica.correctResponses.length)]);
+                
+                // Show celebration
+                celebrate();
+                
+                // Update progress
+                updateProgress();
+                
+                // Show next button
+                submitBtn.style.display = 'none';
+                nextBtn.style.display = 'inline-block';
+                
+                // Special praise for first try
+                if (attempts === 1) {
+                    setTimeout(() => {
+                        updateTeacherMessage("First try! You're amazing! 🌟");
+                    }, 1500);
+                }
+            } else {
+                // Incorrect answer
+                updateTeacherMessage("Almost there! Try again. Remember: " + problems[currentProblem].hint);
+                answerInput.value = '';
+                answerInput.focus();
+            }
+        }
+        
+        function nextProblem() {
+            document.getElementById('problem-display').classList.remove('correct');
+            submitBtn.style.display = 'inline-block';
+            nextBtn.style.display = 'none';
+            
+            currentProblem++;
+            if (currentProblem < problems.length) {
+                displayProblem();
+            } else {
+                // Game completed
+                problemText.innerHTML = "Mission Complete!<br>You got " + score + " out of " + problems.length + " correct!";
+                answerInput.style.display = 'none';
+                submitBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                updateTeacherMessage("Congratulations! You're a math champion! 🎉");
+                
+                // Final celebration
+                celebrate(true);
+            }
+        }
+        
+        function updateProgress() {
+            const progress = (score / problems.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Praise at progress milestones
+            if (progress % 25 === 0) {
+                updateTeacherMessage(msMathematica.progressPraise[Math.floor(Math.random() * msMathematica.progressPraise.length)]);
+            }
+        }
+        
+        function updateTeacherMessage(message) {
+            teacherMessage.textContent = message;
+            // Animate the speech bubble
+            const bubble = document.getElementById('speech-bubble');
+            bubble.style.animation = 'none';
+            void bubble.offsetWidth; // Trigger reflow
+            bubble.style.animation = 'bubblePop 0.3s ease';
+        }
+        
+        function giveHint() {
+            updateTeacherMessage(problems[currentProblem].hint);
+        }
+        
+        function giveEncouragement() {
+            updateTeacherMessage(msMathematica.encouragement[Math.floor(Math.random() * msMathematica.encouragement.length)]);
+        }
+        
+        function celebrate(final = false) {
+            celebration.style.display = 'block';
+            celebration.innerHTML = '';
+            
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#7bed9f'];
+            const particleCount = final ? 100 : 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 15 + 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = '50%';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.opacity = '0';
+                
+                const animation = particle.animate([
+                    { opacity: 0, transform: 'translateY(0) scale(0)' },
+                    { opacity: 1, transform: 'translateY(-20px) scale(1)' },
+                    { opacity: 0, transform: 'translateY(-100px) scale(0.5)' }
+                ], {
+                    duration: Math.random() * 2000 + 1000,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                });
+                
+                celebration.appendChild(particle);
+                
+                animation.onfinish = () => {
+                    particle.remove();
+                };
+            }
+            
+            setTimeout(() => {
+                celebration.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Initial teacher greeting
+        setTimeout(() => {
+            updateTeacherMessage(msMathematica.greetings[0]);
+        }, 1000);
+    </script>
+</body>
+</html>
