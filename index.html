@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathGenius - Multi-Grade Math Tutor</title>
+    <title>MathGenius - Interactive Math Tutor</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -47,65 +47,9 @@
             100% { opacity: 0.7; }
         }
         
-        /* Grade Selection Screen */
-        .grade-selector {
-            max-width: 800px;
-            margin: 50px auto;
-            text-align: center;
-            animation: fadeIn 1s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .grade-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            color: var(--neon-yellow);
-            text-shadow: 0 0 10px var(--neon-yellow);
-            margin-bottom: 30px;
-        }
-        
-        .grade-options {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .grade-card {
-            background: rgba(20, 20, 50, 0.8);
-            border: 3px solid var(--neon-blue);
-            border-radius: 15px;
-            padding: 30px;
-            width: 200px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(15, 240, 252, 0.3);
-        }
-        
-        .grade-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 30px var(--neon-blue);
-            border-color: var(--neon-pink);
-        }
-        
-        .grade-card h3 {
-            color: var(--neon-green);
-            font-size: 1.5rem;
-            margin-top: 0;
-        }
-        
-        .grade-card p {
-            color: #ccc;
-        }
-        
-        /* Main Tutor Container (now hidden initially) */
+        /* Main Container */
         .math-tutor {
-            display: none;
-            max-width: 900px;
+            max-width: 1000px;
             margin: 20px auto;
             padding: 30px;
             background: rgba(10, 10, 30, 0.9);
@@ -115,199 +59,437 @@
                 0 0 30px var(--neon-blue),
                 inset 0 0 20px var(--neon-blue);
             position: relative;
-            animation: fadeIn 0.5s;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
         }
         
-        /* ... (keep all previous CSS styles from earlier version) ... */
+        /* Chat Interface */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(0, 20, 40, 0.5);
+            border-radius: 15px;
+            border: 2px solid var(--neon-purple);
+        }
+        
+        .chat-message {
+            margin: 10px;
+            padding: 15px;
+            border-radius: 20px;
+            max-width: 70%;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tutor-message {
+            align-self: flex-start;
+            background: rgba(15, 240, 252, 0.2);
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background: rgba(255, 44, 237, 0.2);
+            border: 1px solid var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #user-input {
+            flex: 1;
+            padding: 15px;
+            border-radius: 25px;
+            border: 2px solid var(--neon-green);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-family: 'Comic Neue', cursive;
+            font-size: 1rem;
+        }
+        
+        #send-btn {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
+            border: none;
+            color: white;
+            padding: 0 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Comic Neue', cursive;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        #send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+        
+        /* Problem Area */
+        .problem-container {
+            background: rgba(0, 30, 50, 0.7);
+            border: 3px solid var(--neon-green);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .problem-text {
+            font-size: 1.8rem;
+            margin: 0;
+            color: white;
+        }
+        
+        .answer-input {
+            font-size: 1.5rem;
+            padding: 10px;
+            width: 200px;
+            margin: 15px auto;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-green);
+            border-radius: 10px;
+            font-family: 'Comic Neue', cursive;
+        }
+        
+        /* Unit Progress */
+        .unit-display {
+            background: rgba(157, 0, 255, 0.2);
+            border: 2px solid var(--neon-purple);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .unit-title {
+            color: var(--neon-yellow);
+            margin: 0;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .math-tutor {
+                padding: 15px;
+                margin: 10px;
+                height: 85vh;
+            }
+            
+            .problem-text {
+                font-size: 1.5rem;
+            }
+            
+            .answer-input {
+                font-size: 1.2rem;
+                width: 150px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- LED Grid Background -->
     <div class="led-grid"></div>
     
-    <!-- Grade Level Selection Screen -->
-    <div class="grade-selector" id="grade-selector">
-        <h1 class="grade-title">Choose Your Math Level</h1>
-        <div class="grade-options">
-            <div class="grade-card" data-grade="elementary">
-                <h3>Elementary School</h3>
-                <p>Grades 1-5</p>
-                <p>Addition, Subtraction, Multiplication</p>
-            </div>
-            <div class="grade-card" data-grade="middle">
-                <h3>Middle School</h3>
-                <p>Grades 6-8</p>
-                <p>Pre-Algebra, Geometry, Ratios</p>
-            </div>
-            <div class="grade-card" data-grade="high">
-                <h3>High School</h3>
-                <p>Grades 9-12</p>
-                <p>Algebra, Calculus, Trigonometry</p>
-            </div>
+    <!-- Main Tutor Container -->
+    <div class="math-tutor">
+        <!-- Unit Display -->
+        <div class="unit-display">
+            <h3 class="unit-title" id="unit-title">Unit 1: Basic Addition</h3>
+        </div>
+        
+        <!-- Chat Interface -->
+        <div class="chat-container" id="chat-container">
+            <!-- Messages will appear here -->
+        </div>
+        
+        <!-- Problem Area -->
+        <div class="problem-container" id="problem-container">
+            <p class="problem-text" id="problem-text">5 + 3 = ▢</p>
+            <input type="number" class="answer-input" id="answer-input" placeholder="Your answer">
+        </div>
+        
+        <!-- Input Area -->
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type to Math Buddy...">
+            <button id="send-btn">Send</button>
         </div>
     </div>
     
-    <!-- Main Tutor Container (hidden initially) -->
-    <div class="math-tutor" id="math-tutor">
-        <!-- ... (keep all previous HTML from earlier version) ... -->
-    </div>
-    
-    <!-- Celebration Effects -->
-    <div class="celebration" id="celebration"></div>
-    <div class="level-up" id="level-up">LEVEL UP!</div>
-    
     <script>
         // ======================
-        // ENHANCED MATH TUTOR ENGINE
+        // INTERACTIVE MATH TUTOR ENGINE
         // ======================
         
-        // Massive Question Database by Grade Level
-        const mathProblems = {
-            elementary: {
-                addition: [
-                    { question: "5 + 3 = ▢", answer: 8, hint: "Count up from 5!" },
-                    // ... (keep all elementary problems from earlier)
-                ],
-                subtraction: [
-                    // ... elementary subtraction
-                ],
-                // ... other elementary categories
-            },
-            
-            middle: {
-                preAlgebra: [
-                    { question: "x + 3 = 9, x = ▢", answer: 6, hint: "Subtract 3 from both sides" },
-                    { question: "2x = 16, x = ▢", answer: 8, hint: "Divide both sides by 2" },
-                    { question: "x - 7 = 15, x = ▢", answer: 22, hint: "Add 7 to both sides" },
-                    { question: "3x + 5 = 20, x = ▢", answer: 5, hint: "First subtract 5, then divide by 3" },
-                    { question: "2(x - 3) = 10, x = ▢", answer: 8, hint: "First divide both sides by 2" }
-                ],
-                geometry: [
-                    { question: "Area of 5×8 rectangle = ▢", answer: 40, hint: "Area = length × width" },
-                    { question: "Perimeter of 6×9 rectangle = ▢", answer: 30, hint: "Add all four sides" },
-                    { question: "Right triangle sides 5,12,▢", answer: 13, hint: "Pythagorean theorem" },
-                    { question: "Circle diameter=10, radius=▢", answer: 5, hint: "Radius is half of diameter" },
-                    { question: "Angles in quadrilateral add to ▢°", answer: 360, hint: "All 4-sided shapes" }
-                ],
-                ratios: [
-                    { question: "Simplify 15:25", answer: "3:5", hint: "Divide both by greatest common factor" },
-                    { question: "If 3 pencils cost $1.20, 5 pencils cost $▢", answer: "2.00", hint: "Find cost per pencil first" },
-                    { question: "Map scale 1in:10mi, 3in = ▢mi", answer: 30, hint: "Multiply by scale factor" },
-                    { question: "Recipe needs 2c flour for 24 cookies. For 60 cookies, ▢c flour", answer: 5, hint: "Find ratio per cookie" },
-                    { question: "Class has 18 girls and 12 boys. Girl:boy ratio = ▢", answer: "3:2", hint: "Simplify the fraction" }
+        // IXL-style Learning Units
+        const learningUnits = [
+            {
+                title: "Unit 1: Basic Addition",
+                problems: [
+                    { question: "5 + 3 = ▢", answer: 8 },
+                    { question: "7 + 9 = ▢", answer: 16 },
+                    { question: "12 + 15 = ▢", answer: 27 },
+                    { question: "23 + 18 = ▢", answer: 41 },
+                    { question: "56 + 47 = ▢", answer: 103 }
                 ]
             },
-            
-            high: {
-                algebra: [
-                    { question: "Solve x² - 9 = 0", answer: "3,-3", hint: "Factor as (x+3)(x-3)=0" },
-                    { question: "Factor x² + 5x + 6", answer: "(x+2)(x+3)", hint: "Find two numbers that multiply to 6 and add to 5" },
-                    { question: "Solve |2x - 5| = 7", answer: "6,-1", hint: "Create two equations" },
-                    { question: "Simplify (3x³)²", answer: "9x⁶", hint: "Square both coefficient and exponent" },
-                    { question: "Solve √(x + 3) = 5", answer: 22, hint: "Square both sides first" }
+            {
+                title: "Unit 2: Subtraction Skills",
+                problems: [
+                    { question: "10 - 4 = ▢", answer: 6 },
+                    { question: "15 - 8 = ▢", answer: 7 },
+                    { question: "23 - 15 = ▢", answer: 8 },
+                    { question: "50 - 27 = ▢", answer: 23 },
+                    { question: "100 - 56 = ▢", answer: 44 }
+                ]
+            },
+            {
+                title: "Unit 3: Multiplication Mastery",
+                problems: [
+                    { question: "2 × 5 = ▢", answer: 10 },
+                    { question: "7 × 3 = ▢", answer: 21 },
+                    { question: "6 × 9 = ▢", answer: 54 },
+                    { question: "12 × 5 = ▢", answer: 60 },
+                    { question: "11 × 12 = ▢", answer: 132 }
+                ]
+            },
+            {
+                title: "Unit 4: Division Drills",
+                problems: [
+                    { question: "10 ÷ 2 = ▢", answer: 5 },
+                    { question: "21 ÷ 3 = ▢", answer: 7 },
+                    { question: "48 ÷ 8 = ▢", answer: 6 },
+                    { question: "72 ÷ 9 = ▢", answer: 8 },
+                    { question: "144 ÷ 12 = ▢", answer: 12 }
+                ]
+            }
+        ];
+        
+        // Tutor Personality Responses
+        const tutorResponses = {
+            greetings: [
+                "Hi there! I'm Math Buddy, ready to help you learn!",
+                "Hello math superstar! Let's solve some problems together!",
+                "Hey there! I'm so excited to be your math helper today!"
+            ],
+            encouragement: [
+                "You're doing amazing! Keep it up!",
+                "I can see you're working hard - that's awesome!",
+                "Your brain is growing with every problem you solve!"
+            ],
+            correct: [
+                "Perfect! You nailed it! 🎉",
+                "Exactly right! You're on fire! 🔥",
+                "Brilliant work! I knew you could do it!"
+            ],
+            incorrect: [
+                "Almost there! Want to try again?",
+                "That was a good attempt! Let me help...",
+                "Mistakes help us learn! Here's a hint..."
+            ],
+            general: {
+                "hello": ["Hi there!", "Hello!", "Hey math friend!"],
+                "help": ["I'd love to help! What do you need?", "Sure thing! Ask me anything.", "How can I assist you?"],
+                "hard": [
+                    "It's okay to find things challenging - that's how we grow!",
+                    "Difficult problems make your brain stronger!",
+                    "Let's break it down together step by step."
                 ],
-                calculus: [
-                    { question: "Derivative of 3x⁴", answer: "12x³", hint: "Multiply coefficient by exponent, reduce exponent by 1" },
-                    { question: "∫(2x + 1) dx from 0 to 2", answer: 6, hint: "Find antiderivative then evaluate" },
-                    { question: "f'(x) if f(x) = sin(2x)", answer: "2cos(2x)", hint: "Chain rule" },
-                    { question: "lim_(x→3) (x² - 9)/(x - 3)", answer: 6, hint: "Factor numerator" },
-                    { question: "dy/dx for y = ln(x²)", answer: "2/x", hint: "Chain rule + derivative of ln" }
+                "easy": [
+                    "That's great you're finding this easy! Should we try something more challenging?",
+                    "Awesome confidence! Ready for the next level?",
+                    "You're mastering this! High five! ✋"
                 ],
-                trigonometry: [
-                    { question: "sin(30°) = ▢", answer: "0.5", hint: "Special triangle ratio" },
-                    { question: "cos(π/3) = ▢", answer: "0.5", hint: "π/3 radians = 60 degrees" },
-                    { question: "tan(45°) = ▢", answer: "1", hint: "Opposite/adjacent in 45-45-90 triangle" },
-                    { question: "Convert 150° to radians", answer: "5π/6", hint: "Multiply by π/180" },
-                    { question: "Period of y = sin(2x)", answer: "π", hint: "2π divided by coefficient" }
+                "thanks": [
+                    "You're very welcome! 😊",
+                    "Happy to help!",
+                    "Anytime, math superstar!"
                 ]
             }
         };
-
+        
         // Game State
-        let currentGrade = '';
-        let currentCategory = '';
+        let currentUnit = 0;
         let currentProblem = 0;
         let score = 0;
-        let attempts = 0;
-        let level = 1;
-        let problemsAnswered = 0;
-        let totalProblems = 0;
-
+        
         // DOM Elements
-        const gradeSelector = document.getElementById('grade-selector');
-        const mathTutor = document.getElementById('math-tutor');
-        const gradeCards = document.querySelectorAll('.grade-card');
-        // ... (keep other DOM elements from earlier)
-
-        // Event Listeners for Grade Selection
-        gradeCards.forEach(card => {
-            card.addEventListener('click', function() {
-                currentGrade = this.getAttribute('data-grade');
-                startGradeLevel(currentGrade);
-            });
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const problemText = document.getElementById('problem-text');
+        const answerInput = document.getElementById('answer-input');
+        const unitTitle = document.getElementById('unit-title');
+        const problemContainer = document.getElementById('problem-container');
+        
+        // Initialize
+        displayProblem();
+        addTutorMessage(tutorResponses.greetings[Math.floor(Math.random() * tutorResponses.greetings.length)]);
+        
+        // Event Listeners
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
         });
-
-        // Start Selected Grade Level
-        function startGradeLevel(grade) {
-            currentGrade = grade;
-            gradeSelector.style.display = 'none';
-            mathTutor.style.display = 'block';
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkAnswer();
+        });
+        
+        // Display Current Problem
+        function displayProblem() {
+            unitTitle.textContent = learningUnits[currentUnit].title;
+            problemText.textContent = learningUnits[currentUnit].problems[currentProblem].question;
+            answerInput.value = '';
+            answerInput.focus();
+        }
+        
+        // Check Answer
+        function checkAnswer() {
+            const userAnswer = answerInput.value.trim();
+            const correctAnswer = learningUnits[currentUnit].problems[currentProblem].answer.toString();
             
-            // Set first category based on grade
-            if (grade === 'elementary') {
-                currentCategory = 'addition';
-            } else if (grade === 'middle') {
-                currentCategory = 'preAlgebra';
-            } else {
-                currentCategory = 'algebra';
+            if (userAnswer === '') {
+                addTutorMessage("Please enter an answer! I know you can do it!");
+                return;
             }
             
-            // Calculate total problems for progress tracking
-            totalProblems = Object.values(mathProblems[currentGrade])
-                .reduce((sum, cat) => sum + cat.length, 0);
-            
-            // Start first problem
-            displayProblem();
-            showFeedback(`Welcome to ${grade} math! Let's begin!`);
+            if (userAnswer === correctAnswer) {
+                // Correct answer
+                score++;
+                addTutorMessage(tutorResponses.correct[Math.floor(Math.random() * tutorResponses.correct.length)]);
+                nextProblem();
+            } else {
+                // Incorrect answer
+                addTutorMessage(tutorResponses.incorrect[Math.floor(Math.random() * tutorResponses.incorrect.length)] + 
+                    " The correct answer is " + correctAnswer + ".");
+            }
         }
-
-        // ... (keep all other functions from earlier, but they'll now use currentGrade) ...
-
-        // Example modified displayProblem function:
-        function displayProblem() {
-            const categoryProblems = mathProblems[currentGrade][currentCategory];
-            problemText.textContent = categoryProblems[currentProblem].question;
-            // ... rest of the function remains same
-        }
-
-        // Modified nextProblem function to handle category switching:
+        
+        // Next Problem
         function nextProblem() {
-            problemContainer.classList.remove('correct');
-            
             currentProblem++;
-            const categoryProblems = mathProblems[currentGrade][currentCategory];
             
-            if (currentProblem >= categoryProblems.length) {
-                // Move to next category
-                const categories = Object.keys(mathProblems[currentGrade]);
-                const currentIndex = categories.indexOf(currentCategory);
+            if (currentProblem >= learningUnits[currentUnit].problems.length) {
+                // Unit completed
+                currentProblem = 0;
+                currentUnit++;
                 
-                if (currentIndex < categories.length - 1) {
-                    currentCategory = categories[currentIndex + 1];
-                    currentProblem = 0;
-                    showFeedback(`Great job! Now let's try ${currentCategory} problems!`);
-                } else {
-                    // All categories completed
-                    problemText.innerHTML = `You completed all ${currentGrade} math problems!<br>Final Score: ${score} correct!`;
-                    // ... rest of completion logic
+                if (currentUnit >= learningUnits.length) {
+                    // All units completed
+                    addTutorMessage("CONGRATULATIONS! You've completed all units! 🎉🏆");
+                    problemContainer.style.display = 'none';
                     return;
                 }
+                
+                addTutorMessage(`Great job! Moving to ${learningUnits[currentUnit].title}!`);
             }
             
             displayProblem();
+            
+            // Occasionally give encouragement
+            if (Math.random() > 0.5) {
+                setTimeout(() => {
+                    addTutorMessage(tutorResponses.encouragement[Math.floor(Math.random() * tutorResponses.encouragement.length)]);
+                }, 1000);
+            }
         }
-
-        // ... (keep all other existing functions) ...
+        
+        // Send Message
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+            
+            // Add user message to chat
+            addUserMessage(message);
+            userInput.value = '';
+            
+            // Process message
+            setTimeout(() => {
+                const lowerMsg = message.toLowerCase();
+                let response = "";
+                
+                // Check for keywords
+                if (lowerMsg.includes("hello") || lowerMsg.includes("hi")) {
+                    response = getRandomResponse(tutorResponses.general.hello);
+                } 
+                else if (lowerMsg.includes("help")) {
+                    response = getRandomResponse(tutorResponses.general.help);
+                }
+                else if (lowerMsg.includes("hard") || lowerMsg.includes("difficult")) {
+                    response = getRandomResponse(tutorResponses.general.hard);
+                }
+                else if (lowerMsg.includes("easy") || lowerMsg.includes("simple")) {
+                    response = getRandomResponse(tutorResponses.general.easy);
+                }
+                else if (lowerMsg.includes("thank")) {
+                    response = getRandomResponse(tutorResponses.general.thanks);
+                }
+                else if (lowerMsg.includes("hint")) {
+                    response = "Here's a hint: " + getHintForCurrentProblem();
+                }
+                else if (lowerMsg.includes("answer")) {
+                    response = "I can't give you the answer, but I can give you a hint! " + getHintForCurrentProblem();
+                }
+                else {
+                    response = "I'm here to help with math! Try asking for a hint or telling me how you're feeling about the problems.";
+                }
+                
+                addTutorMessage(response);
+            }, 500);
+        }
+        
+        // Helper functions
+        function addTutorMessage(text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message tutor-message';
+            msgDiv.textContent = text;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function addUserMessage(text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message user-message';
+            msgDiv.textContent = text;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function getRandomResponse(responses) {
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        function getHintForCurrentProblem() {
+            const problem = learningUnits[currentUnit].problems[currentProblem].question;
+            
+            if (problem.includes("+")) {
+                return "Try counting up from the larger number!";
+            }
+            else if (problem.includes("-")) {
+                return "Think of subtraction as 'how much is between these numbers?'";
+            }
+            else if (problem.includes("×") || problem.includes("*")) {
+                return "Multiplication is repeated addition - try adding the number to itself!";
+            }
+            else if (problem.includes("÷") || problem.includes("/")) {
+                return "Division is about splitting into equal parts - how many times does the divisor fit?";
+            }
+            
+            return "Break the problem down into smaller steps!";
+        }
     </script>
 </body>
 </html>
