@@ -3,340 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathGenius Pro+ - Blended Math Learning</title>
+    <title>MathGenius Pro+ - LED Math Adventure</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --accent: #4895ef;
-            --success: #4cc9f0;
-            --warning: #f72585;
-            --text: #2b2d42;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --light-gray: #e9ecef;
+            --led-blue: #00f0fc;
+            --led-pink: #ff2ced;
+            --led-green: #00ff88;
+            --led-yellow: #fff01f;
+            --led-purple: #9d00ff;
+            --led-red: #ff0055;
+            --led-glow: 0 0 10px;
+            --led-glow-lg: 0 0 20px;
+            --led-glow-xl: 0 0 30px;
+            --primary-bg: #0a0a20;
+            --card-bg: #121230;
+            --text-light: #ffffff;
         }
         
         body {
             margin: 0;
             padding: 0;
             font-family: 'Nunito', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--primary-bg);
+            color: var(--text-light);
             min-height: 100vh;
+            overflow-x: hidden;
         }
         
-        /* Dashboard Layout */
-        .dashboard {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            min-height: 100vh;
+        /* LED Grid Background */
+        .led-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(10, 10, 32, 0.9), 
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="1" fill="%2300f0fc" opacity="0.2"/></svg>');
+            background-size: 40px 40px;
+            z-index: -2;
+            animation: matrixScroll 100s linear infinite;
         }
         
-        /* Enhanced Sidebar */
-        .sidebar {
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 20px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
+        @keyframes matrixScroll {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
         }
         
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
+        /* LED Pulse Animation */
+        @keyframes ledPulse {
+            0% { box-shadow: var(--led-glow) var(--led-blue); }
+            50% { box-shadow: var(--led-glow-xl) var(--led-blue); }
+            100% { box-shadow: var(--led-glow) var(--led-blue); }
         }
         
-        .nav-menu {
-            list-style: none;
-            padding: 0;
-            flex-grow: 1;
-        }
-        
-        .nav-item {
-            margin-bottom: 8px;
-        }
-        
-        .nav-link {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255,255,255,0.2);
-            transform: translateX(5px);
-        }
-        
-        .sidebar-footer {
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.85rem;
-            opacity: 0.8;
-        }
-        
-        /* Main Content */
-        .main-content {
+        /* Main Container with LED Border */
+        .math-container {
+            max-width: 1100px;
+            margin: 30px auto;
             padding: 30px;
-            background-color: var(--bg);
+            background-color: var(--card-bg);
+            border: 3px solid var(--led-blue);
+            border-radius: 15px;
+            box-shadow: 
+                var(--led-glow-lg) var(--led-blue),
+                inset 0 0 20px rgba(0, 240, 252, 0.3);
+            position: relative;
+            overflow: hidden;
         }
         
+        .math-container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px dashed var(--led-pink);
+            border-radius: 20px;
+            animation: borderPulse 4s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        @keyframes borderPulse {
+            0%, 100% { opacity: 0.3; box-shadow: 0 0 10px var(--led-pink); }
+            50% { opacity: 1; box-shadow: 0 0 30px var(--led-pink); }
+        }
+        
+        /* Header with LED Title */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            background-color: var(--card-bg);
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
         }
         
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--secondary);
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin: 0;
+            color: var(--led-yellow);
+            text-shadow: 
+                var(--led-glow) var(--led-yellow),
+                var(--led-glow-lg) var(--led-purple);
+            letter-spacing: 3px;
+            animation: titleGlow 2s ease-in-out infinite alternate;
         }
         
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        @keyframes titleGlow {
+            from { text-shadow: var(--led-glow) var(--led-yellow); }
+            to { text-shadow: var(--led-glow-lg) var(--led-yellow), var(--led-glow-xl) var(--led-purple); }
         }
         
-        .avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        /* Enhanced Skill Tree */
-        .skill-tree {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
-            border: 1px solid var(--light-gray);
-        }
-        
-        .skill-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        .skill-category {
-            margin-bottom: 35px;
-        }
-        
-        .skill-category-title {
-            font-size: 1.25rem;
-            margin-bottom: 18px;
-            color: var(--secondary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .skill-category-title i {
-            color: var(--accent);
-        }
-        
+        /* Skill Cards with LED Effects */
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
         
         .skill-card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 18px;
-            border: 1px solid var(--light-gray);
+            background: rgba(20, 20, 50, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid var(--led-blue);
             transition: all 0.3s;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             position: relative;
             overflow: hidden;
+            box-shadow: var(--led-glow) var(--led-blue);
         }
         
         .skill-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            border-color: var(--accent);
+            box-shadow: 
+                var(--led-glow-lg) var(--led-blue),
+                var(--led-glow) var(--led-pink);
+            border-color: var(--led-pink);
         }
         
         .skill-card.completed {
-            border-left: 5px solid var(--success);
+            border-left: 5px solid var(--led-green);
+            box-shadow: var(--led-glow) var(--led-green);
         }
         
         .skill-card.in-progress {
-            border-left: 5px solid var(--accent);
+            border-left: 5px solid var(--led-blue);
         }
         
         .skill-card.new {
-            border-left: 5px solid var(--warning);
+            border-left: 5px solid var(--led-purple);
         }
         
-        .skill-card-title {
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .skill-card-desc {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-bottom: 12px;
-            min-height: 40px;
-        }
-        
-        .skill-card-progress {
-            height: 6px;
-            background-color: var(--light-gray);
-            border-radius: 6px;
-            margin-top: 15px;
+        /* Progress Bars with LED Glow */
+        .skill-progress {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-top: 20px;
             overflow: hidden;
             position: relative;
         }
         
-        .progress-bar {
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent), var(--success));
+            background: linear-gradient(90deg, var(--led-blue), var(--led-green));
             width: 0%;
-            transition: width 0.8s ease;
+            transition: width 0.8s ease-out;
+            box-shadow: var(--led-glow) var(--led-green);
         }
         
-        .skill-card-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--success);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-        
-        /* Enhanced Practice Area */
-        .practice-area {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid var(--light-gray);
+        /* Question Area with LED Effects */
+        .question-area {
+            background: rgba(0, 30, 50, 0.7);
+            border: 3px solid var(--led-green);
+            border-radius: 15px;
+            padding: 30px;
             margin-bottom: 30px;
-        }
-        
-        .practice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .current-skill {
-            font-size: 1.35rem;
-            color: var(--secondary);
-            font-weight: 700;
-        }
-        
-        .question-counter {
-            background-color: var(--light-gray);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-        
-        .question-container {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 25px;
-            border: 1px solid var(--light-gray);
+            box-shadow: 
+                var(--led-glow) var(--led-green),
+                inset 0 0 15px var(--led-green);
         }
         
         .question-text {
-            font-size: 1.6rem;
+            font-size: 2rem;
             margin-bottom: 25px;
-            line-height: 1.4;
+            text-align: center;
+            text-shadow: 0 0 10px white;
         }
         
+        /* Answer Options with LED Hover */
         .answer-options {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-            margin-bottom: 25px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
         .answer-option {
-            background-color: white;
-            border: 1px solid var(--light-gray);
-            border-radius: 10px;
-            padding: 18px;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--led-blue);
+            border-radius: 12px;
+            padding: 20px;
             text-align: center;
-            font-size: 1.1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            box-shadow: var(--led-glow) var(--led-blue);
         }
         
         .answer-option:hover {
-            background-color: #f1f3f5;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            box-shadow: var(--led-glow-lg) var(--led-blue);
+            border-color: var(--led-pink);
         }
         
         .answer-option.selected {
-            border: 2px solid var(--accent);
-            background-color: rgba(72, 149, 239, 0.1);
+            background: rgba(0, 240, 252, 0.2);
+            box-shadow: var(--led-glow-lg) var(--led-blue);
         }
         
         .answer-option.correct {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--led-green);
+            box-shadow: var(--led-glow-lg) var(--led-green);
             animation: pulseCorrect 0.5s;
         }
         
         .answer-option.incorrect {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
+            background: rgba(255, 0, 85, 0.2);
+            border-color: var(--led-red);
+            box-shadow: var(--led-glow) var(--led-red);
         }
         
         @keyframes pulseCorrect {
@@ -345,59 +245,64 @@
             100% { transform: scale(1); }
         }
         
-        .answer-input-container {
-            margin-bottom: 25px;
-        }
-        
-        .answer-input {
-            width: 100%;
-            padding: 16px;
-            border: 1px solid var(--light-gray);
-            border-radius: 10px;
-            font-size: 1.2rem;
-            transition: all 0.3s;
-        }
-        
-        .answer-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
-            outline: none;
-        }
-        
+        /* Submit Button with LED Effects */
         .submit-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--led-purple), var(--led-pink));
             color: white;
             border: none;
-            padding: 14px 28px;
-            border-radius: 10px;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
             transition: all 0.3s;
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
+            box-shadow: 
+                var(--led-glow) var(--led-purple),
+                0 4px 15px rgba(157, 0, 255, 0.5);
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
         }
         
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 
+                var(--led-glow-lg) var(--led-pink),
+                0 6px 20px rgba(255, 44, 237, 0.6);
         }
         
         .submit-btn:active {
-            transform: translateY(0);
+            transform: translateY(1px);
         }
         
-        /* Enhanced Feedback Area */
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.3),
+                rgba(255, 255, 255, 0)
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s;
+        }
+        
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Feedback Area with LED Effects */
         .feedback-area {
-            margin-top: 25px;
-            padding: 18px;
-            border-radius: 10px;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
             display: none;
             animation: fadeIn 0.5s;
-            line-height: 1.6;
         }
         
         @keyframes fadeIn {
@@ -406,38 +311,32 @@
         }
         
         .feedback-correct {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid var(--led-green);
+            box-shadow: var(--led-glow) var(--led-green);
         }
         
         .feedback-incorrect {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
+            background: rgba(255, 0, 85, 0.2);
+            border: 2px solid var(--led-red);
+            box-shadow: var(--led-glow) var(--led-red);
         }
         
-        .feedback-title {
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* Enhanced Tutor Chat */
+        /* Tutor Chat with LED Effects */
         .tutor-chat {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 380px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            bottom: 30px;
+            right: 30px;
+            width: 350px;
+            background: var(--card-bg);
+            border: 2px solid var(--led-purple);
+            border-radius: 15px;
+            box-shadow: 
+                var(--led-glow) var(--led-purple),
+                0 8px 25px rgba(0, 0, 0, 0.3);
             overflow: hidden;
             z-index: 1000;
             display: none;
-            border: 1px solid var(--light-gray);
             transform: translateY(20px);
             opacity: 0;
             transition: all 0.3s;
@@ -449,42 +348,20 @@
         }
         
         .tutor-header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--led-purple), var(--led-pink));
             color: white;
-            padding: 16px;
+            padding: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
         }
         
-        .tutor-header-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-        }
-        
-        .tutor-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.85rem;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #4cc9f0;
-        }
-        
         .tutor-messages {
-            height: 350px;
+            height: 300px;
             overflow-y: auto;
             padding: 20px;
-            background-color: #f8f9fa;
-            scroll-behavior: smooth;
+            background: rgba(10, 10, 30, 0.7);
         }
         
         .message {
@@ -494,148 +371,138 @@
         }
         
         .tutor-message {
-            background-color: white;
-            padding: 12px 16px;
+            background: rgba(0, 240, 252, 0.2);
+            border: 1px solid var(--led-blue);
+            padding: 15px;
             border-radius: 18px 18px 18px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            align-self: flex-start;
-            line-height: 1.5;
+            box-shadow: var(--led-glow) var(--led-blue);
         }
         
         .user-message {
-            background: linear-gradient(135deg, var(--accent), var(--primary));
+            background: linear-gradient(135deg, var(--led-pink), var(--led-purple));
             color: white;
-            padding: 12px 16px;
+            padding: 15px;
             border-radius: 18px 18px 0 18px;
             margin-left: auto;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: var(--led-glow) var(--led-purple);
         }
         
         .tutor-input {
             display: flex;
-            padding: 16px;
-            border-top: 1px solid var(--light-gray);
-            background-color: white;
+            padding: 15px;
+            border-top: 1px solid var(--led-purple);
+            background: var(--card-bg);
         }
         
         .tutor-input-field {
             flex: 1;
-            padding: 12px 16px;
-            border: 1px solid var(--light-gray);
+            padding: 12px 15px;
+            border: 2px solid var(--led-blue);
             border-radius: 24px;
             margin-right: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
             font-family: 'Nunito', sans-serif;
+            box-shadow: var(--led-glow) var(--led-blue);
             transition: all 0.3s;
         }
         
         .tutor-input-field:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
             outline: none;
+            border-color: var(--led-pink);
+            box-shadow: var(--led-glow-lg) var(--led-pink);
         }
         
         .tutor-send-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--led-blue), var(--led-green));
             color: white;
             border: none;
-            width: 44px;
-            height: 44px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: var(--led-glow) var(--led-blue);
             transition: all 0.3s;
         }
         
         .tutor-send-btn:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
+            box-shadow: var(--led-glow-lg) var(--led-green);
         }
         
-        /* Enhanced Help Button */
+        /* Help Button with LED Effects */
         .help-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, var(--warning), #ff7096);
+            background: linear-gradient(135deg, var(--led-red), #ff2ced);
             color: white;
-            width: 64px;
-            height: 64px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 15px rgba(247, 37, 133, 0.3);
             cursor: pointer;
             z-index: 900;
+            box-shadow: 
+                var(--led-glow) var(--led-red),
+                0 6px 15px rgba(255, 0, 85, 0.4);
             transition: all 0.3s;
+            font-size: 1.5rem;
         }
         
         .help-btn:hover {
             transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 8px 20px rgba(247, 37, 133, 0.4);
+            box-shadow: 
+                var(--led-glow-lg) var(--led-pink),
+                0 8px 20px rgba(255, 44, 237, 0.6);
         }
         
-        .help-btn i {
-            font-size: 1.8rem;
+        /* Celebration Effects */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2000;
+            display: none;
         }
         
-        /* Badges & Achievements */
-        .badges-section {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid var(--light-gray);
-            margin-bottom: 30px;
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            opacity: 0;
+            animation: confettiFall 5s linear forwards;
         }
         
-        .badges-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .badge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        
-        .badge-icon {
-            width: 60px;
-            height: 60px;
-            background-color: var(--light-gray);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-            font-size: 1.5rem;
-            color: var(--text);
-        }
-        
-        .badge.earned .badge-icon {
-            background: linear-gradient(135deg, var(--success), #80ffdb);
-            color: white;
-            box-shadow: 0 4px 8px rgba(76, 201, 240, 0.3);
-        }
-        
-        .badge-name {
-            font-size: 0.85rem;
-            font-weight: 600;
+        @keyframes confettiFall {
+            0% { 
+                transform: translateY(-100px) rotate(0deg); 
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(720deg); 
+                opacity: 0;
+            }
         }
         
         /* Responsive Design */
-        @media (max-width: 992px) {
-            .dashboard {
-                grid-template-columns: 1fr;
+        @media (max-width: 768px) {
+            .math-container {
+                margin: 15px;
+                padding: 20px;
             }
             
-            .sidebar {
-                display: none;
+            .title {
+                font-size: 2rem;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
             }
             
             .answer-options {
@@ -651,256 +518,139 @@
             .help-btn {
                 bottom: 20px;
                 right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
             }
-        }
-        
-        @media (max-width: 576px) {
-            .main-content {
-                padding: 15px;
-            }
-            
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .skills-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .question-text {
-                font-size: 1.4rem;
-            }
-        }
-        
-        /* Animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        
-        /* Loading Spinner */
-        .typing-indicator {
-            display: flex;
-            padding: 10px;
-            gap: 4px;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #6c757d;
-            border-radius: 50%;
-            animation: typingAnimation 1.4s infinite ease-in-out;
-        }
-        
-        .typing-dot:nth-child(1) { animation-delay: 0s; }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
-        @keyframes typingAnimation {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
         }
     </style>
 </head>
 <body>
-    <!-- Dashboard Layout -->
-    <div class="dashboard">
-        <!-- Enhanced Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <i class="fas fa-square-root-alt"></i>
-                <span>MathGenius Pro+</span>
+    <!-- LED Grid Background -->
+    <div class="led-grid"></div>
+    
+    <!-- Main Container -->
+    <div class="math-container">
+        <div class="header">
+            <h1 class="title">MATHGENIUS PRO+</h1>
+            <p class="subtitle" style="color: var(--led-blue); text-shadow: var(--led-glow) var(--led-blue);">
+                Master Math with LED-Powered Learning!
+            </p>
+        </div>
+        
+        <!-- Skills Grid -->
+        <div class="skills-grid">
+            <div class="skill-card completed">
+                <h3><i class="fas fa-plus" style="color: var(--led-green);"></i> Adding Integers</h3>
+                <p>Mastered adding positive and negative numbers</p>
+                <div class="skill-progress">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
             </div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-line"></i> Progress</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-trophy"></i> Achievements</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-road"></i> Learning Paths</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-book"></i> Resources</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-sliders-h"></i> Settings</a></li>
-            </ul>
-            <div class="sidebar-footer">
-                <div>MathGenius Pro+ v2.0</div>
-                <div>© 2023 Math Education Inc.</div>
+            
+            <div class="skill-card completed">
+                <h3><i class="fas fa-minus" style="color: var(--led-green);"></i> Subtracting Integers</h3>
+                <p>Confidently subtract integers of any sign</p>
+                <div class="skill-progress">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+            </div>
+            
+            <div class="skill-card in-progress">
+                <h3><i class="fas fa-times" style="color: var(--led-blue);"></i> Multiplying Decimals</h3>
+                <p>Working on decimal placement in products</p>
+                <div class="skill-progress">
+                    <div class="progress-fill" style="width: 80%"></div>
+                </div>
+            </div>
+            
+            <div class="skill-card new">
+                <h3><i class="fas fa-divide" style="color: var(--led-purple);"></i> Dividing Fractions</h3>
+                <p>Learn to multiply by reciprocals</p>
+                <div class="skill-progress">
+                    <div class="progress-fill" style="width: 15%"></div>
+                </div>
             </div>
         </div>
         
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <div class="header-title">Today's Math Practice</div>
-                <div class="user-profile">
-                    <div class="avatar">JS</div>
-                    <span>Jamie Smith</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
+        <!-- Question Area -->
+        <div class="question-area">
+            <div class="current-skill" style="color: var(--led-blue); text-shadow: var(--led-glow) var(--led-blue);">
+                <i class="fas fa-times"></i> Multiplying Decimals
+            </div>
+            <div class="question-counter" style="color: var(--led-pink);">
+                Question 12 of 15
             </div>
             
-            <!-- Badges Section -->
-            <div class="badges-section">
-                <h2><i class="fas fa-award"></i> Your Achievements</h2>
-                <div class="badges-grid">
-                    <div class="badge earned">
-                        <div class="badge-icon"><i class="fas fa-check"></i></div>
-                        <div class="badge-name">Addition Master</div>
-                    </div>
-                    <div class="badge earned">
-                        <div class="badge-icon"><i class="fas fa-star"></i></div>
-                        <div class="badge-name">5-Day Streak</div>
-                    </div>
-                    <div class="badge">
-                        <div class="badge-icon"><i class="fas fa-calculator"></i></div>
-                        <div class="badge-name">Problem Solver</div>
-                    </div>
-                    <div class="badge">
-                        <div class="badge-icon"><i class="fas fa-bolt"></i></div>
-                        <div class="badge-name">Quick Thinker</div>
-                    </div>
-                </div>
+            <div class="question-text">What is 3.5 × 2.4?</div>
+            
+            <div class="answer-options">
+                <div class="answer-option">7.0</div>
+                <div class="answer-option">8.4</div>
+                <div class="answer-option">6.9</div>
+                <div class="answer-option">8.0</div>
             </div>
             
-            <!-- Enhanced Skill Tree -->
-            <div class="skill-tree">
-                <div class="skill-header">
-                    <h2><i class="fas fa-sitemap"></i> Your Math Skills</h2>
-                    <div>Grade 7</div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3 class="skill-category-title"><i class="fas fa-calculator"></i> Numbers & Operations</h3>
-                    <div class="skills-grid">
-                        <div class="skill-card completed">
-                            <div class="skill-card-title"><i class="fas fa-plus-circle"></i> Adding Integers</div>
-                            <div class="skill-card-desc">Mastered adding positive and negative numbers</div>
-                            <div class="skill-card-progress">
-                                <div class="progress-bar" style="width: 100%"></div>
-                            </div>
-                            <div class="skill-card-badge">Mastered</div>
-                        </div>
-                        <div class="skill-card completed">
-                            <div class="skill-card-title"><i class="fas fa-minus-circle"></i> Subtracting Integers</div>
-                            <div class="skill-card-desc">Confidently subtract integers of any sign</div>
-                            <div class="skill-card-progress">
-                                <div class="progress-bar" style="width: 100%"></div>
-                            </div>
-                            <div class="skill-card-badge">Mastered</div>
-                        </div>
-                        <div class="skill-card in-progress">
-                            <div class="skill-card-title"><i class="fas fa-times-circle"></i> Multiplying Decimals</div>
-                            <div class="skill-card-desc">Working on decimal placement in products</div>
-                            <div class="skill-card-progress">
-                                <div class="progress-bar" style="width: 80%"></div>
-                            </div>
-                            <div class="skill-card-badge">In Progress</div>
-                        </div>
-                        <div class="skill-card new">
-                            <div class="skill-card-title"><i class="fas fa-divide"></i> Dividing Fractions</div>
-                            <div class="skill-card-desc">Learn to multiply by reciprocals</div>
-                            <div class="skill-card-progress">
-                                <div class="progress-bar" style="width: 15%"></div>
-                            </div>
-                            <div class="skill-card-badge">New</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <h3 class="skill-category-title"><i class="fas fa-x"></i> Algebra</h3>
-                    <div class="skills-grid">
-                        <div class="skill-card in-progress">
-                            <div class="skill-card-title"><i class="fas fa-equals"></i> Solving Equations</div>
-                            <div class="skill-card-desc">Balance equations to find unknowns</div>
-                            <div class="skill-card-progress">
-                                <div class="progress-bar" style="width: 65%"></div>
-                            </div>
-                            <div class="skill-card-badge">In Progress</div>
-                        </div>
-                        <div class="skill-card">
-                            <div class="skill-card-title"><i class="fas fa-chart-line"></i> Linear Functions</div>
-                            <div class="skill-card-desc">Graph and interpret linear relationships</div>
-                            <div class="skill-card-progress">
-                                <div class="progress-bar" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <button class="submit-btn">
+                <i class="fas fa-paper-plane"></i> Submit Answer
+            </button>
+            
+            <div class="feedback-area feedback-correct">
+                <h3 style="color: var(--led-green); text-shadow: var(--led-glow) var(--led-green);">
+                    <i class="fas fa-check-circle"></i> Correct!
+                </h3>
+                <p>Great job! 3.5 × 2.4 = 8.4. Remember to count the decimal places in both numbers.</p>
             </div>
             
-            <!-- Enhanced Practice Area -->
-            <div class="practice-area">
-                <div class="practice-header">
-                    <div class="current-skill"><i class="fas fa-times-circle"></i> Multiplying Decimals</div>
-                    <div class="question-counter">Question 12 of 15</div>
-                </div>
-                
-                <div class="question-container">
-                    <div class="question-text">What is 3.5 × 2.4?</div>
-                    
-                    <div class="answer-options">
-                        <div class="answer-option">7.0</div>
-                        <div class="answer-option">8.4</div>
-                        <div class="answer-option">6.9</div>
-                        <div class="answer-option">8.0</div>
-                    </div>
-                </div>
-                
-                <button class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Answer</button>
-                
-                <div class="feedback-area feedback-correct">
-                    <div class="feedback-title"><i class="fas fa-check-circle"></i> Correct!</div>
-                    Great job! 3.5 × 2.4 = 8.4. Remember to count the decimal places in both numbers (1 in 3.5 and 1 in 2.4) for a total of 2 decimal places in the answer.
-                </div>
-                
-                <div class="feedback-area feedback-incorrect">
-                    <div class="feedback-title"><i class="fas fa-times-circle"></i> Not Quite Right</div>
-                    The correct answer is 8.4. When multiplying decimals: <br>
-                    1) Multiply as whole numbers: 35 × 24 = 840 <br>
-                    2) Count total decimal places (1 + 1 = 2) <br>
-                    3) Place the decimal: 8.40 = 8.4
-                </div>
+            <div class="feedback-area feedback-incorrect">
+                <h3 style="color: var(--led-red); text-shadow: var(--led-glow) var(--led-red);">
+                    <i class="fas fa-times-circle"></i> Not Quite Right
+                </h3>
+                <p>The correct answer is 8.4. When multiplying decimals, count the total decimal places in both numbers.</p>
             </div>
         </div>
     </div>
     
-    <!-- Enhanced Tutor Chat -->
+    <!-- Tutor Chat -->
     <div class="tutor-chat" id="tutorChat">
         <div class="tutor-header" id="tutorHeader">
-            <div class="tutor-header-title">
+            <div>
                 <i class="fas fa-robot"></i> Math Tutor
             </div>
-            <div class="tutor-status">
-                <div class="status-dot"></div>
-                <span>Online</span>
+            <div>
+                <span style="color: var(--led-green); text-shadow: var(--led-glow) var(--led-green);">Online</span>
             </div>
         </div>
         <div class="tutor-messages" id="tutorMessages">
             <div class="message tutor-message">
-                Hi there! I'm your personal math tutor. Ask me anything about multiplying decimals or other math topics!
+                Hi there! I'm your LED-powered math tutor. How can I help you today?
             </div>
             <div class="message tutor-message">
-                Try solving the current problem, and I can help explain any steps you're unsure about.
+                Try solving the current problem, and I'll give you glowing feedback!
             </div>
         </div>
         <div class="tutor-input">
-            <input type="text" class="tutor-input-field" placeholder="Type your math question..." id="tutorInput">
-            <button class="tutor-send-btn" id="tutorSend"><i class="fas fa-paper-plane"></i></button>
+            <input type="text" class="tutor-input-field" placeholder="Type your question..." id="tutorInput">
+            <button class="tutor-send-btn" id="tutorSend">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
     
-    <!-- Enhanced Help Button -->
+    <!-- Help Button -->
     <div class="help-btn" id="helpBtn">
         <i class="fas fa-question"></i>
     </div>
     
+    <!-- Celebration Effect -->
+    <div class="celebration" id="celebration"></div>
+    
     <script>
         // ======================
-        // ENHANCED MATH LEARNING ENGINE
+        // LED MATH TUTOR ENGINE
         // ======================
         
-        // Comprehensive Question Database
+        // Question Database
         const questions = {
             "Multiplying Decimals": [
                 {
@@ -920,101 +670,32 @@
                     options: ["7.0", "8.4", "6.9", "8.0"],
                     answer: 1,
                     explanation: "Multiply 35 × 24 = 840. There are 2 decimal places total, so 8.40 = 8.4"
-                },
-                {
-                    question: "Find the product of 0.8 × 0.05",
-                    options: ["0.4", "0.04", "0.004", "0.0004"],
-                    answer: 2,
-                    explanation: "Multiply 8 × 5 = 40. There are 3 decimal places total (1 in 0.8 and 2 in 0.05), so 0.040 = 0.04"
-                },
-                {
-                    question: "Calculate 4.25 × 3.2",
-                    options: ["13.6", "12.8", "13.2", "12.6"],
-                    answer: 0,
-                    explanation: "Multiply 425 × 32 = 13,600. There are 3 decimal places total (2 in 4.25 and 1 in 3.2), so 13.600 = 13.6"
-                }
-            ],
-            "Dividing Fractions": [
-                {
-                    question: "What is ½ ÷ ¼?",
-                    options: ["1/8", "2", "1/2", "4"],
-                    answer: 1,
-                    explanation: "Dividing by ¼ is the same as multiplying by 4. ½ × 4 = 2"
-                },
-                {
-                    question: "Calculate ¾ ÷ ½",
-                    options: ["3/8", "1.5", "1.25", "1.75"],
-                    answer: 1,
-                    explanation: "Dividing by ½ is the same as multiplying by 2. ¾ × 2 = 6/4 = 1.5"
-                }
-            ],
-            "Solving Equations": [
-                {
-                    question: "Solve for x: x + 7 = 15",
-                    options: ["8", "22", "105", "9"],
-                    answer: 0,
-                    explanation: "Subtract 7 from both sides: x = 15 - 7 = 8"
                 }
             ]
         };
         
-        // Enhanced Tutor Responses
+        // Tutor Responses
         const tutorResponses = {
             greetings: [
-                "Hi there! I'm here to help with your math questions.",
-                "Hello math superstar! Ready to learn together?",
-                "Hey there! I'm your personal math tutor. What can I help you with today?"
+                "Hello! I'm your LED-powered math tutor! ✨",
+                "Hi there! Ready for some glowing math practice? 🌟",
+                "Welcome! Let's light up your math skills! 💡"
             ],
             help: [
-                "I can explain math concepts, work through examples, or help with specific problems. What do you need?",
-                "Let me know what part you're struggling with, and I'll break it down for you.",
-                "I'm happy to help! Try asking about the current problem or any math topic."
+                "I can explain math concepts with colorful examples!",
+                "Need help? I'll make math shine for you!",
+                "What part has you stuck? I'll brighten the way!"
             ],
-            encouragement: [
-                "You're making great progress! Keep up the good work!",
-                "I can see your math skills improving with each problem!",
-                "Mistakes are just learning opportunities. You're doing awesome!"
+            correct: [
+                "🌟 Brilliant! Your answer is shining bright!",
+                "✨ Correct! You're lighting up the math world!",
+                "💡 Perfect! Your math skills are glowing!"
             ],
-            explanations: {
-                "multiplying decimals": {
-                    steps: [
-                        "1. Multiply the numbers as if they were whole numbers (ignore decimals)",
-                        "2. Count the total number of decimal places in both original numbers",
-                        "3. Place the decimal point in your answer so it has that many decimal places"
-                    ],
-                    example: "For 1.5 × 0.6: Multiply 15 × 6 = 90. There are 2 decimal places total (1 in 1.5 and 1 in 0.6), so 0.90 = 0.9"
-                },
-                "dividing fractions": {
-                    steps: [
-                        "1. Keep the first fraction the same",
-                        "2. Change the division sign to multiplication",
-                        "3. Flip the second fraction (find its reciprocal)",
-                        "4. Multiply the numerators (top numbers)",
-                        "5. Multiply the denominators (bottom numbers)",
-                        "6. Simplify if needed"
-                    ],
-                    example: "½ ÷ ¼ becomes ½ × 4/1 = 4/2 = 2"
-                }
-            },
-            general: {
-                "hello": ["Hi there!", "Hello!", "Hey math whiz!"],
-                "help": ["How can I assist you today?", "What do you need help with?", "I'm here to help!"],
-                "hard": [
-                    "It's okay to find this challenging. Let's break it down together.",
-                    "Math can be tough, but you're tougher! Where are you stuck?",
-                    "Difficult problems help your brain grow stronger. Want a hint?"
-                ],
-                "easy": [
-                    "That's great you're finding this easy! Ready for a challenge?",
-                    "Awesome confidence! Should we try something more advanced?",
-                    "You're mastering this! High five! ✋"
-                ],
-                "thanks": [
-                    "You're very welcome! 😊",
-                    "Happy to help! Keep up the great work!",
-                    "Anytime! You're doing fantastic!"
-                ]
-            }
+            incorrect: [
+                "💡 Almost! Let me brighten your understanding...",
+                "🔦 Not quite, but we'll light the way to the right answer!",
+                "✨ Oops! Here's a lightbulb moment to help..."
+            ]
         };
         
         // DOM Elements
@@ -1028,12 +709,12 @@
         const submitBtn = document.querySelector('.submit-btn');
         const feedbackCorrect = document.querySelector('.feedback-correct');
         const feedbackIncorrect = document.querySelector('.feedback-incorrect');
+        const celebration = document.getElementById('celebration');
         
         // Current State
         let currentSkill = "Multiplying Decimals";
         let currentQuestion = 0;
         let score = 0;
-        let streak = 0;
         
         // Initialize
         loadQuestion();
@@ -1074,16 +755,18 @@
             
             // Show typing indicator
             const typingIndicator = document.createElement('div');
-            typingIndicator.className = 'message tutor-message typing-indicator';
+            typingIndicator.className = 'message tutor-message';
             typingIndicator.innerHTML = `
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
+                <div style="display: flex; gap: 5px;">
+                    <div style="width: 8px; height: 8px; background-color: var(--led-blue); border-radius: 50%; animation: blink 1s infinite;"></div>
+                    <div style="width: 8px; height: 8px; background-color: var(--led-blue); border-radius: 50%; animation: blink 1s infinite 0.2s;"></div>
+                    <div style="width: 8px; height: 8px; background-color: var(--led-blue); border-radius: 50%; animation: blink 1s infinite 0.4s;"></div>
+                </div>
             `;
             tutorMessages.appendChild(typingIndicator);
             tutorMessages.scrollTop = tutorMessages.scrollHeight;
             
-            // Process and respond after delay
+            // Process and respond
             setTimeout(() => {
                 // Remove typing indicator
                 if (typingIndicator.parentNode) {
@@ -1094,44 +777,23 @@
                 let response = "";
                 
                 if (lowerMsg.includes("hello") || lowerMsg.includes("hi")) {
-                    response = getRandomResponse(tutorResponses.general.hello);
+                    response = getRandomResponse(tutorResponses.greetings);
                 }
                 else if (lowerMsg.includes("help")) {
                     response = getRandomResponse(tutorResponses.help);
                 }
                 else if (lowerMsg.includes("multipl") || lowerMsg.includes("decimal")) {
-                    const explanation = tutorResponses.explanations["multiplying decimals"];
-                    response = `Here's how to multiply decimals:\n\n${explanation.steps.join('\n')}\n\nExample: ${explanation.example}`;
+                    response = "To multiply decimals:\n1) Multiply as whole numbers\n2) Count total decimal places\n3) Place decimal in answer\n\nExample: 1.5 × 0.6 = 0.9";
                 }
-                else if (lowerMsg.includes("divide") || lowerMsg.includes("fraction")) {
-                    const explanation = tutorResponses.explanations["dividing fractions"];
-                    response = `Here's how to divide fractions:\n\n${explanation.steps.join('\n')}\n\nExample: ${explanation.example}`;
-                }
-                else if (lowerMsg.includes("explain") || lowerMsg.includes("how")) {
-                    response = `Here's how to solve the current problem: ${questions[currentSkill][currentQuestion].explanation}`;
-                }
-                else if (lowerMsg.includes("hard") || lowerMsg.includes("difficult") || lowerMsg.includes("stuck")) {
-                    response = getRandomResponse(tutorResponses.general.hard);
-                }
-                else if (lowerMsg.includes("easy") || lowerMsg.includes("simple")) {
-                    response = getRandomResponse(tutorResponses.general.easy);
-                }
-                else if (lowerMsg.includes("thank")) {
-                    response = getRandomResponse(tutorResponses.general.thanks);
+                else if (lowerMsg.includes("explain")) {
+                    response = questions[currentSkill][currentQuestion].explanation;
                 }
                 else {
-                    response = "I'm not sure I understand. Try asking about:\n- How to multiply decimals\n- How to solve the current problem\n- Or any other math concept!";
+                    response = "I'm your LED math tutor! Try asking:\n- How to multiply decimals\n- Explain this problem\n- Or any math question!";
                 }
                 
                 addTutorMessage(response);
-                
-                // Occasionally add encouragement
-                if (Math.random() > 0.7) {
-                    setTimeout(() => {
-                        addTutorMessage(getRandomResponse(tutorResponses.encouragement));
-                    }, 500);
-                }
-            }, 1000 + Math.random() * 2000); // Random delay for natural feel
+            }, 1000 + Math.random() * 1000);
         }
         
         function addTutorMessage(text) {
@@ -1167,8 +829,6 @@
             if (selectedIndex === correctIndex) {
                 // Correct answer
                 score++;
-                streak++;
-                
                 feedbackCorrect.style.display = 'block';
                 feedbackIncorrect.style.display = 'none';
                 
@@ -1179,43 +839,28 @@
                     }
                 });
                 
-                // Add celebration message
-                const celebrationMessages = [
-                    `✅ Correct! ${questions[currentSkill][currentQuestion].explanation}`,
-                    `🎉 Great job! You got it right!`,
-                    `👍 Perfect! Your answer is correct!`,
-                    `👏 Well done! ${streak > 1 ? `That's ${streak} in a row!` : ''}`
-                ];
-                addTutorMessage(getRandomResponse(celebrationMessages));
+                // Add celebration
+                createCelebration();
+                
+                // Add congratulatory message
+                addTutorMessage(getRandomResponse(tutorResponses.correct));
                 
                 // Move to next question after delay
                 setTimeout(() => {
                     currentQuestion = (currentQuestion + 1) % questions[currentSkill].length;
                     loadQuestion();
-                    
-                    // Occasionally suggest switching skills
-                    if (currentQuestion === 0 && Math.random() > 0.5) {
-                        setTimeout(() => {
-                            addTutorMessage("You've completed all questions in this skill! Would you like to try something new?");
-                        }, 1000);
-                    }
                 }, 2000);
             } else {
                 // Incorrect answer
-                streak = 0;
-                
                 feedbackCorrect.style.display = 'none';
                 feedbackIncorrect.style.display = 'block';
-                feedbackIncorrect.innerHTML = `
-                    <div class="feedback-title"><i class="fas fa-times-circle"></i> Not Quite Right</div>
-                    ${questions[currentSkill][currentQuestion].explanation}
-                `;
                 
                 selectedOption.classList.add('incorrect');
                 answerOptions[correctIndex].classList.add('correct');
                 
                 // Add helpful message
-                addTutorMessage(`Let me help explain this: ${questions[currentSkill][currentQuestion].explanation}`);
+                addTutorMessage(getRandomResponse(tutorResponses.incorrect) + " " + 
+                    questions[currentSkill][currentQuestion].explanation);
             }
         }
         
@@ -1230,6 +875,53 @@
             
             feedbackCorrect.style.display = 'none';
             feedbackIncorrect.style.display = 'none';
+        }
+        
+        function createCelebration() {
+            celebration.innerHTML = '';
+            celebration.style.display = 'block';
+            
+            const colors = [var(--led-blue), var(--led-pink), var(--led-green), var(--led-yellow), var(--led-purple)];
+            const shapes = ['circle', 'square', 'triangle'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Random properties
+                const size = Math.random() * 15 + 5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 3 + 2;
+                const delay = Math.random() * 2;
+                
+                // Apply styles
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.background = color;
+                confetti.style.left = `${left}%`;
+                confetti.style.animationDuration = `${animationDuration}s`;
+                confetti.style.animationDelay = `${delay}s`;
+                
+                // Shape specific styles
+                if (shape === 'square') {
+                    confetti.style.borderRadius = '3px';
+                } else if (shape === 'triangle') {
+                    confetti.style.width = '0';
+                    confetti.style.height = '0';
+                    confetti.style.borderLeft = `${size/2}px solid transparent`;
+                    confetti.style.borderRight = `${size/2}px solid transparent`;
+                    confetti.style.borderBottom = `${size}px solid ${color}`;
+                    confetti.style.background = 'none';
+                }
+                
+                celebration.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                celebration.style.display = 'none';
+            }, 3000);
         }
     </script>
 </body>
