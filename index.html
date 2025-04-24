@@ -3,55 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Matrix | Interactive Learning</title>
+    <title>Math Tournament | Competitive Learning</title>
     <style>
         :root {
-            --neon-blue: #0ff0fc;
-            --neon-pink: #ff2a6d;
-            --neon-purple: #d300c5;
-            --dark-bg: #0d0221;
-            --darker-bg: #070113;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+            --primary: #4a00e0;
+            --secondary: #8e2de2;
+            --dark: #121212;
+            --light: #f8f9fa;
         }
         
         body {
-            font-family: 'Orbitron', 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--dark-bg);
+            background: linear-gradient(135deg, var(--dark), #1a1a2e);
             color: white;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255,42,109,0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(13,240,252,0.1) 0%, transparent 20%);
-            overflow-x: hidden;
+            min-height: 100vh;
         }
         
-        @font-face {
-            font-family: 'Orbitron';
-            src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-        }
-        
-        header {
-            background: linear-gradient(to right, var(--darker-bg), var(--dark-bg));
-            padding: 2rem;
+        .tournament-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            padding: 1.5rem;
             text-align: center;
-            border-bottom: 1px solid var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             position: relative;
             overflow: hidden;
         }
         
-        header::before {
+        .tournament-header::before {
             content: "";
             position: absolute;
-            top: -10px;
+            top: 0;
             left: 0;
             right: 0;
             height: 5px;
             background: linear-gradient(to right, 
                 transparent, 
-                var(--neon-blue), 
-                var(--neon-pink), 
-                var(--neon-purple), 
+                var(--gold), 
+                var(--silver), 
+                var(--bronze), 
                 transparent);
             animation: headerGlow 3s linear infinite;
         }
@@ -63,608 +56,952 @@
         }
         
         h1 {
+            margin: 0;
             font-size: 2.5rem;
-            margin: 0;
-            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 10px rgba(13,240,252,0.3);
-            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
         }
         
-        nav {
-            background: rgba(13,2,33,0.8);
-            backdrop-filter: blur(10px);
-            padding: 1rem;
-            border-bottom: 1px solid var(--neon-purple);
-            box-shadow: 0 5px 15px rgba(211,0,197,0.2);
+        .tagline {
+            font-style: italic;
+            margin-top: 0.5rem;
+            opacity: 0.9;
         }
         
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .tournament-nav {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
             gap: 1rem;
+            flex-wrap: wrap;
         }
         
-        nav a {
+        .nav-btn {
+            background: rgba(255,255,255,0.1);
             color: white;
-            text-decoration: none;
+            border: none;
             padding: 0.8rem 1.5rem;
-            border: 1px solid var(--neon-blue);
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            border-radius: 50px;
+            cursor: pointer;
             font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
-        nav a:hover {
-            background: rgba(13,240,252,0.2);
-            box-shadow: 0 0 15px var(--neon-blue);
-            transform: translateY(-3px);
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
         }
         
-        nav a::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(13,240,252,0.4), transparent);
-            transition: 0.5s;
+        .nav-btn i {
+            font-size: 1.2rem;
         }
         
-        nav a:hover::before {
-            left: 100%;
-        }
-        
-        .grade-section {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
             padding: 2rem;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .active {
-            display: block;
-        }
-        
-        .subject-category {
-            margin-bottom: 3rem;
-            background: rgba(7,1,19,0.7);
-            padding: 2rem;
+        .sidebar {
+            background: rgba(0,0,0,0.3);
             border-radius: 10px;
-            border: 1px solid var(--neon-purple);
-            box-shadow: 0 0 20px rgba(211,0,197,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .subject-category::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink), var(--neon-purple));
-        }
-        
-        h2, h3 {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px rgba(13,240,252,0.3);
-        }
-        
-        .math-problem {
-            margin: 1.5rem 0;
             padding: 1.5rem;
-            background: rgba(13,2,33,0.5);
-            border-left: 4px solid var(--neon-pink);
-            border-radius: 5px;
-            transition: transform 0.3s ease;
+            height: fit-content;
         }
         
-        .math-problem:hover {
-            transform: translateX(5px);
-            box-shadow: 5px 0 15px rgba(255,42,109,0.3);
+        .player-card {
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
         }
         
-        input[type="text"] {
-            padding: 0.8rem;
-            margin: 1rem 0;
-            width: 120px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--neon-blue);
-            border-radius: 5px;
+        .player-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
             color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
+            border: 3px solid var(--gold);
         }
         
-        input[type="text"]:focus {
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 10px var(--neon-pink);
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .btn {
-            background: transparent;
-            color: white;
-            border: 2px solid var(--neon-blue);
-            padding: 0.8rem 1.8rem;
-            border-radius: 30px;
-            cursor: pointer;
-            margin: 1rem 1rem 1rem 0;
+        .player-name {
             font-weight: bold;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            z-index: 1;
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
         }
         
-        .btn::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
+        .player-level {
+            display: inline-block;
+            background: rgba(255,215,0,0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--gold);
+        }
+        
+        .progress-container {
+            background: rgba(0,0,0,0.3);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-bar {
             height: 100%;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            transition: width 0.3s ease;
-            z-index: -1;
-        }
-        
-        .btn:hover::before {
-            width: 100%;
-        }
-        
-        .btn:hover {
-            box-shadow: 0 0 15px var(--neon-blue);
-            transform: translateY(-3px);
-            color: white;
-        }
-        
-        .answer-feedback {
-            margin: 1rem 0;
-            font-weight: bold;
-            padding: 0.8rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             border-radius: 5px;
+            width: 65%;
+            position: relative;
+        }
+        
+        .progress-bar::after {
+            content: "65%";
+            position: absolute;
+            right: -25px;
+            top: -2px;
+            font-size: 0.8rem;
+        }
+        
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff8a00, #ff0058);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            border: 2px solid white;
+        }
+        
+        .tournament-section {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: none;
+        }
+        
+        .active-section {
+            display: block;
             animation: fadeIn 0.5s ease-out;
         }
         
-        .correct {
-            color: #00ff88;
-            background: rgba(0,255,136,0.1);
-            border-left: 4px solid #00ff88;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        .incorrect {
-            color: var(--neon-pink);
-            background: rgba(255,42,109,0.1);
-            border-left: 4px solid var(--neon-pink);
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
-        footer {
-            background: linear-gradient(to right, var(--darker-bg), var(--dark-bg));
+        .section-title {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--gold);
+        }
+        
+        .leaderboard-btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            border-top: 1px solid var(--neon-purple);
-            box-shadow: 0 -5px 15px rgba(211,0,197,0.2);
-            position: relative;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
-        footer::before {
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .unit-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .unit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: rgba(255,215,0,0.3);
+        }
+        
+        .unit-card::before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(to right, 
-                transparent, 
-                var(--neon-blue), 
-                var(--neon-pink), 
-                var(--neon-purple), 
-                transparent);
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
         }
         
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+        .unit-title {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .unit-progress {
+            height: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        
+        .unit-progress-fill {
             height: 100%;
-            z-index: -1;
-            pointer-events: none;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 5px;
+            width: 30%;
+        }
+        
+        .unit-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .start-btn {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,176,155,0.4);
+        }
+        
+        .problem-container {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .problem-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .problem-title {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .problem-points {
+            background: var(--gold);
+            color: black;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .problem-content {
+            margin-bottom: 1.5rem;
+        }
+        
+        .answer-input {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .answer-input input {
+            padding: 0.8rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+            min-width: 200px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74,0,224,0.4);
+        }
+        
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .correct-feedback {
+            background: rgba(0,255,0,0.1);
+            border-left: 4px solid #00ff00;
+            display: block;
+        }
+        
+        .incorrect-feedback {
+            background: rgba(255,0,0,0.1);
+            border-left: 4px solid #ff0000;
+            display: block;
+        }
+        
+        .leaderboard {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        
+        .leaderboard th {
+            text-align: left;
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            color: var(--gold);
+        }
+        
+        .leaderboard td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .leaderboard tr:hover {
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .rank-1 {
+            color: var(--gold);
+            font-weight: bold;
+        }
+        
+        .rank-2 {
+            color: var(--silver);
+            font-weight: bold;
+        }
+        
+        .rank-3 {
+            color: var(--bronze);
+            font-weight: bold;
         }
         
         @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                align-items: center;
+            .main-content {
+                grid-template-columns: 1fr;
             }
             
-            .btn {
-                width: 100%;
-                margin: 0.5rem 0;
-            }
-            
-            header {
-                padding: 1.5rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
+            .units-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="particles" id="particles-js"></div>
+    <div class="tournament-header">
+        <h1>Math Tournament</h1>
+        <p class="tagline">Compete. Learn. Dominate.</p>
+    </div>
     
-    <header>
-        <h1>MATH MATRIX</h1>
-        <p>Neon-Powered Math Learning</p>
-    </header>
-    
-    <nav>
-        <ul>
-            <li><a href="#" onclick="showSection('home')">HOME</a></li>
-            <li><a href="#" onclick="showSection('grade1-5')">GRADES 1-5</a></li>
-            <li><a href="#" onclick="showSection('grade6-8')">GRADES 6-8</a></li>
-            <li><a href="#" onclick="showSection('grade9-12')">GRADES 9-12</a></li>
-        </ul>
+    <nav class="tournament-nav">
+        <button class="nav-btn" onclick="showSection('dashboard')">
+            <i class="fas fa-home"></i> Dashboard
+        </button>
+        <button class="nav-btn" onclick="showSection('pre-algebra')">
+            <i class="fas fa-calculator"></i> Pre-Algebra
+        </button>
+        <button class="nav-btn" onclick="showSection('algebra')">
+            <i class="fas fa-square-root-alt"></i> Algebra
+        </button>
+        <button class="nav-btn" onclick="showSection('leaderboard')">
+            <i class="fas fa-trophy"></i> Leaderboard
+        </button>
+        <button class="nav-btn" onclick="showSection('achievements')">
+            <i class="fas fa-medal"></i> Achievements
+        </button>
     </nav>
     
-    <main>
-        <!-- Home Section -->
-        <section id="home" class="grade-section active">
-            <div style="text-align: center; margin: 3rem 0;">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">WELCOME TO THE MATH MATRIX</h2>
-                <p style="max-width: 700px; margin: 0 auto 2rem; line-height: 1.8;">
-                    Where numbers come alive in a neon digital universe. 
-                    Select your grade level to begin your interactive math journey.
-                </p>
-                <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
-                    <button class="btn" onclick="showSection('grade1-5')" 
-                            style="border-color: var(--neon-blue);">ELEMENTARY</button>
-                    <button class="btn" onclick="showSection('grade6-8')" 
-                            style="border-color: var(--neon-pink);">MIDDLE SCHOOL</button>
-                    <button class="btn" onclick="showSection('grade9-12')" 
-                            style="border-color: var(--neon-purple);">HIGH SCHOOL</button>
+    <div class="main-content">
+        <div class="sidebar">
+            <div class="player-card">
+                <div class="player-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="player-name">Math Warrior</div>
+                <div class="player-level">Level 5</div>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+                <div>Points: 1,250</div>
+                <div class="badges">
+                    <div class="badge" title="Fast Learner"><i class="fas fa-bolt"></i></div>
+                    <div class="badge" title="Problem Solver"><i class="fas fa-lightbulb"></i></div>
+                    <div class="badge" title="Streak Master"><i class="fas fa-fire"></i></div>
                 </div>
             </div>
             
-            <div style="display: flex; justify-content: center; margin-top: 3rem;">
-                <div style="width: 100%; max-width: 800px; background: rgba(13,2,33,0.7); padding: 2rem; border-radius: 10px; border: 1px solid var(--neon-blue);">
-                    <h3 style="color: var(--neon-pink); text-align: center; margin-bottom: 1.5rem;">HOW IT WORKS</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                        <div style="text-align: center;">
-                            <div style="width: 60px; height: 60px; background: rgba(13,240,252,0.1); border: 1px solid var(--neon-blue); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">1</div>
-                            <p>Select your grade level</p>
+            <h3>Current Tournaments</h3>
+            <div class="tournament-card">
+                <div class="tournament-title">Weekly Math Challenge</div>
+                <div class="tournament-time">Ends in 2d 5h</div>
+                <div class="tournament-progress">
+                    <div class="progress-bar" style="width: 40%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-area">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="tournament-section active-section">
+                <div class="section-header">
+                    <h2 class="section-title">Your Math Journey</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">25</div>
+                        <div class="stat-label">Problems Solved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Tournaments Joined</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Badges Earned</div>
+                    </div>
+                </div>
+                
+                <h3>Recommended Units</h3>
+                <div class="units-grid">
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-percentage"></i> Percentages</h4>
+                        <p>Master calculating discounts, tips, and interest rates</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 45%;"></div>
                         </div>
-                        <div style="text-align: center;">
-                            <div style="width: 60px; height: 60px; background: rgba(255,42,109,0.1); border: 1px solid var(--neon-pink); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">2</div>
-                            <p>Choose a math topic</p>
+                        <div class="unit-stats">
+                            <span>5/12 problems</span>
+                            <span>250 pts</span>
                         </div>
-                        <div style="text-align: center;">
-                            <div style="width: 60px; height: 60px; background: rgba(211,0,197,0.1); border: 1px solid var(--neon-purple); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">3</div>
-                            <p>Solve problems and get instant feedback</p>
+                        <button class="start-btn" onclick="showSection('pre-algebra')">
+                            <i class="fas fa-play"></i> Continue
+                        </button>
+                    </div>
+                    
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-superscript"></i> Exponents</h4>
+                        <p>Learn the power of exponents and scientific notation</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 20%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>2/15 problems</span>
+                            <span>100 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="showSection('pre-algebra')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Pre-Algebra Section -->
+            <section id="pre-algebra" class="tournament-section">
+                <div class="section-header">
+                    <h2 class="section-title">Pre-Algebra Tournament</h2>
+                    <button class="leaderboard-btn" onclick="showSection('leaderboard')">
+                        <i class="fas fa-trophy"></i> View Leaderboard
+                    </button>
+                </div>
+                
+                <div class="units-grid">
+                    <!-- Unit 1: Percentages -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-percentage"></i> Unit 1: Percentages</h4>
+                        <p>Calculate discounts, tips, and interest rates</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 45%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>5/12 problems</span>
+                            <span>250 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('percentages')">
+                            <i class="fas fa-play"></i> Continue
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 2: Absolute Value and Negative Numbers -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-arrows-alt-h"></i> Unit 2: Absolute Value</h4>
+                        <p>Master positive and negative numbers</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 30%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>3/10 problems</span>
+                            <span>150 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('absolute-value')">
+                            <i class="fas fa-play"></i> Continue
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 3: Fractions -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-divide"></i> Unit 3: Fractions</h4>
+                        <p>Add, subtract, multiply and divide fractions</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 60%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>6/15 problems</span>
+                            <span>300 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('fractions')">
+                            <i class="fas fa-play"></i> Continue
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 4: Order of Operations -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-list-ol"></i> Unit 4: Order of Operations</h4>
+                        <p>Master PEMDAS rules</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 10%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>1/8 problems</span>
+                            <span>50 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('order-of-operations')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 5: Manipulating Expressions -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-puzzle-piece"></i> Unit 5: Expressions</h4>
+                        <p>Simplify and evaluate expressions</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>0/10 problems</span>
+                            <span>0 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('expressions')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 6: Solving Equations -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-equals"></i> Unit 6: Equations</h4>
+                        <p>Solve linear equations</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 25%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>2/12 problems</span>
+                            <span>100 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('equations')">
+                            <i class="fas fa-play"></i> Continue
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 7: Solving Inequalities -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-not-equal"></i> Unit 7: Inequalities</h4>
+                        <p>Solve and graph inequalities</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>0/8 problems</span>
+                            <span>0 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('inequalities')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 8: Exponents -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-superscript"></i> Unit 8: Exponents</h4>
+                        <p>Work with powers and roots</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 20%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>2/15 problems</span>
+                            <span>100 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('exponents')">
+                            <i class="fas fa-play"></i> Continue
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 9: Intro to Statistics -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-chart-bar"></i> Unit 9: Statistics</h4>
+                        <p>Mean, median, mode and range</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>0/10 problems</span>
+                            <span>0 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('statistics')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 10: Scatter Plots -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-chart-line"></i> Unit 10: Scatter Plots</h4>
+                        <p>Interpret and create scatter plots</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>0/6 problems</span>
+                            <span>0 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('scatter-plots')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 11: Intro to Functions -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-project-diagram"></i> Unit 11: Functions</h4>
+                        <p>Understand basic function concepts</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>0/8 problems</span>
+                            <span>0 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('functions')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                    
+                    <!-- Unit 12: Graphing Linear Functions -->
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-chart-area"></i> Unit 12: Graphing</h4>
+                        <p>Graph linear functions</p>
+                        <div class="unit-progress">
+                            <div class="unit-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="unit-stats">
+                            <span>0/10 problems</span>
+                            <span>0 pts</span>
+                        </div>
+                        <button class="start-btn" onclick="startUnit('graphing')">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sample Problem Section (would be dynamically loaded) -->
+            <section id="problem-section" class="tournament-section" style="display: none;">
+                <div class="problem-container">
+                    <div class="problem-header">
+                        <h3 class="problem-title">Percentage Calculation</h3>
+                        <div class="problem-points">50 pts</div>
+                    </div>
+                    <div class="problem-content">
+                        <p>A shirt costs $40 and is on sale for 25% off. What is the sale price?</p>
+                    </div>
+                    <div class="answer-input">
+                        <input type="text" id="answer-input" placeholder="Enter your answer">
+                        <button class="submit-btn" onclick="checkProblemAnswer()">
+                            Submit Answer
+                        </button>
+                    </div>
+                    <div id="feedback" class="feedback"></div>
+                </div>
+                
+                <button class="btn" onclick="showSection('pre-algebra')">
+                    <i class="fas fa-arrow-left"></i> Back to Units
+                </button>
+            </section>
+            
+            <!-- Leaderboard Section -->
+            <section id="leaderboard" class="tournament-section">
+                <div class="section-header">
+                    <h2 class="section-title">Tournament Leaderboard</h2>
+                </div>
+                
+                <table class="leaderboard">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Level</th>
+                            <th>Points</th>
+                            <th>Problems Solved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="rank-1">1</td>
+                            <td>Math Genius</td>
+                            <td>12</td>
+                            <td>5,420</td>
+                            <td>142</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-2">2</td>
+                            <td>Number Ninja</td>
+                            <td>10</td>
+                            <td>4,850</td>
+                            <td>128</td>
+                        </tr>
+                        <tr>
+                            <td class="rank-3">3</td>
+                            <td>Equation Expert</td>
+                            <td>9</td>
+                            <td>4,120</td>
+                            <td>115</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Algebra Ace</td>
+                            <td>8</td>
+                            <td>3,750</td>
+                            <td>98</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Fraction Master</td>
+                            <td>7</td>
+                            <td>3,200</td>
+                            <td>85</td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>Math Warrior (You)</td>
+                            <td>5</td>
+                            <td>1,250</td>
+                            <td>25</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <!-- Achievements Section -->
+            <section id="achievements" class="tournament-section">
+                <div class="section-header">
+                    <h2 class="section-title">Your Achievements</h2>
+                </div>
+                
+                <div class="units-grid">
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-bolt"></i> Fast Learner</h4>
+                        <p>Solved 5 problems in one day</p>
+                        <div class="unit-stats">
+                            <span>Earned: 2 days ago</span>
+                        </div>
+                        <div class="achievement-badge" style="color: var(--gold);">
+                            <i class="fas fa-trophy fa-2x"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-lightbulb"></i> Problem Solver</h4>
+                        <p>Solved 20 problems total</p>
+                        <div class="unit-stats">
+                            <span>Earned: 1 week ago</span>
+                        </div>
+                        <div class="achievement-badge" style="color: var(--silver);">
+                            <i class="fas fa-medal fa-2x"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="unit-card">
+                        <h4 class="unit-title"><i class="fas fa-fire"></i> Streak Master</h4>
+                        <p>Practiced for 5 days in a row</p>
+                        <div class="unit-stats">
+                            <span>Earned: Yesterday</span>
+                        </div>
+                        <div class="achievement-badge" style="color: var(--bronze);">
+                            <i class="fas fa-award fa-2x"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="unit-card" style="opacity: 0.5;">
+                        <h4 class="unit-title"><i class="fas fa-infinity"></i> Math Wizard</h4>
+                        <p>Solve 100 problems (Locked)</p>
+                        <div class="unit-stats">
+                            <span>25/100 problems</span>
+                        </div>
+                        <div class="achievement-badge">
+                            <i class="fas fa-lock fa-2x"></i>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        
-        <!-- Grades 1-5 Section -->
-        <section id="grade1-5" class="grade-section">
-            <button class="btn" onclick="showSection('home')" style="margin-bottom: 2rem;">← BACK TO HOME</button>
-            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; text-shadow: 0 0 15px var(--neon-blue);">GRADES 1-5 MATH LAB</h2>
-            
-            <div class="subject-category">
-                <h3 style="color: var(--neon-blue);">BASIC ARITHMETIC</h3>
-                
-                <div class="math-problem">
-                    <p>1. What is 8 + 7?</p>
-                    <input type="text" id="grade1-q1" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade1-q1', '15')">CHECK ANSWER</button>
-                    <div id="grade1-q1-feedback" class="answer-feedback"></div>
-                </div>
-                
-                <div class="math-problem">
-                    <p>2. What is 12 - 5?</p>
-                    <input type="text" id="grade1-q2" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade1-q2', '7')">CHECK ANSWER</button>
-                    <div id="grade1-q2-feedback" class="answer-feedback"></div>
-                </div>
-                
-                <div class="math-problem">
-                    <p>3. What is 3 × 4?</p>
-                    <input type="text" id="grade1-q3" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade1-q3', '12')">CHECK ANSWER</button>
-                    <div id="grade1-q3-feedback" class="answer-feedback"></div>
-                </div>
-            </div>
-            
-            <div class="subject-category">
-                <h3 style="color: var(--neon-pink);">FRACTIONS</h3>
-                
-                <div class="math-problem">
-                    <p>4. What is 1/2 + 1/4? (answer as fraction)</p>
-                    <input type="text" id="grade1-q4" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade1-q4', '3/4')">CHECK ANSWER</button>
-                    <div id="grade1-q4-feedback" class="answer-feedback"></div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Grades 6-8 Section -->
-        <section id="grade6-8" class="grade-section">
-            <button class="btn" onclick="showSection('home')" style="margin-bottom: 2rem;">← BACK TO HOME</button>
-            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; text-shadow: 0 0 15px var(--neon-pink);">GRADES 6-8 MATH LAB</h2>
-            
-            <div class="subject-category">
-                <h3 style="color: var(--neon-blue);">PRE-ALGEBRA</h3>
-                
-                <div class="math-problem">
-                    <p>1. Solve for x: x + 5 = 12</p>
-                    <input type="text" id="grade6-q1" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade6-q1', '7')">CHECK ANSWER</button>
-                    <div id="grade6-q1-feedback" class="answer-feedback"></div>
-                </div>
-                
-                <div class="math-problem">
-                    <p>2. Solve for y: 2y = 18</p>
-                    <input type="text" id="grade6-q2" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade6-q2', '9')">CHECK ANSWER</button>
-                    <div id="grade6-q2-feedback" class="answer-feedback"></div>
-                </div>
-            </div>
-            
-            <div class="subject-category">
-                <h3 style="color: var(--neon-pink);">GEOMETRY</h3>
-                
-                <div class="math-problem">
-                    <p>3. What is the area of a rectangle with length 5 and width 3?</p>
-                    <input type="text" id="grade6-q3" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade6-q3', '15')">CHECK ANSWER</button>
-                    <div id="grade6-q3-feedback" class="answer-feedback"></div>
-                </div>
-                
-                <div class="math-problem">
-                    <p>4. What is the circumference of a circle with radius 7? (Use π = 3.14)</p>
-                    <input type="text" id="grade6-q4" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade6-q4', '43.96')">CHECK ANSWER</button>
-                    <div id="grade6-q4-feedback" class="answer-feedback"></div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Grades 9-12 Section -->
-        <section id="grade9-12" class="grade-section">
-            <button class="btn" onclick="showSection('home')" style="margin-bottom: 2rem;">← BACK TO HOME</button>
-            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem; text-shadow: 0 0 15px var(--neon-purple);">GRADES 9-12 MATH LAB</h2>
-            
-            <div class="subject-category">
-                <h3 style="color: var(--neon-blue);">ALGEBRA</h3>
-                
-                <div class="math-problem">
-                    <p>1. Solve for x: 2x + 3 = 15</p>
-                    <input type="text" id="grade9-q1" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade9-q1', '6')">CHECK ANSWER</button>
-                    <div id="grade9-q1-feedback" class="answer-feedback"></div>
-                </div>
-                
-                <div class="math-problem">
-                    <p>2. Factor: x² + 5x + 6</p>
-                    <input type="text" id="grade9-q2" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade9-q2', '(x+2)(x+3)')">CHECK ANSWER</button>
-                    <div id="grade9-q2-feedback" class="answer-feedback"></div>
-                </div>
-            </div>
-            
-            <div class="subject-category">
-                <h3 style="color: var(--neon-pink);">GEOMETRY</h3>
-                
-                <div class="math-problem">
-                    <p>3. What is the area of a circle with radius 5? (Answer in terms of π)</p>
-                    <input type="text" id="grade9-q3" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade9-q3', '25π')">CHECK ANSWER</button>
-                    <div id="grade9-q3-feedback" class="answer-feedback"></div>
-                </div>
-                
-                <div class="math-problem">
-                    <p>4. A right triangle has legs of 3 and 4. What is the hypotenuse?</p>
-                    <input type="text" id="grade9-q4" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade9-q4', '5')">CHECK ANSWER</button>
-                    <div id="grade9-q4-feedback" class="answer-feedback"></div>
-                </div>
-            </div>
-            
-            <div class="subject-category">
-                <h3 style="color: var(--neon-purple);">TRIGONOMETRY</h3>
-                
-                <div class="math-problem">
-                    <p>5. What is sin(30°)?</p>
-                    <input type="text" id="grade9-q5" placeholder="Your answer">
-                    <button class="btn" onclick="checkAnswer('grade9-q5', '0.5')">CHECK ANSWER</button>
-                    <div id="grade9-q5-feedback" class="answer-feedback"></div>
-                </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </div>
+    </div>
     
-    <footer>
-        <p>© 2023 MATH MATRIX | Neon-Powered Math Learning</p>
-        <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">All problems are randomly generated for educational purposes</p>
-    </footer>
-
     <script>
-        // JavaScript for interactive elements
+        // Navigation functions
         function showSection(sectionId) {
-            document.querySelectorAll('.grade-section').forEach(section => {
-                section.classList.remove('active');
+            document.querySelectorAll('.tournament-section').forEach(section => {
+                section.classList.remove('active-section');
+                section.style.display = 'none';
             });
-            document.getElementById(sectionId).classList.add('active');
-            window.scrollTo(0, 0);
+            
+            document.getElementById(sectionId).classList.add('active-section');
+            document.getElementById(sectionId).style.display = 'block';
         }
-
-        function checkAnswer(inputId, correctAnswer) {
-            const userAnswer = document.getElementById(inputId).value.trim();
-            const feedbackElement = document.getElementById(inputId + '-feedback');
+        
+        function startUnit(unitId) {
+            // In a real app, this would load problems for the selected unit
+            // For this demo, we'll just show a sample problem
+            document.getElementById('problem-title').textContent = getUnitTitle(unitId);
+            document.getElementById('problem-content').innerHTML = getSampleProblem(unitId);
+            document.getElementById('correct-answer').value = getCorrectAnswer(unitId);
+            
+            showSection('problem-section');
+        }
+        
+        function getUnitTitle(unitId) {
+            const titles = {
+                'percentages': 'Percentage Calculation',
+                'absolute-value': 'Absolute Value Problem',
+                'fractions': 'Fraction Operation',
+                'order-of-operations': 'Order of Operations',
+                'expressions': 'Expression Simplification',
+                'equations': 'Equation Solving',
+                'inequalities': 'Inequality Solving',
+                'exponents': 'Exponent Calculation',
+                'statistics': 'Statistics Problem',
+                'scatter-plots': 'Scatter Plot Interpretation',
+                'functions': 'Function Evaluation',
+                'graphing': 'Graphing Linear Function'
+            };
+            return titles[unitId] || "Math Problem";
+        }
+        
+        function getSampleProblem(unitId) {
+            const problems = {
+                'percentages': '<p>A shirt costs $40 and is on sale for 25% off. What is the sale price?</p>',
+                'absolute-value': '<p>What is the absolute value of -15 plus the absolute value of 7?</p>',
+                'fractions': '<p>What is 2/3 + 1/6? (Simplify your answer)</p>',
+                'order-of-operations': '<p>Evaluate: 3 + 4 × (6 - 2) ÷ 2</p>',
+                'expressions': '<p>Simplify the expression: 3(x + 4) - 2x + 5</p>',
+                'equations': '<p>Solve for x: 2x + 5 = 17</p>',
+                'inequalities': '<p>Solve the inequality: 3x - 7 < 8</p>',
+                'exponents': '<p>Evaluate: 2³ × 3²</p>',
+                'statistics': '<p>Find the mean of these numbers: 12, 15, 18, 21, 24</p>',
+                'scatter-plots': '<p>If points on a scatter plot show a clear upward trend from left to right, what type of correlation is this?</p>',
+                'functions': '<p>If f(x) = 2x + 3, what is f(5)?</p>',
+                'graphing': '<p>What is the slope of the line represented by y = 2x - 4?</p>'
+            };
+            return problems[unitId] || "<p>Sample math problem</p>";
+        }
+        
+        function getCorrectAnswer(unitId) {
+            const answers = {
+                'percentages': '30',
+                'absolute-value': '22',
+                'fractions': '5/6',
+                'order-of-operations': '11',
+                'expressions': 'x + 17',
+                'equations': '6',
+                'inequalities': 'x < 5',
+                'exponents': '72',
+                'statistics': '18',
+                'scatter-plots': 'positive',
+                'functions': '13',
+                'graphing': '2'
+            };
+            return answers[unitId] || "";
+        }
+        
+        function checkProblemAnswer() {
+            const userAnswer = document.getElementById('answer-input').value.trim();
+            const correctAnswer = document.getElementById('correct-answer').value;
+            const feedback = document.getElementById('feedback');
             
             if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-                feedbackElement.textContent = "✓ Correct! Great job!";
-                feedbackElement.className = "answer-feedback correct";
-                
-                // Add neon pulse effect
-                feedbackElement.style.animation = "none";
-                void feedbackElement.offsetWidth; // Trigger reflow
-                feedbackElement.style.animation = "pulseCorrect 0.5s";
+                feedback.textContent = "✓ Correct! Great job! +50 points";
+                feedback.className = "feedback correct-feedback";
             } else {
-                feedbackElement.textContent = `✗ Incorrect. The correct answer is ${correctAnswer}. Try again!`;
-                feedbackElement.className = "answer-feedback incorrect";
-                
-                // Add shake effect
-                feedbackElement.style.animation = "none";
-                void feedbackElement.offsetWidth; // Trigger reflow
-                feedbackElement.style.animation = "shake 0.5s";
+                feedback.textContent = `✗ Incorrect. The correct answer is ${correctAnswer}. Try again!`;
+                feedback.className = "feedback incorrect-feedback";
             }
         }
-
-        // Add animation keyframes dynamically
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes pulseCorrect {
-                0% { box-shadow: 0 0 5px rgba(0,255,136,0.5); }
-                50% { box-shadow: 0 0 20px rgba(0,255,136,0.8); }
-                100% { box-shadow: 0 0 5px rgba(0,255,136,0.5); }
-            }
-            
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                20%, 60% { transform: translateX(-5px); }
-                40%, 80% { transform: translateX(5px); }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Initialize with home section active
+        
+        // Initialize with dashboard visible
         document.addEventListener('DOMContentLoaded', function() {
-            showSection('home');
-        });
-    </script>
-
-    <!-- Particles.js for background effect -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof particlesJS !== 'undefined') {
-                particlesJS('particles-js', {
-                    "particles": {
-                        "number": {
-                            "value": 80,
-                            "density": {
-                                "enable": true,
-                                "value_area": 800
-                            }
-                        },
-                        "color": {
-                            "value": ["#0ff0fc", "#ff2a6d", "#d300c5"]
-                        },
-                        "shape": {
-                            "type": "circle",
-                            "stroke": {
-                                "width": 0,
-                                "color": "#000000"
-                            }
-                        },
-                        "opacity": {
-                            "value": 0.5,
-                            "random": true,
-                            "anim": {
-                                "enable": true,
-                                "speed": 1,
-                                "opacity_min": 0.1,
-                                "sync": false
-                            }
-                        },
-                        "size": {
-                            "value": 3,
-                            "random": true,
-                            "anim": {
-                                "enable": true,
-                                "speed": 2,
-                                "size_min": 0.1,
-                                "sync": false
-                            }
-                        },
-                        "line_linked": {
-                            "enable": true,
-                            "distance": 150,
-                            "color": "#0ff0fc",
-                            "opacity": 0.2,
-                            "width": 1
-                        },
-                        "move": {
-                            "enable": true,
-                            "speed": 1,
-                            "direction": "none",
-                            "random": true,
-                            "straight": false,
-                            "out_mode": "out",
-                            "bounce": false,
-                            "attract": {
-                                "enable": true,
-                                "rotateX": 600,
-                                "rotateY": 1200
-                            }
-                        }
-                    },
-                    "interactivity": {
-                        "detect_on": "canvas",
-                        "events": {
-                            "onhover": {
-                                "enable": true,
-                                "mode": "grab"
-                            },
-                            "onclick": {
-                                "enable": true,
-                                "mode": "push"
-                            },
-                            "resize": true
-                        },
-                        "modes": {
-                            "grab": {
-                                "distance": 140,
-                                "line_linked": {
-                                    "opacity": 0.5
-                                }
-                            },
-                            "push": {
-                                "particles_nb": 4
-                            }
-                        }
-                    },
-                    "retina_detect": true
-                });
-            }
+            showSection('dashboard');
         });
     </script>
 </body>
