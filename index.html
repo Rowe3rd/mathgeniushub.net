@@ -3,196 +3,537 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MATHVERSE</title>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-  <script src="https://cdn.firebase.com/js/8.10.0/firebase-app.js"></script>
-  <script src="https://cdn.firebase.com/js/8.10.0/firebase-firestore.js"></script>
+  <title>MATHVERSE: Epic Math Battles</title>
   <style>
+    :root {
+      --primary: #FF6B6B;
+      --secondary: #4ECDC4;
+      --dark: #292F36;
+      --light: #F7FFF7;
+      --accent: #FFE66D;
+    }
     body {
-      font-family: 'Comic Sans MS', cursive;
-      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      font-family: 'Luckiest Guy', cursive;
+      background: var(--dark);
       margin: 0;
       padding: 0;
+      color: var(--light);
+      background-image: url('https://assets.codepen.io/605876/star-bg.png');
+      overflow-x: hidden;
     }
     #game-container {
       max-width: 800px;
-      margin: 0 auto;
+      margin: 20px auto;
       padding: 20px;
-      background: white;
+      background: rgba(41, 47, 54, 0.8);
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      box-shadow: 0 0 30px rgba(78, 205, 196, 0.3);
+      text-align: center;
+      border: 3px solid var(--secondary);
     }
-    .problem-display {
-      font-size: 24px;
+    h1 {
+      color: var(--accent);
+      text-shadow: 3px 3px 0 var(--primary);
+      font-size: 3rem;
+      margin: 10px 0;
+      letter-spacing: 2px;
+    }
+    #battle-arena {
+      position: relative;
+      height: 300px;
       margin: 20px 0;
-      padding: 15px;
-      background: #f8f9fa;
-      border-radius: 10px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 15px;
+      overflow: hidden;
+      border: 2px dashed var(--secondary);
     }
-    #confetti-canvas {
-      position: fixed;
+    #hero, #enemy {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      bottom: 50px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      transition: all 0.3s;
+    }
+    #hero {
+      left: 100px;
+      background-image: url('https://assets.codepen.io/605876/math-hero.png');
+    }
+    #enemy {
+      right: 100px;
+      background-image: url('https://assets.codepen.io/605876/math-monster.png');
+    }
+    .health-bar {
+      height: 20px;
+      background: #333;
+      border-radius: 10px;
+      margin: 10px auto;
+      width: 80%;
+      overflow: hidden;
+    }
+    #hero-health {
+      width: 100%;
+      height: 100%;
+      background: var(--secondary);
+      transition: width 0.5s;
+    }
+    #enemy-health {
+      width: 100%;
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.5s;
+    }
+    #problem-display {
+      font-size: 2rem;
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      min-height: 60px;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    #answer-input {
+      padding: 15px;
+      font-size: 1.5rem;
+      width: 200px;
+      text-align: center;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.9);
+      font-family: 'Luckiest Guy', cursive;
+    }
+    #submit-btn {
+      padding: 15px 30px;
+      font-size: 1.5rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-left: 10px;
+      font-family: 'Luckiest Guy', cursive;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    #submit-btn:hover {
+      background: #ff5252;
+      transform: scale(1.05);
+    }
+    #xp-display {
+      font-size: 1.5rem;
+      margin: 20px 0;
+      color: var(--accent);
+    }
+    #streak-display {
+      color: var(--secondary);
+      font-size: 1.2rem;
+    }
+    .grade-btn {
+      padding: 10px 20px;
+      margin: 5px;
+      background: var(--secondary);
+      color: var(--dark);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+    }
+    .grade-btn:hover {
+      background: var(--accent);
+      transform: translateY(-3px);
+    }
+    .confetti {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100;
+    }
+    #feedback {
+      min-height: 30px;
+      font-size: 1.5rem;
+      margin: 15px 0;
+      text-shadow: 2px 2px 0 var(--dark);
+    }
+    .correct {
+      color: var(--secondary);
+    }
+    .wrong {
+      color: var(--primary);
+    }
+    #battle-effects {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 100;
+      z-index: 10;
+    }
+    .attack-effect {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0;
+    }
+    #level-up {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      padding: 30px;
+      border-radius: 20px;
+      border: 3px solid var(--accent);
+      color: var(--accent);
+      font-size: 2rem;
+      text-align: center;
+      z-index: 1000;
+      display: none;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-15px); }
+      75% { transform: translateX(15px); }
+    }
+    .shake {
+      animation: shake 0.3s linear;
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="game-container">
-    <h1>MATHVERSE</h1>
-    <div id="grade-selector"></div>
-    <div class="problem-display" id="problem"></div>
-    <input type="text" id="answer-input" placeholder="Your answer...">
-    <button id="submit-btn">Submit</button>
-    <div id="xp-counter">XP: 0</div>
-    <div id="confetti-canvas"></div>
+    <h1>MATHVERSE BATTLES</h1>
+    
+    <div id="battle-arena">
+      <div id="battle-effects"></div>
+      <div id="hero"></div>
+      <div id="enemy"></div>
+      <div class="health-bar"><div id="hero-health"></div></div>
+      <div class="health-bar"><div id="enemy-health"></div></div>
+    </div>
+    
+    <div id="grade-selector">
+      <h2>CHOOSE YOUR GRADE:</h2>
+    </div>
+    
+    <div id="problem-display">Select your grade to begin!</div>
+    <div id="feedback"></div>
+    
+    <div>
+      <input type="text" id="answer-input" placeholder="Your answer..." disabled>
+      <button id="submit-btn" disabled>ATTACK!</button>
+    </div>
+    
+    <div id="xp-display">
+      XP: <span id="xp-counter">0</span> 
+      <span id="streak-display"></span>
+    </div>
+  </div>
+  
+  <div id="level-up">
+    <h2>LEVEL UP!</h2>
+    <p>New powers unlocked!</p>
+    <button id="continue-btn">CONTINUE</button>
   </div>
 
-  <script>
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "mathverse.firebaseapp.com",
-      projectId: "mathverse",
-      storageBucket: "mathverse.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef123456"
-    };
-    
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  <audio id="attack-sound" src="https://assets.codepen.io/605876/sword-attack.mp3" preload="auto"></audio>
+  <audio id="win-sound" src="https://assets.codepen.io/605876/victory-fanfare.mp3" preload="auto"></audio>
+  <audio id="wrong-sound" src="https://assets.codepen.io/605876/wrong-buzzer.mp3" preload="auto"></audio>
 
-    // Game Data
+  <script>
+    // ========== GAME DATA ==========
     const mathProblems = {
       grade1: [
-        { question: "2 + 3 = ?", answer: "5" },
-        { question: "How many sides does a square have?", answer: "4" }
+        { question: "2 + 3 = ?", answer: "5", type: "addition" },
+        { question: "How many sides does a square have?", answer: "4", type: "geometry" },
+        { question: "Complete: 5, 6, __", answer: "7", type: "patterns" }
       ],
       grade2: [
-        { question: "5 × 3 = ?", answer: "15" },
-        { question: "1/2 of 10 is?", answer: "5" }
+        { question: "5 × 3 = ?", answer: "15", type: "multiplication" },
+        { question: "1/2 of 10 is?", answer: "5", type: "fractions" },
+        { question: "10 - 7 = ?", answer: "3", type: "subtraction" }
+      ],
+      grade3: [
+        { question: "7 × 8 = ?", answer: "56", type: "multiplication" },
+        { question: "Which is greater: 3/4 or 1/2?", answer: "3/4", type: "fractions" },
+        { question: "How many sides does a pentagon have?", answer: "5", type: "geometry" }
       ]
     };
 
-    // Game State
-    let currentGrade = 'grade1';
+    const enemies = [
+      { name: "Add-o-Tron", health: 100, grade: "grade1", image: "robot.png" },
+      { name: "Multiply Monster", health: 150, grade: "grade2", image: "dragon.png" },
+      { name: "Fraction Fiend", health: 200, grade: "grade3", image: "wizard.png" }
+    ];
+
+    // ========== GAME STATE ==========
+    let currentGrade = null;
     let currentProblemIndex = 0;
     let xp = 0;
+    let level = 1;
+    let streak = 0;
+    let heroHealth = 100;
+    let enemyHealth = 100;
+    let currentEnemy = null;
 
-    // DOM Elements
-    const problemElement = document.getElementById('problem');
+    // ========== DOM ELEMENTS ==========
+    const problemElement = document.getElementById('problem-display');
     const answerInput = document.getElementById('answer-input');
     const submitBtn = document.getElementById('submit-btn');
     const xpCounter = document.getElementById('xp-counter');
+    const streakDisplay = document.getElementById('streak-display');
     const gradeSelector = document.getElementById('grade-selector');
+    const feedbackElement = document.getElementById('feedback');
+    const heroHealthBar = document.getElementById('hero-health');
+    const enemyHealthBar = document.getElementById('enemy-health');
+    const battleEffects = document.getElementById('battle-effects');
+    const heroElement = document.getElementById('hero');
+    const enemyElement = document.getElementById('enemy');
+    const levelUpModal = document.getElementById('level-up');
+    const continueBtn = document.getElementById('continue-btn');
+    const attackSound = document.getElementById('attack-sound');
+    const winSound = document.getElementById('win-sound');
+    const wrongSound = document.getElementById('wrong-sound');
 
-    // Initialize Grade Selector
-    function initGradeSelector() {
-      gradeSelector.innerHTML = '';
+    // ========== GAME FUNCTIONS ==========
+    function initGame() {
+      // Create grade buttons
+      gradeSelector.innerHTML = '<h2>CHOOSE YOUR GRADE:</h2>';
       Object.keys(mathProblems).forEach(grade => {
         const btn = document.createElement('button');
-        btn.textContent = grade;
-        btn.addEventListener('click', () => {
-          currentGrade = grade;
-          loadProblem(0);
-        });
+        btn.className = 'grade-btn';
+        btn.textContent = grade.replace('grade', 'Grade ');
+        btn.addEventListener('click', () => startGrade(grade));
         gradeSelector.appendChild(btn);
       });
+      
+      // Set up enemy (random from selected grade)
+      currentEnemy = enemies.find(e => e.grade === currentGrade) || enemies[0];
+      enemyElement.style.backgroundImage = `url(https://assets.codepen.io/605876/${currentEnemy.image})`;
+      updateHealthBars();
     }
 
-    // Load Problem
+    function startGrade(grade) {
+      currentGrade = grade;
+      currentProblemIndex = 0;
+      currentEnemy = enemies.find(e => e.grade === grade) || enemies[0];
+      enemyElement.style.backgroundImage = `url(https://assets.codepen.io/605876/${currentEnemy.image})`;
+      enemyHealth = currentEnemy.health;
+      updateHealthBars();
+      
+      answerInput.disabled = false;
+      submitBtn.disabled = false;
+      loadProblem(0);
+      answerInput.focus();
+    }
+
     function loadProblem(index) {
       currentProblemIndex = index;
       const problems = mathProblems[currentGrade];
+      
       if (index < problems.length) {
         problemElement.textContent = problems[index].question;
         answerInput.value = '';
+        feedbackElement.textContent = '';
+        feedbackElement.className = '';
       } else {
-        problemElement.textContent = "You completed all problems!";
+        // Grade completed!
+        problemElement.textContent = `🏆 You defeated the ${currentEnemy.name}!`;
+        answerInput.style.display = 'none';
+        submitBtn.style.display = 'none';
+        winSound.play();
+        createConfetti(50);
       }
     }
 
-    // Check Answer
     function checkAnswer() {
       const problems = mathProblems[currentGrade];
       const currentProblem = problems[currentProblemIndex];
-      const userAnswer = answerInput.value.trim();
+      let userAnswer = answerInput.value.trim();
       
-      if (userAnswer === currentProblem.answer) {
-        xp += 100;
-        xpCounter.textContent = `XP: ${xp}`;
-        createConfetti();
-        loadProblem(currentProblemIndex + 1);
+      // Normalize answers for comparison
+      if (!isNaN(userAnswer) && !isNaN(currentProblem.answer)) {
+        userAnswer = parseFloat(userAnswer).toString();
+      }
+      
+      if (userAnswer.toLowerCase() === currentProblem.answer.toLowerCase()) {
+        // CORRECT ANSWER - ATTACK!
+        streak++;
+        const damage = 20 + (streak * 5);
+        enemyHealth = Math.max(0, enemyHealth - damage);
+        updateHealthBars();
+        
+        xp += 50 + (streak * 10);
+        xpCounter.textContent = xp;
+        streakDisplay.textContent = `🔥 Streak: ${streak}`;
+        
+        feedbackElement.textContent = `💥 You hit for ${damage} damage!`;
+        feedbackElement.className = 'correct';
+        
+        // Visual effects
+        createAttackEffect('hero');
+        attackSound.currentTime = 0;
+        attackSound.play();
+        
+        if (enemyHealth <= 0) {
+          // Enemy defeated
+          setTimeout(() => {
+            feedbackElement.textContent = `🎉 ${currentEnemy.name} defeated! +100 XP`;
+            xp += 100;
+            xpCounter.textContent = xp;
+            loadProblem(currentProblemIndex + 1);
+          }, 1000);
+        } else {
+          // Enemy attacks back
+          setTimeout(enemyAttack, 1000);
+        }
+        
+        // Check for level up
+        if (xp >= level * 100) {
+          levelUp();
+        }
       } else {
-        alert("Try again!");
+        // WRONG ANSWER - MISS!
+        streak = 0;
+        streakDisplay.textContent = '';
+        feedbackElement.textContent = getHint(currentProblem);
+        feedbackElement.className = 'wrong';
+        wrongSound.currentTime = 0;
+        wrongSound.play();
+        
+        // Enemy attacks
+        setTimeout(enemyAttack, 500);
       }
     }
 
-    // Confetti Effect
-    function createConfetti() {
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer({ alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.getElementById('confetti-canvas').appendChild(renderer.domElement);
+    function enemyAttack() {
+      const damage = 10 + Math.floor(Math.random() * 15);
+      heroHealth = Math.max(0, heroHealth - damage);
+      updateHealthBars();
+      
+      feedbackElement.textContent = `💢 ${currentEnemy.name} hits you for ${damage} damage!`;
+      feedbackElement.className = 'wrong';
+      
+      createAttackEffect('enemy');
+      heroElement.classList.add('shake');
+      setTimeout(() => heroElement.classList.remove('shake'), 300);
+      
+      if (heroHealth <= 0) {
+        setTimeout(() => {
+          feedbackElement.textContent = "💀 Game Over! Select a grade to try again.";
+          answerInput.disabled = true;
+          submitBtn.disabled = true;
+        }, 500);
+      }
+    }
 
-      const particles = new THREE.Group();
-      for (let i = 0; i < 200; i++) {
-        const geometry = new THREE.SphereGeometry(0.2);
-        const material = new THREE.MeshBasicMaterial({ 
-          color: Math.random() * 0xffffff 
+    function updateHealthBars() {
+      heroHealthBar.style.width = `${heroHealth}%`;
+      enemyHealthBar.style.width = `${enemyHealth}%`;
+    }
+
+    function levelUp() {
+      level++;
+      levelUpModal.style.display = 'block';
+      winSound.play();
+      createConfetti(100);
+    }
+
+    // ========== VISUAL EFFECTS ==========
+    function createAttackEffect(attacker) {
+      const effect = document.createElement('div');
+      effect.className = 'attack-effect';
+      
+      if (attacker === 'hero') {
+        effect.style.backgroundImage = 'url(https://assets.codepen.io/605876/sword-slash.png)';
+        effect.style.left = '200px';
+        effect.style.top = '100px';
+      } else {
+        effect.style.backgroundImage = 'url(https://assets.codepen.io/605876/fireball.png)';
+        effect.style.right = '200px';
+        effect.style.top = '100px';
+      }
+      
+      battleEffects.appendChild(effect);
+      
+      // Animate
+      effect.animate([
+        { opacity: 0, transform: 'scale(0.5)' },
+        { opacity: 1, transform: 'scale(1.2)' },
+        { opacity: 0, transform: 'scale(0.5)' }
+      ], {
+        duration: 500,
+        easing: 'ease-out'
+      });
+      
+      setTimeout(() => effect.remove(), 500);
+    }
+
+    function createConfetti(count) {
+      const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FFFFFF', '#FFA5A5'];
+      
+      for (let i = 0; i < count; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-20px';
+        confetti.style.width = 10 + Math.random() * 10 + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        
+        document.body.appendChild(confetti);
+        
+        const animation = confetti.animate([
+          { top: '-20px', opacity: 1, transform: `rotate(0deg)` },
+          { top: '100vh', opacity: 0, transform: `rotate(${Math.random() * 360}deg)` }
+        ], {
+          duration: 1000 + Math.random() * 2000,
+          easing: 'cubic-bezier(0.1,0.8,0.9,1)'
         });
-        const particle = new THREE.Mesh(geometry, material);
-        particle.position.set(
-          Math.random() * 2 - 1,
-          Math.random() * 2 - 1,
-          Math.random() * 2 - 1
-        ).multiplyScalar(2);
-        particles.add(particle);
+        
+        animation.onfinish = () => confetti.remove();
       }
-      scene.add(particles);
-      camera.position.z = 5;
-
-      const animate = function () {
-        requestAnimationFrame(animate);
-        particles.rotation.x += 0.01;
-        particles.rotation.y += 0.01;
-        renderer.render(scene, camera);
-      };
-
-      animate();
-      setTimeout(() => {
-        document.getElementById('confetti-canvas').innerHTML = '';
-      }, 3000);
     }
 
-    // Event Listeners
+    function getHint(problem) {
+      const hints = {
+        addition: `Add the two numbers together`,
+        multiplication: `Remember your times tables!`,
+        fractions: `Imagine splitting a pizza into equal parts`,
+        geometry: `Count the sides of the shape`,
+        patterns: `What number comes next in the sequence?`,
+        default: `Think carefully and try again!`
+      };
+      return `❌ ${hints[problem.type] || hints.default}`;
+    }
+
+    // ========== EVENT LISTENERS ==========
     submitBtn.addEventListener('click', checkAnswer);
     answerInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') checkAnswer();
     });
+    
+    continueBtn.addEventListener('click', () => {
+      levelUpModal.style.display = 'none';
+      feedbackElement.textContent = `🌟 You reached level ${level}!`;
+      setTimeout(() => feedbackElement.textContent = '', 2000);
+    });
 
-    // Initialize Game
-    initGradeSelector();
-    loadProblem(0);
-
-    // Save progress to Firebase
-    function saveProgress() {
-      if (firebase.apps.length) {
-        db.collection("users").doc("currentUser").set({
-          xp: xp,
-          grade: currentGrade,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }
-    }
-
-    // Auto-save every minute
-    setInterval(saveProgress, 60000);
+    // ========== START GAME ==========
+    initGame();
   </script>
 </body>
 </html>
