@@ -1,996 +1,246 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MATHVERSE: Ultimate Math Battle</title>
-  <style>
-    :root {
-      --primary: #FF6B6B;
-      --secondary: #4ECDC4;
-      --dark: #292F36;
-      --light: #F7FFF7;
-      --accent: #FFE66D;
-      --error: #FF3D3D;
-      --success: #4CAF50;
-    }
-    body {
-      font-family: 'Luckiest Guy', cursive;
-      background: var(--dark);
-      margin: 0;
-      padding: 20px;
-      color: var(--light);
-      background-image: url('https://assets.codepen.io/605876/star-bg.png');
-      overflow-x: hidden;
-      text-align: center;
-      min-height: 100vh;
-    }
-    #game-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background: rgba(41, 47, 54, 0.8);
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(78, 205, 196, 0.3);
-      border: 3px solid var(--secondary);
-      position: relative;
-    }
-    h1 {
-      color: var(--accent);
-      text-shadow: 3px 3px 0 var(--primary);
-      font-size: 3rem;
-      margin: 10px 0;
-    }
-    #battle-arena {
-      position: relative;
-      height: 250px;
-      margin: 20px 0;
-      background: rgba(0,0,0,0.3);
-      border-radius: 15px;
-      overflow: hidden;
-      border: 2px dashed var(--secondary);
-    }
-    #hero, #enemy {
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      bottom: 50px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      transition: all 0.3s;
-      image-rendering: pixelated;
-    }
-    #hero { 
-      left: 100px; 
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="40" r="30" fill="%234ECDC4"/><rect x="40" y="70" width="20" height="30" fill="%234ECDC4"/><circle cx="40" cy="35" r="5" fill="%23292F36"/><circle cx="60" cy="35" r="5" fill="%23292F36"/></svg>');
-    }
-    #enemy { 
-      right: 100px; 
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 20 L90 50 L70 90 L30 90 L10 50 Z" fill="%23FF6B6B"/><circle cx="35" cy="50" r="8" fill="%23292F36"/><circle cx="65" cy="50" r="8" fill="%23292F36"/></svg>');
-    }
-    .health-bar {
-      height: 20px;
-      background: #333;
-      border-radius: 10px;
-      margin: 10px auto;
-      width: 80%;
-      overflow: hidden;
-      position: relative;
-    }
-    #hero-health, #enemy-health {
-      height: 100%;
-      transition: width 0.5s;
-    }
-    #hero-health { background: var(--secondary); }
-    #enemy-health { background: var(--primary); }
-    .health-text {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      font-size: 0.8rem;
-      color: white;
-      text-shadow: 1px 1px 1px black;
-    }
-    #problem-display {
-      font-size: 1.8rem;
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 10px;
-      margin: 20px 0;
-      min-height: 60px;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-    }
-    #answer-input {
-      padding: 12px;
-      font-size: 1.2rem;
-      width: 200px;
-      text-align: center;
-      border: none;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.9);
-      font-family: 'Arial', sans-serif;
-    }
-    #submit-btn {
-      padding: 12px 25px;
-      font-size: 1.2rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-left: 10px;
-      transition: all 0.3s;
-      font-family: 'Luckiest Guy', cursive;
-    }
-    #submit-btn:hover {
-      background: #ff5252;
-      transform: scale(1.05);
-    }
-    #submit-btn:disabled {
-      background: #cccccc;
-      transform: none;
-      cursor: not-allowed;
-    }
-    .confetti {
-      position: absolute;
-      width: 15px;
-      height: 15px;
-      background-color: var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 100;
-    }
-    .grade-btn {
-      padding: 8px 15px;
-      margin: 5px;
-      background: var(--secondary);
-      color: var(--dark);
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-family: 'Luckiest Guy', cursive;
-      transition: all 0.2s;
-    }
-    .grade-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    #xp-display {
-      font-size: 1.3rem;
-      margin: 15px 0;
-      color: var(--accent);
-    }
-    #feedback {
-      min-height: 24px;
-      font-size: 1.2rem;
-      margin: 10px 0;
-      transition: all 0.3s;
-    }
-    .success { color: var(--success); }
-    .error { color: var(--error); }
-    .warning { color: var(--accent); }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
-    }
-    .shake {
-      animation: shake 0.4s ease-in-out;
-    }
-    #debug-console {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.7);
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      font-family: monospace;
-      font-size: 12px;
-      max-width: 300px;
-      max-height: 150px;
-      overflow: auto;
-      display: none;
-    }
-    #streak-display {
-      display: inline-block;
-      margin-left: 10px;
-      color: var(--accent);
-    }
-    #level-display {
-      display: inline-block;
-      margin-left: 10px;
-      color: var(--secondary);
-    }
-    #timer {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.5);
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-    }
-    .power-up {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      background-color: var(--accent);
-      border-radius: 50%;
-      animation: float 3s ease-in-out infinite;
-      cursor: pointer;
-      display: none;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    #mobile-controls {
-      display: none;
-      margin-top: 10px;
-    }
-    .mobile-btn {
-      padding: 10px;
-      margin: 0 5px;
-      background: var(--secondary);
-      border: none;
-      border-radius: 5px;
-      color: var(--dark);
-      font-size: 1rem;
-    }
-    @media (max-width: 600px) {
-      #game-container {
-        padding: 10px;
-      }
-      #hero { left: 50px; }
-      #enemy { right: 50px; }
-      #answer-input {
-        width: 150px;
-      }
-      #mobile-controls {
-        display: block;
-      }
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div id="game-container">
-    <div id="timer">Time: <span id="time">60</span>s</div>
-    <h1>MATHVERSE</h1>
-    <div id="grade-selector"></div>
-    
-    <div id="battle-arena">
-      <div id="power-up" class="power-up" title="Bonus Points!"></div>
-      <div id="hero"></div>
-      <div id="enemy"></div>
-      <div class="health-bar">
-        <div id="hero-health" style="width:100%"></div>
-        <div class="health-text" id="hero-health-text">100/100</div>
-      </div>
-      <div class="health-bar">
-        <div id="enemy-health" style="width:100%"></div>
-        <div class="health-text" id="enemy-health-text">100/100</div>
-      </div>
+<!-- Add this right after the opening <body> tag -->
+<div id="loading-screen">
+  <div class="loading-container">
+    <div class="loading-title">
+      <span>M</span>
+      <span>A</span>
+      <span>T</span>
+      <span>H</span>
+      <span>V</span>
+      <span>E</span>
+      <span>R</span>
+      <span>S</span>
+      <span>E</span>
     </div>
-    
-    <div id="problem-display">Select your grade to begin!</div>
-    <div id="feedback"></div>
-    
-    <div>
-      <input type="text" id="answer-input" placeholder="Your answer..." disabled>
-      <button id="submit-btn" disabled>ATTACK!</button>
+    <div class="loading-subtitle">Preparing Your Math Adventure</div>
+    <div class="loading-progress">
+      <div class="progress-bar"></div>
     </div>
-    
-    <div id="mobile-controls">
-      <button class="mobile-btn" id="btn-1">1</button>
-      <button class="mobile-btn" id="btn-2">2</button>
-      <button class="mobile-btn" id="btn-3">3</button>
-      <button class="mobile-btn" id="btn-4">4</button>
-      <button class="mobile-btn" id="btn-5">5</button>
-      <button class="mobile-btn" id="btn-6">6</button>
-      <button class="mobile-btn" id="btn-7">7</button>
-      <button class="mobile-btn" id="btn-8">8</button>
-      <button class="mobile-btn" id="btn-9">9</button>
-      <button class="mobile-btn" id="btn-0">0</button>
-      <button class="mobile-btn" id="btn-clear">⌫</button>
+    <div class="loading-math-symbols">
+      <div class="symbol">+</div>
+      <div class="symbol">−</div>
+      <div class="symbol">×</div>
+      <div class="symbol">÷</div>
+      <div class="symbol">=</div>
+      <div class="symbol">√</div>
+      <div class="symbol">π</div>
+      <div class="symbol">∞</div>
     </div>
-    
-    <div id="xp-display">
-      XP: <span id="xp-counter">0</span>
-      <span id="level-display">Level 1</span>
-      <span id="streak-display">Streak: 0</span>
-    </div>
+    <div class="loading-tip" id="loading-tip"></div>
   </div>
+</div>
 
-  <div id="debug-console"></div>
+<style>
+  /* Loading Screen Styles */
+  #loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #292F36 0%, #1a1e23 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow: hidden;
+  }
 
-  <audio id="correct-sound" src="https://assets.codepen.io/605876/correct.mp3" preload="auto"></audio>
-  <audio id="wrong-sound" src="https://assets.codepen.io/605876/wrong.mp3" preload="auto"></audio>
-  <audio id="levelup-sound" src="https://assets.codepen.io/605876/levelup.mp3" preload="auto"></audio>
+  .loading-container {
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    padding: 30px;
+    position: relative;
+  }
 
-  <script>
-    // ==========================================
-    // FINAL TESTED MATH PROBLEM GENERATOR
-    // ==========================================
-    class MathProblemGenerator {
-      constructor(grade) {
-        this.grade = Math.min(Math.max(parseInt(grade) || 1, 1, 12);
-        this.difficulty = 0.5 + (this.grade * 0.1);
-        this.lastGeneratedTypes = [];
-        this.debugLog(`Initialized Grade ${this.grade} generator`);
-      }
+  .loading-title {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: transparent;
+    background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #FFE66D);
+    -webkit-background-clip: text;
+    background-clip: text;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+  }
 
-      generate() {
-        try {
-          const generators = this.getAvailableGenerators();
-          
-          if (generators.length === 0) {
-            throw new Error("No valid generators for this grade");
-          }
-          
-          const generator = this.selectWeightedGenerator(generators);
-          const problem = this.validateProblem(generator.call(this));
-          
-          if (!problem) {
-            throw new Error("Generator returned invalid problem");
-          }
-          
-          this.debugLog(`Generated: ${problem.question}`);
-          return problem;
-          
-        } catch (error) {
-          console.error("Generation error:", error);
-          return this.getFallbackProblem();
-        }
-      }
+  .loading-title span {
+    display: inline-block;
+    animation: bounce 1.5s infinite alternate;
+  }
 
-      getAvailableGenerators() {
-        return [
-          this.generateAddition,
-          this.generateSubtraction,
-          this.generateMultiplication,
-          this.generateDivision,
-          this.generateFractions,
-          this.generateDecimals,
-          this.generateAlgebra,
-          this.generateGeometry,
-          this.generateWordProblem,
-          this.generateExponents,
-          this.generateSquareRoots,
-          this.generatePercentages
-        ].filter(fn => {
-          try {
-            const problem = fn.call(this);
-            return problem && this.validateProblem(problem);
-          } catch {
-            return false;
-          }
-        });
-      }
+  .loading-title span:nth-child(1) { animation-delay: 0.1s; }
+  .loading-title span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-title span:nth-child(3) { animation-delay: 0.3s; }
+  .loading-title span:nth-child(4) { animation-delay: 0.4s; }
+  .loading-title span:nth-child(5) { animation-delay: 0.5s; }
+  .loading-title span:nth-child(6) { animation-delay: 0.6s; }
+  .loading-title span:nth-child(7) { animation-delay: 0.7s; }
+  .loading-title span:nth-child(8) { animation-delay: 0.8s; }
+  .loading-title span:nth-child(9) { animation-delay: 0.9s; }
 
-      selectWeightedGenerator(generators) {
-        // Prefer generators not recently used
-        const weights = generators.map((_, index) => {
-          const lastUsedIndex = this.lastGeneratedTypes.lastIndexOf(index);
-          const weight = lastUsedIndex === -1 ? 5 : Math.max(1, 5 - (this.lastGeneratedTypes.length - lastUsedIndex));
-          return weight;
-        });
-        
-        const totalWeight = weights.reduce((sum, w) => sum + w, 0);
-        let random = Math.random() * totalWeight;
-        
-        for (let i = 0; i < generators.length; i++) {
-          if (random < weights[i]) {
-            this.lastGeneratedTypes.push(i);
-            if (this.lastGeneratedTypes.length > 5) {
-              this.lastGeneratedTypes.shift();
-            }
-            return generators[i];
-          }
-          random -= weights[i];
-        }
-        
-        return generators[0];
-      }
+  .loading-subtitle {
+    font-size: 1.5rem;
+    color: #F7FFF7;
+    margin-bottom: 30px;
+    opacity: 0.8;
+    animation: pulse 2s infinite;
+  }
 
-      // ========== PROBLEM GENERATORS ==========
-      generateAddition() {
-        const max = Math.max(10, Math.floor(10 * this.difficulty));
-        const a = this.randomInt(1, max);
-        const b = this.randomInt(1, max);
-        return {
-          question: `${a} + ${b} = ?`,
-          answer: (a + b).toString(),
-          type: "addition"
-        };
-      }
+  .loading-progress {
+    height: 10px;
+    background: rgba(247, 255, 247, 0.1);
+    border-radius: 5px;
+    margin: 0 auto 40px;
+    overflow: hidden;
+    max-width: 400px;
+  }
 
-      generateAlgebra() {
-        if (this.grade < 6) return null;
-        
-        const options = [];
-        
-        // Linear equations
-        options.push(() => {
-          const a = this.randomInt(1, Math.max(2, this.grade - 2));
-          const b = this.randomInt(1, Math.max(3, this.grade * 2));
-          const x = this.randomInt(1, Math.max(2, this.grade - 1));
-          return {
-            question: `${a}x + ${b} = ${a*x + b}. Solve for x`,
-            answer: x.toString(),
-            type: "algebra-linear"
-          };
-        });
-        
-        // Quadratic equations (grades 9+)
-        if (this.grade >= 9) {
-          options.push(() => {
-            const root = this.randomInt(1, Math.max(2, this.grade - 6));
-            return {
-              question: `x² - ${2*root}x + ${root*root} = 0. Find x`,
-              answer: root.toString(),
-              type: "algebra-quadratic"
-            };
-          });
-        }
-        
-        return options[Math.floor(Math.random() * options.length)]();
-      }
+  .progress-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
 
-      // 10+ additional generators omitted for brevity...
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.6) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: shimmer 2s infinite;
+  }
 
-      // ========== HELPER METHODS ==========
-      randomInt(min, max) {
-        return Math.floor(min + Math.random() * (max - min + 1));
-      }
+  .loading-math-symbols {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
 
-      validateProblem(problem) {
-        if (!problem || typeof problem !== "object") return null;
-        if (!problem.question || typeof problem.question !== "string") return null;
-        if (problem.answer === undefined || problem.answer === null) return null;
-        if (!problem.type || typeof problem.type !== "string") return null;
-        
-        // Additional validation for specific types
-        if (problem.type.includes("algebra") && 
-            problem.question.includes("x") && 
-            !problem.question.includes(problem.answer)) {
-          return problem;
-        }
-        
-        // Basic math problem validation
-        if (problem.type.includes("addition") || 
-            problem.type.includes("subtraction") ||
-            problem.type.includes("multiplication") ||
-            problem.type.includes("division")) {
-          try {
-            // Ensure the answer actually solves the problem
-            const answer = parseFloat(problem.answer);
-            if (isNaN(answer)) return null;
-            return problem;
-          } catch {
-            return null;
-          }
-        }
-        
-        return problem;
-      }
+  .loading-math-symbols .symbol {
+    font-size: 2rem;
+    color: #FFE66D;
+    animation: float 3s infinite ease-in-out;
+    text-shadow: 0 0 10px rgba(255, 230, 109, 0.5);
+  }
 
-      getFallbackProblem() {
-        return {
-          question: "10 + 10 = ?",
-          answer: "20",
-          type: "addition-fallback"
-        };
-      }
+  .loading-math-symbols .symbol:nth-child(1) { animation-delay: 0s; }
+  .loading-math-symbols .symbol:nth-child(2) { animation-delay: 0.5s; }
+  .loading-math-symbols .symbol:nth-child(3) { animation-delay: 1s; }
+  .loading-math-symbols .symbol:nth-child(4) { animation-delay: 1.5s; }
+  .loading-math-symbols .symbol:nth-child(5) { animation-delay: 2s; }
+  .loading-math-symbols .symbol:nth-child(6) { animation-delay: 2.5s; }
+  .loading-math-symbols .symbol:nth-child(7) { animation-delay: 3s; }
+  .loading-math-symbols .symbol:nth-child(8) { animation-delay: 3.5s; }
 
-      debugLog(message) {
-        const debugConsole = document.getElementById('debug-console');
-        if (debugConsole) {
-          debugConsole.innerHTML += `[GEN] ${message}<br>`;
-          debugConsole.scrollTop = debugConsole.scrollHeight;
-        }
-      }
+  .loading-tip {
+    font-size: 1.1rem;
+    color: rgba(247, 255, 247, 0.7);
+    font-style: italic;
+    max-width: 500px;
+    margin: 0 auto;
+    min-height: 40px;
+  }
+
+  /* Animations */
+  @keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-15px); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .loading-title {
+      font-size: 3rem;
     }
-
-    // ==========================================
-    // FINAL TESTED GAME ENGINE
-    // ==========================================
-    class MathVerseGame {
-      constructor() {
-        this.state = {
-          grade: null,
-          xp: 0,
-          level: 1,
-          streak: 0,
-          heroHealth: 100,
-          enemyHealth: 100,
-          currentProblem: null,
-          generator: null,
-          debugMode: false,
-          timer: 60,
-          timerInterval: null,
-          powerUpVisible: false,
-          xpToNextLevel: 100,
-          isProcessing: false
-        };
-        
-        this.cacheElements();
-        this.initEventListeners();
-        this.initGradeSelector();
-        this.updateUI();
-        
-        if (location.search.includes('debug=1')) {
-          this.toggleDebugMode();
-        }
-      }
-      
-      cacheElements() {
-        this.elements = {
-          problem: document.getElementById('problem-display'),
-          answerInput: document.getElementById('answer-input'),
-          submitBtn: document.getElementById('submit-btn'),
-          xpCounter: document.getElementById('xp-counter'),
-          levelDisplay: document.getElementById('level-display'),
-          streakDisplay: document.getElementById('streak-display'),
-          gradeSelector: document.getElementById('grade-selector'),
-          feedback: document.getElementById('feedback'),
-          heroHealth: document.getElementById('hero-health'),
-          enemyHealth: document.getElementById('enemy-health'),
-          heroHealthText: document.getElementById('hero-health-text'),
-          enemyHealthText: document.getElementById('enemy-health-text'),
-          hero: document.getElementById('hero'),
-          enemy: document.getElementById('enemy'),
-          debugConsole: document.getElementById('debug-console'),
-          timerDisplay: document.getElementById('time'),
-          powerUp: document.getElementById('power-up'),
-          mobileBtns: Array.from(document.querySelectorAll('.mobile-btn'))
-        };
-      }
-      
-      initEventListeners() {
-        this.elements.submitBtn.addEventListener('click', () => this.checkAnswer());
-        this.elements.answerInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') this.checkAnswer();
-        });
-        
-        // Mobile number buttons
-        this.elements.mobileBtns.forEach(btn => {
-          if (btn.id.startsWith('btn-') && !isNaN(btn.id.slice(-1))) {
-            btn.addEventListener('click', () => {
-              if (!this.state.isProcessing) {
-                this.elements.answerInput.value += btn.id.slice(-1);
-                this.elements.answerInput.focus();
-              }
-            });
-          }
-        });
-        
-        // Clear button
-        document.getElementById('btn-clear').addEventListener('click', () => {
-          if (!this.state.isProcessing) {
-            this.elements.answerInput.value = '';
-            this.elements.answerInput.focus();
-          }
-        });
-        
-        // Power-up click
-        this.elements.powerUp.addEventListener('click', () => this.collectPowerUp());
-        
-        // Debug mode toggle
-        document.addEventListener('keydown', (e) => {
-          if (e.shiftKey && e.key === 'D') {
-            this.toggleDebugMode();
-          }
-        });
-      }
-      
-      initGradeSelector() {
-        this.elements.gradeSelector.innerHTML = '<h3>SELECT YOUR GRADE:</h3>';
-        for (let grade = 1; grade <= 12; grade++) {
-          const btn = document.createElement('button');
-          btn.className = 'grade-btn';
-          btn.textContent = `Grade ${grade}`;
-          btn.addEventListener('click', () => this.startGrade(grade));
-          this.elements.gradeSelector.appendChild(btn);
-        }
-      }
-      
-      startGrade(grade) {
-        if (this.state.isProcessing) return;
-        
-        try {
-          this.resetGame();
-          this.state.grade = grade;
-          this.state.generator = new MathProblemGenerator(grade);
-          
-          this.enableInput();
-          this.loadNewProblem();
-          this.startTimer();
-          this.schedulePowerUp();
-          
-          this.debugLog(`Grade ${grade} started successfully`);
-          
-        } catch (error) {
-          console.error("Error starting grade:", error);
-          this.showFeedback(`Error starting game: ${error.message}`, "error");
-          this.disableInput();
-        }
-      }
-      
-      resetGame() {
-        clearInterval(this.state.timerInterval);
-        this.state = {
-          ...this.state,
-          xp: 0,
-          level: 1,
-          streak: 0,
-          heroHealth: 100,
-          enemyHealth: 100,
-          timer: 60,
-          powerUpVisible: false,
-          xpToNextLevel: 100,
-          isProcessing: false
-        };
-        this.updateUI();
-        this.hidePowerUp();
-      }
-      
-      startTimer() {
-        clearInterval(this.state.timerInterval);
-        this.state.timer = 60;
-        this.updateTimerDisplay();
-        
-        this.state.timerInterval = setInterval(() => {
-          this.state.timer--;
-          this.updateTimerDisplay();
-          
-          if (this.state.timer <= 0) {
-            clearInterval(this.state.timerInterval);
-            this.showFeedback("⏰ Time's up! Select a grade to play again.", "warning");
-            this.disableInput();
-          }
-        }, 1000);
-      }
-      
-      updateTimerDisplay() {
-        this.elements.timerDisplay.textContent = this.state.timer;
-        if (this.state.timer <= 10) {
-          this.elements.timerDisplay.style.color = "var(--error)";
-        } else {
-          this.elements.timerDisplay.style.color = "";
-        }
-      }
-      
-      schedulePowerUp() {
-        if (this.state.powerUpTimer) {
-          clearTimeout(this.state.powerUpTimer);
-        }
-        
-        this.state.powerUpTimer = setTimeout(() => {
-          if (this.state.grade && !this.state.powerUpVisible && !this.state.isProcessing) {
-            this.showPowerUp();
-          }
-        }, 15000 + Math.random() * 30000);
-      }
-      
-      showPowerUp() {
-        this.state.powerUpVisible = true;
-        const powerUp = this.elements.powerUp;
-        powerUp.style.display = "block";
-        powerUp.style.left = `${50 + Math.random() * 50}%`;
-        powerUp.style.top = `${30 + Math.random() * 40}%`;
-        
-        this.state.powerUpTimeout = setTimeout(() => {
-          if (this.state.powerUpVisible) {
-            this.hidePowerUp();
-          }
-        }, 5000);
-      }
-      
-      hidePowerUp() {
-        this.state.powerUpVisible = false;
-        this.elements.powerUp.style.display = "none";
-        this.schedulePowerUp();
-      }
-      
-      collectPowerUp() {
-        if (!this.state.powerUpVisible || this.state.isProcessing) return;
-        
-        this.state.isProcessing = true;
-        const bonus = 50 + Math.floor(Math.random() * 100);
-        this.state.xp += bonus;
-        this.showFeedback(`🎁 Power-up collected! +${bonus} XP`, "success");
-        document.getElementById('correct-sound').play();
-        this.createConfetti(20);
-        this.hidePowerUp();
-        this.checkLevelUp();
-        this.updateUI();
-        this.state.isProcessing = false;
-      }
-      
-      loadNewProblem() {
-        if (this.state.isProcessing) return;
-        this.state.isProcessing = true;
-        
-        try {
-          this.state.currentProblem = this.state.generator.generate();
-          
-          if (!this.state.currentProblem || !this.state.currentProblem.question) {
-            throw new Error("Failed to generate valid problem");
-          }
-          
-          this.elements.problem.textContent = this.state.currentProblem.question;
-          this.elements.answerInput.value = '';
-          this.elements.feedback.textContent = '';
-          this.elements.feedback.className = '';
-          this.elements.answerInput.focus();
-          
-          this.debugLog(`Problem loaded: ${this.state.currentProblem.question}`);
-          
-        } catch (error) {
-          console.error("Error loading problem:", error);
-          this.showFeedback("Error loading problem. Trying again...", "error");
-          setTimeout(() => this.loadNewProblem(), 1000);
-        } finally {
-          this.state.isProcessing = false;
-        }
-      }
-      
-      checkAnswer() {
-        if (this.state.isProcessing) return;
-        this.state.isProcessing = true;
-        
-        try {
-          const userAnswer = this.elements.answerInput.value.trim();
-          
-          if (!userAnswer) {
-            this.showFeedback("Please enter an answer!", "warning");
-            this.state.isProcessing = false;
-            return;
-          }
-          
-          if (!this.state.currentProblem) {
-            throw new Error("No current problem exists");
-          }
-          
-          const isCorrect = this.normalizeAnswer(userAnswer) === 
-                          this.normalizeAnswer(this.state.currentProblem.answer);
-          
-          if (isCorrect) {
-            this.handleCorrectAnswer();
-          } else {
-            this.handleWrongAnswer();
-          }
-          
-        } catch (error) {
-          console.error("Error checking answer:", error);
-          this.showFeedback("Error checking answer. Please try again.", "error");
-        } finally {
-          this.state.isProcessing = false;
-        }
-      }
-      
-      handleCorrectAnswer() {
-        // Play correct sound
-        document.getElementById('correct-sound').play();
-        
-        // Update streak
-        this.state.streak++;
-        if (this.state.streak > 5) {
-          this.showFeedback(`🔥 ${this.state.streak} in a row!`, "success");
-        }
-        
-        // Calculate damage and XP
-        const damage = 10 + (this.state.streak * 2);
-        const xpEarned = 10 + (this.state.streak * 5);
-        
-        // Update game state
-        this.state.enemyHealth = Math.max(0, this.state.enemyHealth - damage);
-        this.state.xp += xpEarned;
-        
-        // Visual feedback
-        this.showFeedback(`✅ Correct! ${damage} damage! +${xpEarned} XP`, "success");
-        this.createConfetti(10);
-        this.animateAttack('hero');
-        
-        // Update UI
-        this.updateUI();
-        
-        // Check for enemy defeat
-        if (this.state.enemyHealth <= 0) {
-          setTimeout(() => {
-            const bonusXP = 50 + Math.floor(this.state.streak * 10);
-            this.state.xp += bonusXP;
-            this.showFeedback(`🎉 Enemy defeated! +${bonusXP} XP`, "success");
-            this.state.enemyHealth = 100;
-            this.updateUI();
-            this.loadNewProblem();
-          }, 1000);
-        } else {
-          setTimeout(() => this.loadNewProblem(), 1000);
-        }
-        
-        // Check for level up
-        this.checkLevelUp();
-      }
-      
-      handleWrongAnswer() {
-        // Play wrong sound
-        document.getElementById('wrong-sound').play();
-        
-        // Reset streak
-        this.state.streak = 0;
-        
-        // Calculate damage
-        const damage = 5 + Math.floor(Math.random() * 10);
-        this.state.heroHealth = Math.max(0, this.state.heroHealth - damage);
-        
-        // Visual feedback
-        this.showFeedback(`❌ Wrong! -${damage} HP`, "error");
-        this.animateAttack('enemy');
-        this.elements.hero.classList.add('shake');
-        setTimeout(() => this.elements.hero.classList.remove('shake'), 400);
-        
-        // Update UI
-        this.updateUI();
-        
-        // Check for game over or next problem
-        if (this.state.heroHealth <= 0) {
-          setTimeout(() => {
-            this.showFeedback("💀 Game Over! Select a grade to try again.", "error");
-            this.disableInput();
-            clearInterval(this.state.timerInterval);
-          }, 500);
-        } else {
-          setTimeout(() => this.loadNewProblem(), 1000);
-        }
-      }
-      
-      checkLevelUp() {
-        if (this.state.xp >= this.state.xpToNextLevel) {
-          this.state.level++;
-          this.state.xpToNextLevel = Math.floor(this.state.xpToNextLevel * 1.5);
-          
-          // Play level up sound
-          document.getElementById('levelup-sound').play();
-          
-          // Show level up message
-          this.showFeedback(`🌟 Level Up! Now level ${this.state.level}`, "success");
-          this.createConfetti(30);
-          
-          // Heal player
-          this.state.heroHealth = Math.min(100, this.state.heroHealth + 30);
-          
-          this.updateUI();
-        }
-      }
-      
-      animateAttack(attacker) {
-        const element = attacker === 'hero' ? this.elements.hero : this.elements.enemy;
-        
-        // Move forward
-        element.style.transform = `translateX(${attacker === 'hero' ? '20px' : '-20px'})`;
-        
-        // Return to original position
-        setTimeout(() => {
-          element.style.transform = 'translateX(0)';
-        }, 300);
-      }
-      
-      updateUI() {
-        // Update health bars
-        this.elements.heroHealth.style.width = `${this.state.heroHealth}%`;
-        this.elements.enemyHealth.style.width = `${this.state.enemyHealth}%`;
-        this.elements.heroHealthText.textContent = `${this.state.heroHealth}/100`;
-        this.elements.enemyHealthText.textContent = `${this.state.enemyHealth}/100`;
-        
-        // Update XP and level
-        this.elements.xpCounter.textContent = this.state.xp;
-        this.elements.levelDisplay.textContent = `Level ${this.state.level}`;
-        this.elements.streakDisplay.textContent = this.state.streak > 0 ? 
-          `Streak: ${this.state.streak}` : '';
-        
-        // Update timer if needed
-        if (this.state.timerInterval) {
-          this.updateTimerDisplay();
-        }
-      }
-      
-      enableInput() {
-        this.elements.answerInput.disabled = false;
-        this.elements.submitBtn.disabled = false;
-        this.elements.answerInput.focus();
-      }
-      
-      disableInput() {
-        this.elements.answerInput.disabled = true;
-        this.elements.submitBtn.disabled = true;
-      }
-      
-      showFeedback(message, type = "info") {
-        this.elements.feedback.textContent = message;
-        this.elements.feedback.className = type;
-      }
-      
-      createConfetti(count) {
-        const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FFFFFF'];
-        const container = document.getElementById('game-container');
-        
-        for (let i = 0; i < count; i++) {
-          const confetti = document.createElement('div');
-          confetti.className = 'confetti';
-          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-          confetti.style.left = Math.random() * 100 + '%';
-          confetti.style.top = '-20px';
-          confetti.style.width = (10 + Math.random() * 10) + 'px';
-          confetti.style.height = confetti.style.width;
-          
-          container.appendChild(confetti);
-          
-          const animation = confetti.animate([
-            { top: '-20px', opacity: 1 },
-            { top: '100%', opacity: 0 }
-          ], {
-            duration: 1000 + Math.random() * 2000,
-            easing: 'cubic-bezier(0.1,0.8,0.9,1)'
-          });
-          
-          animation.onfinish = () => confetti.remove();
-        }
-      }
-      
-      normalizeAnswer(answer) {
-        if (typeof answer === 'number') {
-          return answer.toString().toLowerCase().trim();
-        }
-        return String(answer).toLowerCase().trim();
-      }
-      
-      toggleDebugMode() {
-        this.state.debugMode = !this.state.debugMode;
-        this.elements.debugConsole.style.display = this.state.debugMode ? 'block' : 'none';
-        this.debugLog(`Debug mode ${this.state.debugMode ? 'enabled' : 'disabled'}`);
-      }
-      
-      debugLog(message) {
-        if (this.state.debugMode) {
-          console.log(message);
-          if (this.elements.debugConsole) {
-            this.elements.debugConsole.innerHTML += `[GAME] ${message}<br>`;
-            this.elements.debugConsole.scrollTop = this.elements.debugConsole.scrollHeight;
-          }
-        }
-      }
+    
+    .loading-subtitle {
+      font-size: 1.2rem;
     }
+    
+    .loading-math-symbols .symbol {
+      font-size: 1.5rem;
+    }
+  }
+</style>
 
-    // ==========================================
-    // START THE GAME WHEN PAGE LOADS
-    // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
-      try {
-        const game = new MathVerseGame();
-        window.mathGame = game; // Make available for debugging
-        
-        // Test all grade generators if requested
-        if (location.search.includes('test=1')) {
-          console.log("Running generator tests...");
-          for (let grade = 1; grade <= 12; grade++) {
-            const generator = new MathProblemGenerator(grade);
-            for (let i = 0; i < 5; i++) {
-              const problem = generator.generate();
-              console.log(`Grade ${grade} Problem ${i+1}:`, problem);
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Failed to initialize game:", error);
-        document.getElementById('feedback').textContent = 
-          "Failed to load game. Please refresh the page.";
+<script>
+  // Loading screen functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const loadingScreen = document.getElementById('loading-screen');
+    const progressBar = document.querySelector('.progress-bar');
+    const loadingTip = document.getElementById('loading-tip');
+    
+    // Fun loading tips
+    const tips = [
+      "Did you know? The word 'mathematics' comes from the Greek word 'máthēma' meaning 'knowledge'.",
+      "Pro tip: Practice math daily to keep your skills sharp!",
+      "The number 0 was invented in India around the 5th century.",
+      "A 'jiffy' is an actual unit of time - 1/100th of a second!",
+      "The equals sign (=) was invented in 1557 by Welsh mathematician Robert Recorde.",
+      "There are 86,400 seconds in a day. Can you calculate how many in a week?",
+      "The Fibonacci sequence appears often in nature - in pinecones, sunflowers, and more!",
+      "The largest known prime number has over 24 million digits!"
+    ];
+    
+    // Simulate loading progress
+    let progress = 0;
+    const loadingInterval = setInterval(function() {
+      // Update progress
+      progress += Math.random() * 10;
+      if (progress > 100) progress = 100;
+      progressBar.style.width = progress + '%';
+      
+      // Change tip every few seconds
+      if (progress % 25 === 0) {
+        loadingTip.textContent = tips[Math.floor(Math.random() * tips.length)];
       }
-    });
-  </script>
-</body>
-</html>
+      
+      // Complete loading
+      if (progress >= 100) {
+        clearInterval(loadingInterval);
+        loadingTip.textContent = "Ready to begin your math adventure!";
+        
+        // Add fade out animation
+        loadingScreen.style.opacity = 0;
+        setTimeout(function() {
+          loadingScreen.style.display = 'none';
+          
+          // Initialize the game after loading
+          window.mathVerseGame = new MathVerseGame();
+        }, 500);
+      }
+    }, 150);
+  });
+</script>
